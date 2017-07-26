@@ -18,7 +18,7 @@ class OPAuctionInstall(install):
         check_call(GULP)
 
 
-setup(name='openprocurement.auction.esco-js',
+setup(name='openprocurement.auction.dutch-js',
       version='0.0.1',
       description='frontend application for openprocurement.auction',
       classifiers=[
