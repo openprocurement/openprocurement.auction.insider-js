@@ -15,8 +15,8 @@ angular.module('auction').controller('AuctionController',[
       window.open(location.href, '_blank');
       return false;
     }
-
-    AuctionConfig.auction_doc_id = window.location.pathname.replace('/tenders/', '');
+    var parts = window.location.pathname.split('/')
+    AuctionConfig.auction_doc_id = parts[parts.length - 1];
 
     $scope.lang = 'uk';
     $rootScope.normilized = false;
@@ -171,7 +171,7 @@ angular.module('auction').controller('AuctionController',[
       });
       $log.info({message: 'Start set_sse_timeout on event source', timeout: response_timeout});
       }, 20000);
-
+      
       evtSrc = new EventSource(sse_url + '/event_source', {withCredentials: true});
       $scope.restart_retries_events = 3;
       evtSrc.addEventListener('ClientsList', function(e) {
@@ -212,7 +212,7 @@ angular.module('auction').controller('AuctionController',[
             progress_timer: $rootScope.progres_timer
           });
         }
-
+        
       }, false);
       evtSrc.addEventListener('Identification', function(e) {
         if (response_timeout) {
@@ -388,7 +388,7 @@ angular.module('auction').controller('AuctionController',[
         message: "Start post bid",
         bid_data: parseFloat(bid) || parseFloat($rootScope.form.bid) || 0
       });
-
+      
       if (parseFloat($rootScope.form.bid) == -1) {
         var msg_id = Math.random();
         $rootScope.alerts.push({
