@@ -255,17 +255,17 @@
                                 <div class="input-group main-price-block">
                                     <div class="col-md-8 col-sm-8 col-xs-11" >
                                         <span class="lead">{{auction_doc.stages[auction_doc.current_stage].amount}} {{ auction_doc.value.currency|translate }}</span>
-                                        <input id="bid-amount-input"
-                                               id="bid"
-                                               name="bid"
-                                               checked="checked"
-                                               ng-model="$root.form.bid"
-                                               type="radio"
-                                               ng-value="auction_doc.stages[auction_doc.current_stage].amount"
-                                               required />
                                     </div>
                                     <div class="input-group-btn col-md-4 col-sm-4 pull-right">
-                                        <button id="place-bid-button" type="submit" ng-if="allow_bidding" ng-click="post_bid()" class="btn btn-success" ng-class="{'active': form.active}" translate>Place a bid</button>
+                                      <button
+					id="place-bid-button"
+					type="submit"
+					ng-if="allow_bidding"
+					ng-click="post_bid()"
+					class="btn btn-success"
+					ng-class="{'active': form.active}" translate>
+					Place a bid
+				      </button>
                                     </div>
                                 </div>
                               </div>
