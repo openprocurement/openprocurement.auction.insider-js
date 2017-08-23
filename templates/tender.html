@@ -97,8 +97,14 @@
             <div class="col-xs-12 stage-item stage-round">
                 <div class="stage-item-lining">
                     <div class="stage-info">
-                        <div class="stage-info-lining">
-                            <span class="stage-info-item stage-label" >Dutch Auction</span>
+                      <div class="stage-info-lining">
+			<span ng-switch on="auction_doc.current_phase">
+                          <span ng-switch-when="pre-started" translate class="stage-info-item stage-label">Wait for Dutch Auction</span>
+			  <span ng-switch-when="dutch" translate class="stage-info-item stage-label">Dutch Auction</span>
+			  <span ng-switch-when="pre-sealedbid" translate class="stage-info-item stage-label">Wait for Sealedbid Auction</span>
+			  <span ng-switch-when="sealedbid" translate class="stage-info-item stage-label">Sealedbid Auction</span>
+			  <span ng-switch-when="pre-bestbid" translate class="stage-info-item stage-label">Wait for Bestbid Auction</span>
+			  <span ng-switch-default translate class="stage-info-item stage-label">Auction not started yet</span>
                         </div>
                     </div>
                 </div>
@@ -106,45 +112,45 @@
         </div>
 
         <!-- Start stage item lining -->
-        <div ng-if="auction_doc.current_stage >= 0"
-             class="auction-round"
-             id="round-header-{{$index + 1}}"
-             ng-class="{'past-round':  auction_doc.current_stage > stage,
-                        'current-round': auction_doc.current_stage == stage,
-                        'future-round': auction_doc.current_stage < stage }"
-             ng-repeat="stage in Rounds">
+        <div ng-if="auction_doc.current_stage >= 0">
+	  <div ng-switch on="auction_doc.current_phase">
+	    
+            <div ng-switch-when="dutch">
+	      <div ng-repeat="stage in DutchRounds"
+		   class="auction-round"
+		   id="round-header-{{$index + 1}}"
+		   ng-class="{'past-round':  auction_doc.current_stage > stage,
+                             'current-round': auction_doc.current_stage == stage,
+                             'future-round': auction_doc.current_stage < stage }"
+		   >
+              <div id="stage-{{ stage + $index + 1 }}"
+		   class="row auction-stage stage-item stage-bids"
+                   ng-class="{'current-stage': auction_doc.current_stage == -1,
+                             'past-stage':  auction_doc.current_stage > -1}">
 
-            <div ng-if="(auction_doc.stages[stage].type != 'pause')&&(
-                         auction_doc.stages[stage].type != 'pre-sealed')&&(
-                         auction_doc.stages[stage].type != 'sealedbid')&&(
-                         auction_doc.stages[stage].type != 'pre-bestbid')&&(
-                         auction_doc.stages[stage].type != 'bestbid')&&(
-                         auction_doc.stages[stage].type != 'finish')">
+                <div class="stage-item-lining">
+                  <i ng-if="auction_doc.current_stage != (stage)" class="stage-icon"></i>
 
-                <div id="stage-{{ stage + $index + 1 }}" class="row auction-stage stage-item stage-bids"
-                     ng-class="{'current-stage': auction_doc.current_stage == -1,
-                                'past-stage':  auction_doc.current_stage > -1}">
+                  <div class="stage-icon-visual" ng-if="auction_doc.current_stage == (stage)">
+                    <svg class="stage-icon-svg" viewbox="0 0 48 48">
+                      <svg-timer></svg-timer>
+                    </svg>
+                  </div>
 
-                    <div class="stage-item-lining">
-                        <i ng-if="auction_doc.current_stage != (stage)" class="stage-icon"></i>
-                        <div class="stage-icon-visual" ng-if="auction_doc.current_stage == (stage)">
-                            <svg class="stage-icon-svg" viewbox="0 0 48 48">
-                                  <svg-timer></svg-timer>
-                            </svg>
-                        </div>
-                        <div class="stage-info">
-                            <div class="stage-info-lining">
-                                <span class="stage-info-item stage-label ng-binding ng-scope">{{auction_doc.stages[stage]['start']|date:'HH:mm:ss'}}</span>
-                                <span class="stage-info-item stage-amount default-amount">{{auction_doc.stages[stage].amount}} <span class="amount-currency" ng-if="!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount_features'])">{{ auction_doc.value.currency|translate }}</span></span>
-                            </div>
-                        </div>
+                  <div class="stage-info">
+                    <div class="stage-info-lining">
+                      <span class="stage-info-item stage-label ng-binding ng-scope">{{auction_doc.stages[stage]['start']|date:'HH:mm:ss'}}</span>
+                      <span class="stage-info-item stage-amount default-amount">{{auction_doc.stages[stage].amount}} <span class="amount-currency" ng-if="!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount_features'])">{{ auction_doc.value.currency|translate }}</span></span>
                     </div>
+                  </div>
 
-                </div>
-            </div>
+                </div> <!-- stage item lining -->
 
-            <div ng-if="auction_doc.stages[stage].type == 'sealedbid'"></div>
-        </div>
+              </div> <!-- row auction stage -->
+	      </div> <!-- ng-repeat -->
+	    </div> <!-- ng when -->
+          </div> <!-- ng switch -->
+        </div> <!-- end ng-if -->
         <!-- End stage item lining -->
 
 
