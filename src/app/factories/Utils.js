@@ -41,7 +41,7 @@ angular.module('auction').factory('AuctionUtils', [
         }
 
       }
-      if ((auction.stages[auction.current_stage].type || '') == "pre_announcement") {
+      if ((auction.stages[auction.current_stage].type || '') == "pre-sealed") {
         var client_time = new Date();
         var ends_time = new Date(auction.stages[auction.current_stage].start);
         if (client_time < ends_time) {
@@ -54,7 +54,7 @@ angular.module('auction').factory('AuctionUtils', [
           'msg_ending': 'Waiting for the disclosure of the participants\' names'
         };
       }
-      if ((auction.stages[auction.current_stage].type || '') == "announcement") {
+      if ((auction.stages[auction.current_stage].type || '') == "sealedbid") {
         var client_time = new Date();
         var ends_time = new Date(auction.stages[auction.current_stage - 1].start);
         if (client_time < ends_time) {
@@ -211,7 +211,7 @@ angular.module('auction').factory('AuctionUtils', [
       $timeout(function() {
         var current_round = 0;
         for (var index in Rounds) {
-          if ((auction_doc.current_stage >= Rounds[index]) && (auction_doc.current_stage <= (Rounds[index] + auction_doc.initial_bids.length))) {
+          if ((auction_doc.current_stage >= Rounds[index]) && (auction_doc.current_stage <= Rounds[index])) {
             current_round = parseInt(index) + 1;
             break;
           }

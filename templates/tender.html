@@ -96,195 +96,63 @@
                 </ul>
             </div>
         </div>
-        <div id="initial-bids-header" class="auction-round past-round" ng-if="auction_doc.current_stage >= 0" >
-            <div class="row">
-                <div class="col-xs-12 stage-item stage-round">
-                    <div class="stage-item-lining">
-                        <div class="stage-info">
-                            <div class="stage-info-lining">
-                                <span class="stage-info-item stage-label" ng-if="auction_doc.current_stage >= 0"><span translate>Initial bids</span></span>
-                                <span class="stage-info-item stage-label" ng-if="auction_doc.current_stage == -1" translate>Bidders</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="initial-bid-{{ $index + 1 }}" class="row auction-stage stage-item stage-bids"
-                 ng-repeat="bid_info in auction_doc.initial_bids"
-                 ng-class="{'current-stage': auction_doc.current_stage == -1,
-                            'past-stage':  auction_doc.current_stage > -1,
-                            'my-bid-stage': bid_info.bidder_id == bidder_id}">
+
+        <div class="row">
+            <div class="col-xs-12 stage-item stage-round">
                 <div class="stage-item-lining">
-                    <i class="stage-icon"></i>
                     <div class="stage-info">
-                        <div class="stage-info-lining" ng-class="{'auction-with-two-prices': auction_doc.auction_type == 'meat' && bid_info.bidder_id == bidder_id && !(auction_doc.current_stage == (auction_doc.stages.length - 1))}">
-                            <span class="stage-info-item stage-label" ng-if="bid_info.bidder_id != bidder_id ">{{ bid_info.label[lang]||"-" }}</span>
-                            <span class="stage-info-item stage-label" ng-if="bid_info.bidder_id == bidder_id " translate>You</span>
-                            <span class="stage-info-item stage-amount"
-                                  ng-if="!angular.isUndefined(bid_info['amount']||bid_info['amount_features'])"
-                                  ng-class="{true: 'minimal-amount', false: 'default-amount'}[((bid_info.amount_features||bid_info.amount) == (minimal_bid.amount_features||minimal_bid.amount)) && bid_info.time == minimal_bid.time]">
-
-                                <span ng-if="bid_info.bidder_id == bidder_id && auction_doc.auction_type == 'meat' && auction_doc.current_stage < (auction_doc.stages.length - 1)">
-                                    <span class="label-price normalized-price">
-                                        <span class="price-type" translate>Normilized Price</span>
-                                        {{ bid_info['amount_features']|fraction }}
-                                        <span class="amount-currency" ng-if="!angular.isUndefined(bid_info['amount_features'])">{{ auction_doc.minimalStep.currency|translate }}</span>
-                                    </span>
-                                    <span class="label-price full-price" >
-                                        <span class="price-type" translate>Full Price</span>
-                                        {{ bid_info['amount_features']|fraction:bidder_coeficient }}
-                                        <span class="amount-currency" ng-if="!angular.isUndefined(bid_info['amount_features'])">{{ auction_doc.minimalStep.currency|translate }}</span>
-                                    </span>
-                                </span>
-
-                                <span ng-if="bid_info.bidder_id != bidder_id && auction_doc.auction_type == 'meat' && auction_doc.current_stage < (auction_doc.stages.length - 1)">
-                                    <span class="label-price">
-                                        <span class="price-type" translate>Normilized Price</span>
-                                        {{ bid_info['amount_features']|fraction }}
-                                        <span class="amount-currency" ng-if="!angular.isUndefined(bid_info['amount_features'])">{{ auction_doc.minimalStep.currency|translate }}</span>
-                                    </span>
-                                </span>
-
-                                <span ng-if="auction_doc.auction_type == 'meat' && auction_doc.current_stage == (auction_doc.stages.length - 1)" tooltip="{{ bid_info['amount'] }} / {{ bid_info['coeficient']| eval_string }} = {{ bid_info['amount_features']|eval_string }}" tooltip-trigger="click" tooltip-placement="bottom">
-                                    <span class="label-price">
-                                        {{ bid_info['amount']|fraction }} <span class="amount-currency" ng-if="!angular.isUndefined(bid_info['amount'])">{{ auction_doc.minimalStep.currency|translate }}</span> / {{ bid_info['coeficient']|fraction }}
-                                    </span>
-                                </span>
-                                <span ng-if="(auction_doc.auction_type||'default') == 'default'">
-                                    <span class="label-price">
-                                        {{ bid_info['amount']|fraction }}
-                                        <span class="amount-currency" ng-if="!angular.isUndefined(bid_info['amount'])">{{ auction_doc.minimalStep.currency|translate }}</span>
-                                    </span>
-                                </span>
-
-                                <span class="label-minimum" ng-if="((bid_info.amount_features||bid_info.amount) == (minimal_bid.amount_features||minimal_bid.amount)) && bid_info.time == minimal_bid.time" translate>maximum</span>
-                            </span>
+                        <div class="stage-info-lining">
+                            <span class="stage-info-item stage-label" >Dutch Auction</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Start stage item lining -->
         <div ng-if="auction_doc.current_stage >= 0"
              class="auction-round"
              id="round-header-{{$index + 1}}"
-             ng-class="{'past-round':  (auction_doc.current_stage > (stage + auction_doc.initial_bids.length)),
-                        'current-round': ((auction_doc.current_stage >= stage)&&(auction_doc.current_stage <= (stage + auction_doc.initial_bids.length))),
-                        'future-round': auction_doc.current_stage < (stage + auction_doc.initial_bids.length)}"
+             ng-class="{'past-round':  auction_doc.current_stage > stage,
+                        'current-round': auction_doc.current_stage == stage,
+                        'future-round': auction_doc.current_stage < stage }"
              ng-repeat="stage in Rounds">
-            <div class="row">
-                <div class="col-xs-12 stage-item stage-round">
+
+            <div ng-if="(auction_doc.stages[stage].type != 'pause')&&(
+                         auction_doc.stages[stage].type != 'pre-sealed')&&(
+                         auction_doc.stages[stage].type != 'sealedbid')&&(
+                         auction_doc.stages[stage].type != 'pre-bestbid')&&(
+                         auction_doc.stages[stage].type != 'bestbid')&&(
+                         auction_doc.stages[stage].type != 'finish')">
+
+                <div id="stage-{{ stage + $index + 1 }}" class="row auction-stage stage-item stage-bids"
+                     ng-class="{'current-stage': auction_doc.current_stage == -1,
+                                'past-stage':  auction_doc.current_stage > -1}">
+
                     <div class="stage-item-lining">
+                        <i ng-if="auction_doc.current_stage != (stage)" class="stage-icon"></i>
+                        <div class="stage-icon-visual" ng-if="auction_doc.current_stage == (stage)">
+                            <svg class="stage-icon-svg" viewbox="0 0 48 48">
+                                  <svg-timer></svg-timer>
+                            </svg>
+                        </div>
                         <div class="stage-info">
                             <div class="stage-info-lining">
-                                <span class="stage-info-item stage-label" ><span translate>Round</span> {{ $index + 1}}</span>
+                                <span class="stage-info-item stage-label ng-binding ng-scope">{{auction_doc.stages[stage]['start']|date:'HH:mm:ss'}}</span>
+                                <span class="stage-info-item stage-amount default-amount">{{auction_doc.stages[stage].amount}} <span class="amount-currency" ng-if="!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount_features'])">{{ auction_doc.value.currency|translate }}</span></span>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
-            <div id="stage-{{ stage + $index + 1 }}" class="row auction-stage stage-item stage-bids"
-                 ng-repeat="initial_bid in auction_doc.initial_bids"
-                 ng-class="{'current-stage svg': auction_doc.current_stage == (stage + $index + 1),
-                            'future-stage':  auction_doc.current_stage < (stage + $index + 1),
-                            'past-stage':  auction_doc.current_stage > (stage + $index + 1),
-                            'my-bid-stage': auction_doc.stages[stage + $index + 1].bidder_id == bidder_id}">
-                <div ng-if="$first" id="stage-{{ stage + $index}}"></div>
-                <div class="stage-item-lining">
-                    <i ng-if="auction_doc.current_stage != (stage + $index + 1)" class="stage-icon"></i>
-                    <div class="stage-icon-visual" ng-if="auction_doc.current_stage == (stage + $index + 1)">
-                        <svg class="stage-icon-svg" viewbox="0 0 48 48">
-                              <svg-timer></svg-timer>
-                        </svg>
-                    </div>
-                    <div class="stage-info">
-                        <div class="stage-info-lining" ng-class="{'auction-with-two-prices': auction_doc.auction_type == 'meat' && auction_doc.stages[stage + $index + 1].bidder_id == bidder_id && !(auction_doc.current_stage == (auction_doc.stages.length - 1))}">
-                            <span class="stage-info-item stage-label" ng-if="auction_doc.stages[stage + $index + 1].bidder_id != bidder_id ">{{ auction_doc.stages[stage + $index + 1].label[lang] }}</span>
-                            <span class="stage-info-item stage-label" ng-if="auction_doc.stages[stage + $index + 1].bidder_id == bidder_id " translate>You</span>
-                            <span class="stage-info-item stage-amount"
-                                  ng-if="(auction_doc.stages[stage + $index + 1]['type'] == 'bids')&&(!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount_features']||auction_doc.stages[stage + $index + 1]['amount']))"
-                                  ng-class="{true: 'minimal-amount', false: 'default-amount'}[((auction_doc.stages[stage + $index + 1].amount_features||auction_doc.stages[stage + $index + 1].amount) == (minimal_bid.amount_features||minimal_bid.amount)) && auction_doc.stages[stage + $index + 1]['time'] == minimal_bid.time]">
-
-                                <span class="label-price" ng-if="auction_doc.stages[stage + $index + 1]['changed']">
-
-                                    <span ng-if="auction_doc.stages[stage + $index + 1].bidder_id == bidder_id && auction_doc.auction_type == 'meat' && (auction_doc.current_stage < (auction_doc.stages.length - 1))">
-                                        <strong class="label-price normalized-price">
-                                            <span class="price-type" translate>Normilized Price</span>
-                                            {{ auction_doc.stages[stage + $index + 1]['amount_features']|fraction }}
-                                            <span class="amount-currency" ng-if="!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount_features'])">{{ auction_doc.minimalStep.currency|translate }}</span>
-                                        </strong>
-                                        <strong class="label-price full-price" >
-                                            <span class="price-type" translate>Full Price</span>
-                                            {{ auction_doc.stages[stage + $index + 1]['amount_features']|fraction:bidder_coeficient }}
-                                            <span class="amount-currency" ng-if="!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount_features'])">{{ auction_doc.minimalStep.currency|translate }}</span>
-                                        </strong>
-                                    </span>
-                                    <span ng-if="auction_doc.stages[stage + $index + 1].bidder_id != bidder_id && auction_doc.auction_type == 'meat' && (auction_doc.current_stage < (auction_doc.stages.length - 1))">
-                                        <strong>
-                                            <span class="price-type" translate>Normilized Price</span>
-                                            {{ auction_doc.stages[stage + $index + 1]['amount_features']|fraction }}
-                                        </strong>
-                                    </span>
-
-                                    <span ng-if="(auction_doc.auction_type == 'meat') && (auction_doc.current_stage == (auction_doc.stages.length - 1))" tooltip="{{ auction_doc.stages[stage + $index + 1]['amount'] }} / {{ auction_doc.stages[stage + $index + 1]['coeficient']| eval_string }} = {{ auction_doc.stages[stage + $index + 1]['amount_features']|eval_string }}" tooltip-trigger="click" tooltip-placement="bottom">
-                                        <strong class="label-price">
-                                            {{ auction_doc.stages[stage + $index + 1]['amount']|fraction }} <span class="amount-currency" ng-if="!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount'])">{{ auction_doc.minimalStep.currency|translate }}</span> * {{ auction_doc.stages[stage + $index + 1]['coeficient']|fraction }}
-                                        </strong>
-                                    </span>
-
-                                    <span ng-if="(auction_doc.auction_type||'default') == 'default'">
-                                        <strong class="label-price">
-                                            {{ auction_doc.stages[stage + $index + 1]['amount']|fraction }}
-                                            <span class="amount-currency" ng-if="!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount'])">{{ auction_doc.minimalStep.currency|translate }}</span>
-                                        </strong>
-                                    </span>
-                                </span>
-
-                                <span class="label-price" ng-if="!auction_doc.stages[stage + $index + 1]['changed']">
-
-                                    <span ng-if="auction_doc.stages[stage + $index + 1].bidder_id == bidder_id && auction_doc.auction_type == 'meat' && auction_doc.current_stage < (auction_doc.stages.length - 1)">
-                                        <span class="label-price normalized-price">
-                                            <span class="price-type" translate>Normilized Price</span>
-                                            {{ auction_doc.stages[stage + $index + 1]['amount_features']|fraction }}
-                                            <span class="amount-currency" ng-if="!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount_features'])">{{ auction_doc.minimalStep.currency|translate }}</span>
-                                        </span>
-                                        <span class="label-price full-price" >
-                                            <span class="price-type" translate>Full Price</span>
-                                            {{ auction_doc.stages[stage + $index + 1]['amount_features']|fraction:bidder_coeficient }}
-                                            <span class="amount-currency" ng-if="!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount_features'])">{{ auction_doc.minimalStep.currency|translate }}</span>
-                                        </span>
-                                    </span>
-                                    <span ng-if="auction_doc.stages[stage + $index + 1].bidder_id != bidder_id && auction_doc.auction_type == 'meat' && auction_doc.current_stage < (auction_doc.stages.length - 1)">
-                                        <span>
-                                            <span class="price-type" translate>Normilized Price</span>
-                                            {{ auction_doc.stages[stage + $index + 1]['amount_features']|fraction }}
-                                            <span class="amount-currency" ng-if="!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount_features'])">{{ auction_doc.minimalStep.currency|translate }}</span>
-                                        </span>
-                                    </span>
-
-
-                                    <span ng-if="auction_doc.auction_type == 'meat' && (auction_doc.current_stage == (auction_doc.stages.length - 1))" tooltip="{{ auction_doc.stages[stage + $index + 1]['amount'] }} / {{ auction_doc.stages[stage + $index + 1]['coeficient']| eval_string }} = {{ auction_doc.stages[stage + $index + 1]['amount_features']|eval_string }}" tooltip-trigger="click" tooltip-placement="bottom">
-                                        <span class="label-price">
-                                            {{ auction_doc.stages[stage + $index + 1]['amount']|fraction }} <span class="amount-currency" ng-if="!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount'])">{{ auction_doc.minimalStep.currency|translate }}</span> * {{ auction_doc.stages[stage + $index + 1]['coeficient']|fraction }}
-                                        </span>
-                                    </span>
-
-                                    <span ng-if="(auction_doc.auction_type||'default') == 'default'">
-                                        <span class="label-price">
-                                            {{ auction_doc.stages[stage + $index + 1]['amount']|fraction }}
-                                            <span class="amount-currency" ng-if="!angular.isUndefined(auction_doc.stages[stage + $index + 1]['amount'])">{{ auction_doc.minimalStep.currency|translate }}</span>
-                                        </span>
-                                    </span>
-                                </span>
-
-                                <span class="label-minimum" ng-if="((auction_doc.stages[stage + $index + 1].amount_features||auction_doc.stages[stage + $index + 1].amount) == (minimal_bid.amount_features||minimal_bid.amount)) && (auction_doc.stages[stage + $index + 1]['time'] == minimal_bid.time)" translate>maximum</span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div ng-if="auction_doc.stages[stage].type == 'sealedbid'"></div>
         </div>
-        <div class="auction-round"
+        <!-- End stage item lining -->
+
+
+      <!--   <div class="auction-round"
             id="results-header"
             ng-if="auction_doc.current_stage >= 0"
             ng-class="{'current-round': (auction_doc.stages[auction_doc.current_stage].type||'').indexOf('announcement') != -1,
@@ -353,7 +221,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
+
+
         <div class="row" ng-if="auction_doc.current_stage == (auction_doc.stages.length - 1)">
             <br/>
             <a ng-if="return_url" class="btn btn-block btn-success" href="{{ return_url }}" translate>Return to Tender</a>
@@ -384,7 +254,26 @@
                         <div class="container">
                             <alert ng-repeat="alert in alerts" type="{{alert.type}}" class="bids-form-alert" close="closeAlert(alert.msg_id)"><span class="bids-form-alert-msg">{{ alert.msg | translate }}</span></alert>
                             <form id="BidsForm" name="form.BidsForm" role="form">
-                                <label for="bid"><span translate>Your proposal</span>:</label>
+                              <label for="bid"><span translate>Your proposal</span>:</label>
+                              <div ng-if="auction_doc.stages[auction_doc.current_stage].type.substring(0,5) === 'dutch'">
+                                <div class="input-group main-price-block">
+                                    <div class="col-md-8 col-sm-8 col-xs-11" >
+                                        <span class="lead">{{auction_doc.stages[auction_doc.current_stage].amount}}{{ auction_doc.value.currency|translate }}</span>
+                                        <input id="bid-amount-input"
+                                               id="bid"
+                                               name="bid"
+                                               checked="checked"
+                                               ng-model="$root.form.bid"
+                                               type="radio"
+                                               ng-value="auction_doc.stages[auction_doc.current_stage].amount"
+                                               required />
+                                    </div>
+                                    <div class="input-group-btn col-md-4 col-sm-4 pull-right">
+                                        <button id="place-bid-button" type="submit" ng-if="allow_bidding" ng-click="post_bid()" class="btn btn-success" ng-class="{'active': form.active}" translate>Place a bid</button>
+                                    </div>
+                                </div>
+                              </div>
+                              <div ng-if="auction_doc.stages[auction_doc.current_stage].type.substring(0,5) != 'dutch'">
                                 <span ng-init="max_bid_amount()" class="max_bid_amount" id="max_bid_amount" ng-if="(auction_doc.auction_type||'default') == 'default'"><span id="max_bid_amount_price">{{ calculated_max_bid_amount|fraction }}</span> {{'or higher'|translate}}</span>
                                 <div class="price-inform-block" ng-if="auction_doc.auction_type == 'meat'">
                                     <div class="col-md-5 col-sm-5 full-price-group">
@@ -418,6 +307,7 @@
                                         <button id="clear-bid-button" type="submit" ng-if="allow_bidding" ng-click="($root.form.full_price = '');($root.form.bid_temp = null);($root.form.bid = null)" class="btn btn-primary" translate>Clear</button>
                                     </div>
                                 </div>
+                              </div>
                             </form>
                         </div>
                     </div>

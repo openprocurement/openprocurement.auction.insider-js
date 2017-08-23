@@ -171,7 +171,7 @@ angular.module('auction').controller('AuctionController',[
       });
       $log.info({message: 'Start set_sse_timeout on event source', timeout: response_timeout});
       }, 20000);
-      
+
       evtSrc = new EventSource(sse_url + '/event_source', {withCredentials: true});
       $scope.restart_retries_events = 3;
       evtSrc.addEventListener('ClientsList', function(e) {
@@ -212,7 +212,7 @@ angular.module('auction').controller('AuctionController',[
             progress_timer: $rootScope.progres_timer
           });
         }
-        
+
       }, false);
       evtSrc.addEventListener('Identification', function(e) {
         if (response_timeout) {
@@ -319,11 +319,11 @@ angular.module('auction').controller('AuctionController',[
     };
     $scope.show_bids_form = function(argument) {
       if ((angular.isNumber($scope.auction_doc.current_stage)) && ($scope.auction_doc.current_stage >= 0)) {
-        if (($scope.auction_doc.stages[$scope.auction_doc.current_stage].type == 'bids') && ($scope.auction_doc.stages[$scope.auction_doc.current_stage].bidder_id == $scope.bidder_id)) {
+        if ($scope.auction_doc.stages[$scope.auction_doc.current_stage].type.substring(0,5) === 'dutch') {
           $log.info({
             message: "Allow view bid form"
           });
-          $scope.max_bid_amount();
+          // $scope.max_bid_amount();
           $scope.view_bids_form = true;
           return $scope.view_bids_form;
         }
@@ -388,7 +388,7 @@ angular.module('auction').controller('AuctionController',[
         message: "Start post bid",
         bid_data: parseFloat(bid) || parseFloat($rootScope.form.bid) || 0
       });
-      
+
       if (parseFloat($rootScope.form.bid) == -1) {
         var msg_id = Math.random();
         $rootScope.alerts.push({
@@ -402,14 +402,14 @@ angular.module('auction').controller('AuctionController',[
       if ($rootScope.form.BidsForm.$valid) {
         $rootScope.alerts = [];
         var bid_amount = parseFloat(bid) || parseFloat($rootScope.form.bid) || 0;
-        if (bid_amount == $scope.minimal_bid.amount) {
-          var msg_id = Math.random();
-          $rootScope.alerts.push({
-            msg_id: msg_id,
-            type: 'warning',
-            msg: 'The proposal you have submitted coincides with a proposal of the other participant. His proposal will be considered first, since it has been submitted earlier.'
-          });
-        }
+        // if (bid_amount == $scope.minimal_bid.amount) {
+        //   var msg_id = Math.random();
+        //   $rootScope.alerts.push({
+        //     msg_id: msg_id,
+        //     type: 'warning',
+        //     msg: 'The proposal you have submitted coincides with a proposal of the other participant. His proposal will be considered first, since it has been submitted earlier.'
+        //   });
+        // }
         $rootScope.form.active = true;
         $timeout(function() {
           $rootScope.form.active = false;
@@ -446,14 +446,14 @@ angular.module('auction').controller('AuctionController',[
             }
           } else {
             var bid = data.data.bid;
-            if ((bid <= ($scope.max_bid_amount() * 0.1)) && (bid != -1)) {
-              var msg_id = Math.random();
-              $rootScope.alerts.push({
-                msg_id: msg_id,
-                type: 'warning',
-                msg: 'Your bid appears too low'
-              });
-            }
+            // if ((bid <= ($scope.max_bid_amount() * 0.1)) && (bid != -1)) {
+            //   var msg_id = Math.random();
+            //   $rootScope.alerts.push({
+            //     msg_id: msg_id,
+            //     type: 'warning',
+            //     msg: 'Your bid appears too low'
+            //   });
+            // }
             var msg_id = Math.random();
             if (bid == -1) {
               $rootScope.alerts = [];
@@ -561,17 +561,17 @@ angular.module('auction').controller('AuctionController',[
         }
         $scope.auction_doc.stages.forEach(filter_func);
         $scope.auction_doc.initial_bids.forEach(filter_func);
-        $scope.minimal_bid = bids.sort(function(a, b) {
-          if ($scope.auction_doc.auction_type == 'meat') {
-            var diff = math.fraction(a.amount_features) - math.fraction(b.amount_features);
-          } else {
-            var diff = a.amount - b.amount;
-          }
-          if (diff == 0) {
-            return Date.parse(b.time || "") - Date.parse(a.time || "");
-          }
-          return diff;
-        })[bids.length - 1];
+        // $scope.minimal_bid = bids.sort(function(a, b) {
+        //   if ($scope.auction_doc.auction_type == 'meat') {
+        //     var diff = math.fraction(a.amount_features) - math.fraction(b.amount_features);
+        //   } else {
+        //     var diff = a.amount - b.amount;
+        //   }
+        //   if (diff == 0) {
+        //     return Date.parse(b.time || "") - Date.parse(a.time || "");
+        //   }
+        //   return diff;
+        // })[bids.length - 1];
       }
     };
     $scope.start_sync = function() {
@@ -646,7 +646,7 @@ angular.module('auction').controller('AuctionController',[
 
         $scope.start_sync_event = $q.defer();
         if (doc.current_stage >= -1 && params.wait) {
-    $log.info("login allowed " + doc.current_stage);
+          $log.info("login allowed " + doc.current_stage);
           $scope.follow_login_allowed = true;
           $log.info({message: 'client wait for login'});
         } else {
@@ -687,7 +687,7 @@ angular.module('auction').controller('AuctionController',[
             } else {
               $scope.start_sync_event.resolve('start');
             }
-      $log.info("LOGIN ALLOWED " + $scope.follow_login_allowed);
+            $log.info("LOGIN ALLOWED " + $scope.follow_login_allowed);
             if (!$scope.follow_login_allowed) {
               $timeout(function() {
                 growl.info($filter('translate')('You are an observer and cannot bid.'), {
@@ -737,7 +737,7 @@ angular.module('auction').controller('AuctionController',[
       }
       $scope.sync_times_with_server();
       $scope.calculate_rounds();
-      $scope.calculate_minimal_bid_amount();
+      // $scope.calculate_minimal_bid_amount();
       $scope.scroll_to_stage();
       $scope.show_bids_form();
 
@@ -746,7 +746,12 @@ angular.module('auction').controller('AuctionController',[
     $scope.calculate_rounds = function(argument) {
       $scope.Rounds = [];
       $scope.auction_doc.stages.forEach(function(item, index) {
-        if (item.type == 'pause') {
+        if ((item.type != 'pause')&&(
+             item.type != 'pre-sealed')&&(
+             item.type != 'sealedbid')&&(
+             item.type != 'pre-bestbid')&&(
+             item.type != 'bestbid')&&(
+             item.type != 'finish')) {
           $scope.Rounds.push(index);
         }
       });
