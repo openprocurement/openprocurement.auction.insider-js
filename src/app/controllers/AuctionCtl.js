@@ -205,7 +205,7 @@ angular.module('auction').controller('AuctionController',[
 		    message: "Tick: " + data
 		});
 		if ($scope.auction_doc.current_stage > -1) {
-		    $rootScope.info_timer = AuctionUtils.prepare_info_timer_data($scope.last_sync, $scope.auction_doc, $scope.bidder_id, $scope.Rounds);
+		    $rootScope.info_timer = AuctionUtils.prepare_info_timer_data($scope.last_sync, $scope.auction_doc, $scope.bidder_id, $scope.Rounds());
 		    $log.debug({
 			message: "Info timer data",
 			info_timer: $rootScope.info_timer
@@ -321,7 +321,7 @@ angular.module('auction').controller('AuctionController',[
 	};
 
 	$scope.get_round_number = function(pause_index) {
-	    return AuctionUtils.get_round_data(pause_index, $scope.auction_doc, $scope.Rounds);
+	    return AuctionUtils.get_round_data(pause_index, $scope.auction_doc, $scope.Rounds());
 	};
 	$scope.show_bids_form = function(argument) {
 	    if ((angular.isNumber($scope.auction_doc.current_stage)) && ($scope.auction_doc.current_stage >= 0)) {
@@ -346,7 +346,7 @@ angular.module('auction').controller('AuctionController',[
 	    }).success(function(data, status, headers, config) {
 
 		$scope.last_sync = new Date(new Date(headers().date));
-		$rootScope.info_timer = AuctionUtils.prepare_info_timer_data($scope.last_sync, $scope.auction_doc, $scope.bidder_id, $scope.Rounds);
+		$rootScope.info_timer = AuctionUtils.prepare_info_timer_data($scope.last_sync, $scope.auction_doc, $scope.bidder_id, $scope.Rounds());
 
 		$log.debug({
 		    message: "Info timer data:",
@@ -763,22 +763,23 @@ angular.module('auction').controller('AuctionController',[
 	    $scope.show_bids_form();
 	    $scope.$apply();
 	};
-
+ 	$scope.Rounds = function() {
+		switch($scope.auction_doc.current_phase) {
+		case "dutch":
+			return $scope.DutchRounds;
+		}
+	}
+ 
 	$scope.calculate_rounds = function(argument) {
-	    $scope.Rounds = [];
+	    $scope.DutchRounds = [];
 	    $scope.auction_doc.stages.forEach(function(item, index) {
-		if ((item.type != 'pause')&&(
-		    item.type != 'pre-sealed')&&(
-			item.type != 'sealedbid')&&(
-			    item.type != 'pre-bestbid')&&(
-				item.type != 'bestbid')&&(
-				    item.type != 'finish')) {
-		    $scope.Rounds.push(index);
+		if (item.type.startsWith('dutch')) {
+		    $scope.DutchRounds.push(index);
 		}
 	    });
 	};
 	$scope.scroll_to_stage = function() {
-	    AuctionUtils.scroll_to_stage($scope.auction_doc, $scope.Rounds);
+	    AuctionUtils.scroll_to_stage($scope.auction_doc, $scope.Rounds());
 	};
 	$scope.array = function(int) {
 	    return new Array(int);
