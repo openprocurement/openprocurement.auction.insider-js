@@ -99,12 +99,9 @@
                     <div class="stage-info">
                       <div class="stage-info-lining">
 			<span ng-switch on="auction_doc.current_phase">
-                          <span ng-switch-when="pre-started" translate class="stage-info-item stage-label">Wait for Dutch Auction</span>
+			  <span ng-switch-when="pre-started" translate class="stage-info-item stage-label">Dutch Auction</span>
 			  <span ng-switch-when="dutch" translate class="stage-info-item stage-label">Dutch Auction</span>
-			  <span ng-switch-when="pre-sealedbid" translate class="stage-info-item stage-label">Wait for Sealedbid Auction</span>
 			  <span ng-switch-when="sealedbid" translate class="stage-info-item stage-label">Sealedbid Auction</span>
-			  <span ng-switch-when="pre-bestbid" translate class="stage-info-item stage-label">Wait for Bestbid Auction</span>
-			  <span ng-switch-default translate class="stage-info-item stage-label">Auction not started yet</span>
                         </div>
                     </div>
                 </div>
@@ -115,7 +112,7 @@
         <div ng-if="auction_doc.current_stage >= 0">
 	  <div ng-switch on="auction_doc.current_phase">
 	    
-            <div ng-switch-when="dutch">
+            <div ng-switch-defaul>
 	      <div ng-repeat="stage in DutchRounds"
 		   class="auction-round"
 		   id="round-header-{{$index + 1}}"
