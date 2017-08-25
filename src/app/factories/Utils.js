@@ -66,51 +66,46 @@ angular.module('auction').factory('AuctionUtils', [
 		    'msg': 'Аuction was completed'
 		};
 	    }
-	    if (bidder_id) {
-		if (auction.stages[auction.current_stage].bidder_id === bidder_id) {
-		    return {
+
+	    if ((auction.stages[auction.current_stage].type === 'pause')) {
+		return {
+		    'countdown': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
+		    'start_time': false,
+		    'msg': 'until the round starts'
+		};
+	    }
+	    if ((auction.stages[auction.current_stage].type.startsWith('dutch'))) {
+		return {
 			'countdown': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
 			'start_time': false,
-			'msg': 'until your turn ends'
-		    };
-		}
-		var all_rounds = Rounds.concat(auction.stages.length - 2);
-		for (i in all_rounds) {
-		    if (auction.current_stage < all_rounds[i]) {
-			for (var index = auction.current_stage; index <= all_rounds[i]; index++) {
-			    if ((auction.stages[index].bidder_id) && (auction.stages[index].bidder_id === bidder_id)) {
-				return {
-				    'countdown': ((new Date(auction.stages[index].start) - current_time) / 1000) + Math.random(),
-				    'start_time': false,
-				    'msg': 'until your turn'
-				};
-			    }
-			}
-			break;
-		    }
-		}
+			'msg': 'until the step ends'
+		};
 	    }
-	    for (i in Rounds) {
-		if (auction.current_stage == Rounds[i]) {
-		    return {
-			'countdown': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
-			'start_time': false,
-			'msg': 'until the round starts'
-		    };
-		}
-		if (auction.current_stage < Rounds[i]) {
-		    return {
-			'countdown': ((new Date(auction.stages[Rounds[i]].start) - current_time) / 1000) + Math.random(),
-			'start_time': false,
-			'msg': 'until the round ends'
-		    };
-		}
-	    }
-	    return {
-		'countdown': ((new Date(auction.stages[auction.stages.length - 2].start) - current_time) / 1000) + Math.random(),
-		'start_time': false,
-		'msg': 'until the results announcement'
-	    };
+	    if ((auction.stages[auction.current_stage].type || '') == "pre_announcement") {
+        var client_time = new Date();
+        var ends_time = new Date(auction.stages[auction.current_stage].start);
+        if (client_time < ends_time) {
+          ends_time = client_time;
+        }
+        return {
+          'countdown': false,
+          'start_time': ends_time,
+          'msg': 'Аuction was completed',
+          'msg_ending': 'Waiting for the disclosure of the participants\' names'
+        };
+      }
+      if ((auction.stages[auction.current_stage].type || '') == "announcement") {
+        var client_time = new Date();
+        var ends_time = new Date(auction.stages[auction.current_stage - 1].start);
+        if (client_time < ends_time) {
+          ends_time = client_time;
+        }
+        return {
+          'countdown': false,
+          'start_time': ends_time,
+          'msg': 'Аuction was completed'
+        };}
+
 	}
 
 	function prepare_progress_timer_data(current_time, auction) {
