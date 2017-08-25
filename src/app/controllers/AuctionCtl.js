@@ -767,6 +767,8 @@ angular.module('auction').controller('AuctionController',[
 		switch($scope.auction_doc.current_phase) {
 		case "dutch":
 			return $scope.DutchRounds;
+		default:
+		        return [];
 		}
 	}
  
