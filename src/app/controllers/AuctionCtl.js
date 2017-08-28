@@ -766,7 +766,10 @@ angular.module('auction').controller('AuctionController',[
  	$scope.Rounds = function() {
 		switch($scope.auction_doc.current_phase) {
 		case "dutch":
-			return $scope.DutchRounds;
+		    return $scope.DutchRounds;
+		case "pre-sealedbid":
+		case "sealedbid":
+		    return $scope.SealedRounds;
 		default:
 		        return [];
 		}
@@ -774,11 +777,16 @@ angular.module('auction').controller('AuctionController',[
  
 	$scope.calculate_rounds = function(argument) {
 	    $scope.DutchRounds = [];
+	    $scope.SealedRounds = [];
 	    $scope.auction_doc.stages.forEach(function(item, index) {
 		if (item.type.startsWith('dutch')) {
 		    $scope.DutchRounds.push(index);
 		}
+		if ((item.type === 'pre-sealedbid') || (item.type === 'sealedbid')) {
+		    $scope.SealedRounds.push(index);
+		}
 	    });
+	    $log.info($scope.SealedRounds)
 	};
 	$scope.scroll_to_stage = function() {
 	    AuctionUtils.scroll_to_stage($scope.auction_doc, $scope.Rounds());
