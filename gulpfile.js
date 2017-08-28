@@ -185,7 +185,7 @@ gulp.task('build', ['all-js', 'css', 'png-images', 'icons', 'htmlPages', 'listin
 });
 
 
-gulp.task('default', ['build']);
+gulp.task('default', ['clean', 'build']);
 
 gulp.task('clean', function () {
     del.sync([config.buildDir + '*/**', config.outDir + '*/**'], {force: true});
