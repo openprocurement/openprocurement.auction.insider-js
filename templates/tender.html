@@ -161,7 +161,7 @@
 			<span class="stage-info-item stage-label ng-binding ng-scope">
 			  {{auction_doc.stages[stage]['start']|date:'HH:mm:ss'}}
 			</span>
-			<span class="stage-info-item stage-amount default-amount">
+			<span class="stage-info-item stage-amount" ng-class="{'minimal-amount': auction_doc.current_stage == stage,'default-amount': auction_doc.current_stage != stage}">
 			  {{auction_doc.stages[stage].amount}}
 			  <span class="amount-currency">
 			    {{ auction_doc.value.currency|translate }}
@@ -229,7 +229,7 @@
 			</span>
 			<span class="stage-info-item stage-amount default-amount">
 			<span class="label-price">
-			  {{bid_info.amount}}			  
+			  {{bid_info.amount}}
 			</span>
 			<span class="amount-currency">
 			  {{ auction_doc.value.currency|translate }}
@@ -247,7 +247,7 @@
 	      </div> <!-- row auction stage -->
 	    </div> <!-- ng-repeat -->
 	  </div>
-	  
+
 
         </div> <!-- end ng-if -->
         <!-- End stage item lining -->
