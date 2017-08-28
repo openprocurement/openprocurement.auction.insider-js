@@ -32,7 +32,7 @@ angular.module('auction').factory('AuctionUtils', [
 			'start_time': false,
 			'msg': 'until the auction starts'
 		    };
-		}else{
+		} else {
 		    return {
 			'countdown': false,
 			'start_time': true,
@@ -42,6 +42,7 @@ angular.module('auction').factory('AuctionUtils', [
 
 	    }
 	    if ((auction.stages[auction.current_stage].type || '') == "pre-sealedbid") {
+		var until_seconds = (new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000;
 		return {
 		    'countdown': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
 		    'start_time': false,
@@ -121,9 +122,13 @@ angular.module('auction').factory('AuctionUtils', [
 	    }
 	    if (auction.current_phase == 'pre-sealedbid'){
 		var until_seconds = (new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000;
+		var last_dutch_index = auction.stages.findIndex(function(stage) {
+		    return (stage.dutch_winner || "") === true;
+		});
+		console.log(last_dutch_index);
 		return {
 		    'countdown_seconds': until_seconds + Math.random(),
-		    'rounds_seconds': until_seconds
+		    'rounds_seconds': ((new Date(auction.stages[auction.current_stage + 1].start) - new Date(auction.stages[last_dutch_index].start)) / 1000),
 		}
 		
 	    } else {
@@ -167,26 +172,28 @@ angular.module('auction').factory('AuctionUtils', [
 		    'type': 'waiting'
 		};
 	    }
-	    if (pause_index <= Rounds[0]) {
-		return {
-		    'type': 'pause',
-		    'data': ['', '1', ]
-		};
-	    }
-	    for (var i in Rounds) {
-		if (pause_index < Rounds[i]) {
-		    return {
-			'type': 'round',
-			'data': parseInt(i)
-		    };
-		} else if (pause_index == Rounds[i]) {
-		    return {
-			'type': 'pause',
-			'data': [(parseInt(i)).toString(), (parseInt(i) + 1).toString(), ]
-		    };
+
+	    if (auction_doc.current_phase === 'dutch') {
+		for (var i in Rounds) {
+		    if (pause_index == Rounds[i]) {
+			return {
+			    'type': 'step',
+			    'data': [(parseInt(i) + 1).toString(), (parseInt(i) + 2).toString()]
+			};
+		    }
+		}
+	    } else {
+		for (var i in Rounds) {
+		    if (auction_doc.current_phase.startsWith('pre')) {
+			return {
+			    'type': 'pause',
+			    'data': ['', auction_doc.stages[auction_doc.current_stage + 1].type]
+			};
+		    } else if (auction_doc.current_phase === 'sealedbid') {
+			return {'type': 'round', 'data': 'sealedbid'}
+		    }
 		}
 	    }
-
 	    if (pause_index < (auction_doc.stages.length - 1)) {
 		return {
 		    'type': 'round',
