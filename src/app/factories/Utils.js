@@ -41,29 +41,18 @@ angular.module('auction').factory('AuctionUtils', [
 		}
 
 	    }
-	    if ((auction.stages[auction.current_stage].type || '') == "pre-sealed") {
-		var client_time = new Date();
-		var ends_time = new Date(auction.stages[auction.current_stage].start);
-		if (client_time < ends_time) {
-		    ends_time = client_time;
-		}
+	    if ((auction.stages[auction.current_stage].type || '') == "pre-sealedbid") {
 		return {
-		    'countdown': false,
-		    'start_time': ends_time,
-		    'msg': 'Аuction was completed',
-		    'msg_ending': 'Waiting for the disclosure of the participants\' names'
+		    'countdown': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
+		    'start_time': false,
+		    'msg': 'until the round starts'
 		};
 	    }
 	    if ((auction.stages[auction.current_stage].type || '') == "sealedbid") {
-		var client_time = new Date();
-		var ends_time = new Date(auction.stages[auction.current_stage - 1].start);
-		if (client_time < ends_time) {
-		    ends_time = client_time;
-		}
 		return {
-		    'countdown': false,
-		    'start_time': ends_time,
-		    'msg': 'Аuction was completed'
+		    'countdown': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
+		    'start_time': false,
+		    'msg': 'until the round ends'
 		};
 	    }
 
@@ -111,10 +100,10 @@ angular.module('auction').factory('AuctionUtils', [
 	function prepare_progress_timer_data(current_time, auction) {
 
 	    if ((((auction.stages[auction.current_stage] || {}).type || '').indexOf('announcement') != -1) || (auction.current_stage === -100) || (auction.current_stage === -101)) {
-		return {
-		    'countdown_seconds': false,
-		    'rounds_seconds': 0,
-		};
+	    	return {
+	    	    'countdown_seconds': false,
+	    	    'rounds_seconds': 0,
+	    	};
 	    }
 	    if (auction.current_stage === -1) {
 		var until_seconds = (new Date(auction.stages[0].start) - current_time) / 1000;
@@ -123,18 +112,26 @@ angular.module('auction').factory('AuctionUtils', [
 			'countdown_seconds': until_seconds + Math.random(),
 			'rounds_seconds': until_seconds,
 		    };
-		}else{
+		} else {
 		    return {
 			'countdown_seconds': false,
 			'rounds_seconds': 0,
 		    };
 		}
 	    }
-	    return {
-		'countdown_seconds': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
-		'rounds_seconds': ((new Date(auction.stages[auction.current_stage + 1].start) - new Date(auction.stages[auction.current_stage].start)) / 1000),
-	    };
-
+	    if (auction.current_phase == 'pre-sealedbid'){
+		var until_seconds = (new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000;
+		return {
+		    'countdown_seconds': until_seconds + Math.random(),
+		    'rounds_seconds': until_seconds
+		}
+		
+	    } else {
+		return {
+		    'countdown_seconds': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
+		    'rounds_seconds': ((new Date(auction.stages[auction.current_stage + 1].start) - new Date(auction.stages[auction.current_stage].start)) / 1000),
+		}
+	    }
 	}
 	// characters 100 true
 	function prepare_title_ending_data(auction, lang) {
