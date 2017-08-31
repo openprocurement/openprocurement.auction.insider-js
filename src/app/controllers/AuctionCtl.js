@@ -17,7 +17,7 @@ angular.module('auction').controller('AuctionController',[
 	}
 
 	var parts = window.location.pathname.split('/');
-	
+
 	AuctionConfig.auction_doc_id = parts[parts.length - 1];
 
 	$scope.lang = 'uk';
@@ -325,7 +325,7 @@ angular.module('auction').controller('AuctionController',[
 	};
 	$scope.show_bids_form = function(argument) {
 	    if ((angular.isNumber($scope.auction_doc.current_stage)) && ($scope.auction_doc.current_stage >= 0)) {
-		if ($scope.auction_doc.stages[$scope.auction_doc.current_stage].type.substring(0,5) === 'dutch') {
+		if (($scope.auction_doc.stages[$scope.auction_doc.current_stage].type.substring(0,5) === 'dutch') && $scope.bidder_id) {
 		    $log.info({
 			message: "Allow view bid form"
 		    });
@@ -774,7 +774,7 @@ angular.module('auction').controller('AuctionController',[
 		        return [];
 		}
 	}
- 
+
 	$scope.calculate_rounds = function(argument) {
 	    $scope.DutchRounds = [];
 	    $scope.SealedRounds = [];
