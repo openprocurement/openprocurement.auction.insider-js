@@ -7,6 +7,7 @@ angular.module('auction').controller('AuctionController',[
 	     $rootScope, $location, $translate, $filter, growl, growlMessages, $aside, $q)
     {
 	var sse_url = window.location.href.replace(window.location.search, '');
+	$scope.here = sse_url;
 	var evtSrc = '';
 	var response_timeout = '';
 
