@@ -186,35 +186,35 @@
           </div>
         </div>
 
-        <div class="auction-round"
+        <div class="auction-round past-round"
              id="round-header-{{$index + 1}}"
-             ng-repeat="bid_info in auction_doc.results"
-             ng-class="{'past-round':  auction_doc.stages[auction_doc.current_stage] === 'pre-sealedbid',
-                        'current-round': auction_doc.current_stage == 'sealedbid'}">
+             ng-repeat="bid_info in auction_doc.results">
           <div id="stage-{{ stage + $index + 1 }}"
-               class="row auction-stage stage-item stage-bids"
-               ng-class="{'current-stage': auction_doc.current_stage == -1,
-                          'past-stage':  auction_doc.current_stage > -1}">
+               class="row auction-stage stage-item stage-bids past-stage">
             <div class="stage-item-lining">
-              <i class="past-stage stage-icon" ng-if="auction_doc.stages[auction_doc.current_stage].type === 'pre-sealedbid'" ></i>
-              <div class="stage-icon-visual" ng-if="auction_doc.stages[auction_doc.current_stage].type === 'sealedbid'">
-                <svg class="stage-icon-svg" viewbox="0 0 48 48">
-                  <svg-timer></svg-timer>
-                </svg>
-              </div>
+              <i class="stage-icon"></i>
               <div class="stage-info">
                 <div class="stage-info-lining">
                   <span class="stage-info-item stage-label"
-                        ng-if="bid_info.bidder_id != bidder_id ">
+                        ng-if="(bid_info.bidder_id != bidder_id) && (['sealedbid', 'pre-sealedbid'].indexOf(auction_doc.current_phase) === -1)">
                     {{ bid_info.label[lang]||"-" }}
                   </span>
                   <span class="stage-info-item stage-label"
-                        ng-if="bid_info.bidder_id == bidder_id " translate>
-                    You
+                        ng-if="(bid_info.bidder_id != bidder_id) && (['sealedbid', 'pre-sealedbid'].indexOf(auction_doc.current_phase) !== -1)" translate>
+                    Dutch Winner
+                  </span>
+                  <span class="stage-info-item stage-label"
+                        ng-if="bid_info.bidder_id == bidder_id">
+                    <span translate>
+                      Dutch Winner
+                    </span>
+                    (<span translate>
+                      You
+                    </span>)
                   </span>
                   <span class="stage-info-item stage-amount default-amount">
                     <span class="label-price">
-                      {{bid_info.amount}}
+                      {{bid_info.amount|formatnumber}}
                     </span>
                     <span class="amount-currency">
                       {{ auction_doc.value.currency|translate }}
