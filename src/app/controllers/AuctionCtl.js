@@ -336,7 +336,7 @@ angular.module('auction').controller('AuctionController',[
         $scope.view_bids_form = true;
         return $scope.view_bids_form;
       }
-      if (($scope.auction_doc.stages[$scope.auction_doc.current_stage].type === 'sealedbid') && $scope.auction_doc.stages[last_dutch_index].bidder_id != $scope.bidder_id) {
+      if ($scope.bidder_id && ($scope.auction_doc.current_phase === 'sealedbid') && ($scope.auction_doc.stages[last_dutch_index].bidder_id != $scope.bidder_id)) {
         $log.info({
           message: "Allow view bid form sealedbid"
         });
