@@ -263,10 +263,11 @@
           <div class="col-xs-12">
             <div class="container">
               <alert ng-repeat="alert in alerts" type="{{alert.type}}" class="bids-form-alert" close="closeAlert(alert.msg_id)"><span class="bids-form-alert-msg">{{ alert.msg | translate }}</span></alert>
-              <form id="BidsForm" name="form.BidsForm" role="form" class="text-center">
+              <form id="BidsForm" name="form.BidsForm" role="form" ng-class="{'text-center': auction_doc.stages[auction_doc.current_stage].type.substring(0,5) === 'dutch'}">
                 <label for="bid"><span translate>Your proposal</span>:</label>
-                <div ng-if="auction_doc.stages[auction_doc.current_stage].type.substring(0,5) === 'dutch'">
-                  <div class="input-group main-price-block">
+                <div class="input-group main-price-block">
+                  <!-- Start Dutch Bid -->
+                  <div ng-if="auction_doc.stages[auction_doc.current_stage].type.substring(0,5) === 'dutch'">
                     <div class="lead">
                       <strong>
                         {{ auction_doc.stages[auction_doc.current_stage].amount|formatnumber }}
@@ -282,17 +283,20 @@
                       Place a bid
                     </button>
                   </div>
-                </div>
-                <div ng-if="auction_doc.stages[auction_doc.current_stage].type.substring(0,5) != 'dutch'">
-                  <span ng-init="max_bid_amount()" class="max_bid_amount" id="max_bid_amount" ng-if="(auction_doc.auction_type||'default') == 'default'"><span id="max_bid_amount_price">{{ calculated_max_bid_amount|fraction }}</span> {{'or higher'|translate}}</span>
-                  <div class="input-group main-price-block">
-                    <div class="input-group-btn col-md-4 col-sm-4 pull-right">
-                      <button id="place-bid-button" type="submit" ng-if="allow_bidding" ng-click="post_bid()" class="btn btn-success" ng-class="{'active': form.active}" translate>Place a bid</button>
-                      <button id="edit-bid-button" type="submit" ng-if="!allow_bidding" ng-click="edit_bid()" class="btn btn-link" translate>Edit</button>
-                      <button id="cancel-bid-button" type="submit" ng-if="!allow_bidding" ng-click="post_bid(-1)" class="btn btn-danger" ng-class="{'active': form.active}" translate>Cancel Bid</button>
-                      <button id="clear-bid-button" type="submit" ng-if="allow_bidding" ng-click="($root.form.full_price = '');($root.form.bid_temp = null);($root.form.bid = null)" class="btn btn-primary" translate>Clear</button>
-                    </div>
+                  <!-- End Dutch Bid -->
+                  <!-- Start Seale Bid -->
+                  <div class="full-price-group col-md-8 col-sm-8" ng-if="auction_doc.stages[auction_doc.current_stage].type === 'sealedbid'">
+                    <input id="bid-amount-input" ng-disabled="!allow_bidding" min="0" ng-focus="$root.form.bid_temp = $root.form.bid" ng-blur="set_bid_from_temp()" ng-change="calculate_bid_temp()" class="form-control" id="bid" name="bid" ng-model="$root.form.bid" required format>
                   </div>
+                  <!-- End Seale Bid -->
+                  <!-- Start Submit For Form -->
+                  <div class="input-group-btn col-md-4 col-sm-4 pull-right" ng-if="auction_doc.stages[auction_doc.current_stage].type.substring(0,5) != 'dutch'">
+                    <button id="place-bid-button" type="submit" ng-if="allow_bidding" ng-click="post_bid()" class="btn btn-success" ng-class="{'active': form.active}" translate>Place a bid</button>
+                    <button id="edit-bid-button" type="submit" ng-if="!allow_bidding" ng-click="edit_bid()" class="btn btn-link" translate>Edit</button>
+                    <button id="cancel-bid-button" type="submit" ng-if="!allow_bidding" ng-click="post_bid(-1)" class="btn btn-danger" ng-class="{'active': form.active}" translate>Cancel Bid</button>
+                    <button id="clear-bid-button" type="submit" ng-if="allow_bidding" ng-click="($root.form.full_price = '');($root.form.bid_temp = null);($root.form.bid = null)" class="btn btn-primary" translate>Clear</button>
+                  </div>
+                  <!-- End Submit For Form -->
                 </div>
               </form>
             </div>

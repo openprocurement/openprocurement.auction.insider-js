@@ -324,21 +324,30 @@ angular.module('auction').controller('AuctionController',[
 	$scope.get_round_number = function(pause_index) {
 	    return AuctionUtils.get_round_data(pause_index, $scope.auction_doc, $scope.Rounds());
 	};
-	$scope.show_bids_form = function(argument) {
-	    if ((angular.isNumber($scope.auction_doc.current_stage)) && ($scope.auction_doc.current_stage >= 0)) {
-		if (($scope.auction_doc.stages[$scope.auction_doc.current_stage].type.substring(0,5) === 'dutch') && $scope.bidder_id) {
-		    $log.info({
-			message: "Allow view bid form"
-		    });
-		    // $scope.max_bid_amount();
-		    $scope.view_bids_form = true;
-		    return $scope.view_bids_form;
-		}
-	    }
-	    $scope.view_bids_form = false;
-	    return $scope.view_bids_form;
-	};
-
+  $scope.show_bids_form = function(argument) {
+    if ((angular.isNumber($scope.auction_doc.current_stage)) && ($scope.auction_doc.current_stage >= 0)) {
+      var last_dutch_index = $scope.auction_doc.stages.findIndex(function(stage) {
+        return (stage.dutch_winner || "") === true;
+      });
+      if (($scope.auction_doc.stages[$scope.auction_doc.current_stage].type.substring(0,5) === 'dutch') && $scope.bidder_id) {
+        $log.info({
+          message: "Allow view bid form dutch"
+        });
+        $scope.view_bids_form = true;
+        return $scope.view_bids_form;
+      }
+      if (($scope.auction_doc.stages[$scope.auction_doc.current_stage].type === 'sealedbid') && $scope.auction_doc.stages[last_dutch_index].bidder_id != $scope.bidder_id) {
+        $log.info({
+          message: "Allow view bid form sealedbid"
+        });
+        $scope.max_bid_amount();
+        $scope.view_bids_form = true;
+        return $scope.view_bids_form;
+      }
+    }
+    $scope.view_bids_form = false;
+    return $scope.view_bids_form;
+  };
 	$scope.sync_times_with_server = function(start) {
 	    $http.get('/get_current_server_time', {
 		'params': {
@@ -395,13 +404,20 @@ angular.module('auction').controller('AuctionController',[
 	    growl.error('Unable to place a bid. Check that no more than 2 auctions are simultaneously opened in your browser.');
 	};
 
-	$scope.post_bid = function(bid) {
-	    var bid_amount = parseFloat($scope.auction_doc.stages[$scope.auction_doc.current_stage].amount || "0");
-
-	    $log.info({
-		message: "Start post bid",
-		bid_data: bid_amount
-	    });
+  $scope.post_bid = function(bid) {
+    if($scope.auction_doc.stages[$scope.auction_doc.current_stage].type.substring(0,5) === 'dutch') {
+      var bid_amount = parseFloat($scope.auction_doc.stages[$scope.auction_doc.current_stage].amount || "0");
+      $log.info({
+        message: "Start post dutchbid",
+        bid_data: bid_amount
+      });
+    } else {
+      var bid_amount = parseFloat(bid) || parseFloat($rootScope.form.bid) || 0;
+      $log.info({
+        message: "Start post sealebid",
+        bid_data: parseFloat(bid) || parseFloat($rootScope.form.bid) || 0
+      });
+    }
 
 	    if ($rootScope.form.BidsForm.$valid) {
 		$rootScope.alerts = [];
