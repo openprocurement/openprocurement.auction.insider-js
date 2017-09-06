@@ -344,6 +344,14 @@ angular.module('auction').controller('AuctionController',[
         $scope.view_bids_form = true;
         return $scope.view_bids_form;
       }
+      if (($scope.auction_doc.current_phase === 'bestbid') && ($scope.auction_doc.stages[last_dutch_index].bidder_id === $scope.bidder_id)) {
+        $log.info({
+          message: "Allow view bid form bestbid"
+        });
+        $scope.max_bid_amount();
+        $scope.view_bids_form = true;
+        return $scope.view_bids_form;
+      }
     }
     $scope.view_bids_form = false;
     return $scope.view_bids_form;
@@ -787,6 +795,9 @@ angular.module('auction').controller('AuctionController',[
 		case "pre-sealedbid":
 		case "sealedbid":
 		    return $scope.SealedRounds;
+		case "pre-bestbid":
+		case "bestbid":
+		    return $scope.BestBidRounds;
 		default:
 		        return [];
 		}
@@ -795,6 +806,7 @@ angular.module('auction').controller('AuctionController',[
 	$scope.calculate_rounds = function(argument) {
 	    $scope.DutchRounds = [];
 	    $scope.SealedRounds = [];
+	    $scope.BestBidRounds = [];
 	    $scope.auction_doc.stages.forEach(function(item, index) {
 		if (item.type.startsWith('dutch')) {
 		    $scope.DutchRounds.push(index);
@@ -802,8 +814,10 @@ angular.module('auction').controller('AuctionController',[
 		if ((item.type === 'pre-sealedbid') || (item.type === 'sealedbid')) {
 		    $scope.SealedRounds.push(index);
 		}
+		if ((item.type === 'pre-bestbid') || (item.type === 'bestbid')) {
+		    $scope.BestBidRounds.push(index);
+		}
 	    });
-	    $log.info($scope.SealedRounds)
 	};
 	$scope.scroll_to_stage = function() {
 	    AuctionUtils.scroll_to_stage($scope.auction_doc, $scope.Rounds());

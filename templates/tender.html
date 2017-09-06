@@ -123,6 +123,7 @@
 
     <!-- Start stage item lining -->
     <div ng-if="auction_doc.current_stage >= 0">
+      <!-- Start Dutch Stage -->
       <div ng-show="['dutch', 'pre-started', 'pre-announcement', 'announcement'].indexOf(auction_doc.current_phase) !== -1">
         <div class="row">
           <div class="col-xs-12 stage-item stage-round">
@@ -135,7 +136,6 @@
             </div>
           </div>
         </div>
-
         <div ng-repeat="stage in DutchRounds"
              class="auction-round"
              id="round-header-{{$index + 1}}"
@@ -170,10 +170,10 @@
           </div> <!-- row auction stage -->
         </div> <!-- ng-repeat -->
       </div>
-
+      <!-- End Dutch Stage -->
+      <!-- Start Sealedbid Stage -->
       <div ng-show="['sealedbid', 'pre-sealedbid', 'pre-announcement', 'announcement'].indexOf(auction_doc.current_phase) !== -1"
            ng-if="auction_doc.results.length > 0">
-
         <div class="row">
           <div class="col-xs-12 stage-item stage-round">
             <div class="stage-item-lining">
@@ -185,7 +185,6 @@
             </div>
           </div>
         </div>
-
         <div class="auction-round past-round"
              id="round-header-{{$index + 1}}"
              ng-repeat="bid_info in auction_doc.results">
@@ -230,6 +229,57 @@
           </div> <!-- row auction stage -->
         </div> <!-- ng-repeat -->
       </div>
+      <!-- End Sealedbid Stage -->
+      <!-- Start Bestbid Stage -->
+      <div ng-show="['bestbid', 'pre-bestbid', 'pre-announcement', 'announcement'].indexOf(auction_doc.current_phase) !== -1"
+           ng-if="auction_doc.results.length > 0">
+        <div class="row">
+          <div class="col-xs-12 stage-item stage-round">
+            <div class="stage-item-lining">
+              <div class="stage-info">
+                <div class="stage-info-lining">
+                  <span translate class="stage-info-item stage-label">Bestbid Auction</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="auction-round past-round"
+             id="round-header-{{$index + 1}}"
+             ng-repeat="bid_info in auction_doc.results">
+          <div id="stage-{{ stage + $index + 1 }}"
+               class="row auction-stage stage-item stage-bids past-stage">
+            <div class="stage-item-lining">
+              <i class="stage-icon"></i>
+              <div class="stage-info">
+                <div class="stage-info-lining">
+                  <span class="stage-info-item stage-label"
+                        ng-if="bid_info.bidder_id != bidder_id">
+                    {{ bid_info.label[lang]||"-" }}
+                  </span>
+                  <span class="stage-info-item stage-label"
+                        ng-if="bid_info.bidder_id == bidder_id" translate>
+                    You
+                  </span>
+                  <span class="stage-info-item stage-amount default-amount">
+                    <span class="label-price">
+                      {{bid_info.amount|formatnumber}}
+                    </span>
+                    <span class="amount-currency">
+                      {{ auction_doc.value.currency|translate }}
+                    </span>
+                    <span class="label-minimum"
+                          ng-if="(bid_info.dutch_winner || false) == true" translate>
+                      dutch winner
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div> <!-- stage item lining -->
+          </div> <!-- row auction stage -->
+        </div> <!-- ng-repeat -->
+      </div>
+      <!-- End Bestbid Stage -->
     </div> <!-- end ng-if -->
     <!-- End stage item lining -->
 
@@ -285,7 +335,7 @@
                   </div>
                   <!-- End Dutch Bid -->
                   <!-- Start Seale Bid -->
-                  <div class="full-price-group col-md-8 col-sm-8" ng-if="auction_doc.stages[auction_doc.current_stage].type === 'sealedbid'">
+                  <div class="full-price-group col-md-8 col-sm-8" ng-if="['bestbid', 'sealedbid'].indexOf(auction_doc.current_phase) !== -1">
                     <input id="bid-amount-input" ng-disabled="!allow_bidding" min="0" ng-focus="$root.form.bid_temp = $root.form.bid" ng-blur="set_bid_from_temp()" ng-change="calculate_bid_temp()" class="form-control" id="bid" name="bid" ng-model="$root.form.bid" required format>
                   </div>
                   <!-- End Seale Bid -->

@@ -55,7 +55,21 @@ angular.module('auction').factory('AuctionUtils', [
         'msg': 'until the round ends'
       };
     }
-
+    if ((auction.stages[auction.current_stage].type || '') == "pre-bestbid") {
+      var until_seconds = (new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000;
+      return {
+        'countdown': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
+        'start_time': false,
+        'msg': 'until the round starts'
+      };
+    }
+    if ((auction.stages[auction.current_stage].type || '') == "bestbid") {
+      return {
+        'countdown': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
+        'start_time': false,
+        'msg': 'until the round ends'
+      };
+    }
     if ((auction.stages[auction.current_stage].type === 'pause')) {
       return {
         'countdown': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
@@ -190,6 +204,8 @@ angular.module('auction').factory('AuctionUtils', [
           };
         } else if (auction_doc.current_phase === 'sealedbid') {
           return {'type': 'round', 'data': 'sealedbid'}
+        } else if (auction_doc.current_phase === 'bestbid') {
+          return {'type': 'round', 'data': 'bestbid'}
         }
       }
     }
