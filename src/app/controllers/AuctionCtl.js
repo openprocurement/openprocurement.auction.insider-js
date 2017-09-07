@@ -609,7 +609,7 @@ angular.module('auction').controller('AuctionController',[
       $scope.restart_retries = AuctionConfig.restart_retries;
       if (resp.id == AuctionConfig.auction_doc_id) {
         $scope.replace_document(resp.doc);
-        if ($scope.auction_doc.current_stage == ($scope.auction_doc.stages.length - 1)) {
+        if ($scope.auction_doc.current_phase === 'announcement') {
           $scope.changes.cancel();
         }
       }

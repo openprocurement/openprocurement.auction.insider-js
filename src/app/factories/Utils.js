@@ -206,7 +206,11 @@ angular.module('auction').factory('AuctionUtils', [
           return {'type': 'round', 'data': 'sealedbid'}
         } else if (auction_doc.current_phase === 'bestbid') {
           return {'type': 'round', 'data': 'bestbid'}
-        }
+        } else {
+	    return {
+		'type': 'finish'
+	    };
+	}
       }
     }
     if (pause_index < (auction_doc.stages.length - 1)) {
