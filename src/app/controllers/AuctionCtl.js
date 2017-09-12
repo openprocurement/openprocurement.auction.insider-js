@@ -38,14 +38,14 @@ angular.module('auction').controller('AuctionController',[
   });
 
   window.onunload = function () {
-    $log.info("Close window")
+    $log.info("Close window");
     if($rootScope.changes){
-      $rootScope.changes.cancel()
+      $rootScope.changes.cancel();
     }
     if($rootScope.evtSrc){
       $rootScope.evtSrc.close();
     }
-  }
+  };
 
   $log.info({
     message: "Start session",
@@ -146,7 +146,7 @@ angular.module('auction').controller('AuctionController',[
             }, 3000);
           }
         });
-      };
+      }
       $timeout(function() {
         $rootScope.time_in_title = event.targetScope.days ? (event.targetScope.days + $filter('translate')('days') + " ") : "";
         $rootScope.time_in_title += event.targetScope.hours ? (AuctionUtils.pad(event.targetScope.hours) + ":") : "";
@@ -430,14 +430,15 @@ angular.module('auction').controller('AuctionController',[
   };
 
   $rootScope.post_bid = function(bid) {
+    var bid_amount;
     if($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].type.substring(0,5) === 'dutch') {
-      var bid_amount = parseFloat($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].amount || "0");
+      bid_amount = parseFloat($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].amount || "0");
       $log.info({
         message: "Start post dutchbid",
         bid_data: bid_amount
       });
     } else {
-      var bid_amount = parseFloat(bid) || parseFloat($rootScope.form.bid) || 0;
+      bid_amount = parseFloat(bid) || parseFloat($rootScope.form.bid) || 0;
       $log.info({
         message: "Start post sealebid",
         bid_data: parseFloat(bid) || parseFloat($rootScope.form.bid) || 0
@@ -507,7 +508,7 @@ angular.module('auction').controller('AuctionController',[
           //     bid_data: bid
           //   });
           // }
-          var msg_id = Math.random();
+          msg_id = Math.random();
           if (bid == -1) {
             $rootScope.alerts = [];
             $rootScope.allow_bidding = true;
@@ -558,7 +559,7 @@ angular.module('auction').controller('AuctionController',[
           });
           relogin = function() {
             window.location.replace(window.location.href + '/relogin?amount=' + $rootScope.form.bid);
-          }
+          };
           $timeout(relogin, 3000);
         } else {
           $log.error({
@@ -582,7 +583,7 @@ angular.module('auction').controller('AuctionController',[
       if (angular.isObject(current_stage_obj) && current_stage_obj.amount) {
         amount = math.fraction(current_stage_obj.amount) + math.fraction($rootScope.auction_doc.minimalStep.amount);
       }
-    };
+    }
 
     if (amount < 0) {
       $rootScope.calculated_max_bid_amount = 0;
@@ -715,7 +716,7 @@ angular.module('auction').controller('AuctionController',[
             disableCountDown: true
           });
         }, 500);
-      };
+      }
 
       $rootScope.scroll_to_stage();
       if ($rootScope.auction_doc.current_stage != ($rootScope.auction_doc.stages.length - 1)) {
@@ -791,10 +792,11 @@ angular.module('auction').controller('AuctionController',[
       $rootScope.form.bid = null;
       $rootScope.allow_bidding = true;
       $rootScope.auction_doc = new_doc;
-    };
+    }
     $rootScope.sync_times_with_server();
     $rootScope.calculate_rounds();
     // $rootScope.calculate_minimal_bid_amount();
+    $rootScope.max_bid();
     $rootScope.scroll_to_stage();
     $rootScope.show_bids_form();
     $rootScope.$apply();
@@ -813,7 +815,7 @@ angular.module('auction').controller('AuctionController',[
     default:
       return [];
     }
-  }
+  };
 
   $rootScope.calculate_rounds = function(argument) {
     $rootScope.DutchRounds = [];
@@ -848,6 +850,10 @@ angular.module('auction').controller('AuctionController',[
       size: 'lg',
       backdrop: true
     });
+  };
+
+  $rootScope.max_bid = function() {
+    $rootScope.max_bid_stage = Math.max.apply(Math,$rootScope.auction_doc.results.map(function(item){return item.amount;}));
   };
 
   $rootScope.start();
