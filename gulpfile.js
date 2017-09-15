@@ -11,6 +11,7 @@ const gulp          = require('gulp'),
       uglify        = require('gulp-uglify'),
       rename        = require("gulp-rename"),
       fs            = require("fs"),
+      eslint        = require('gulp-eslint'),
       merge         = require('merge-stream'),
       server        = require('karma').Server;
 
@@ -26,7 +27,7 @@ function  interceptErrors(error) {
 
 const config = JSON.parse(fs.readFileSync('./config.json'));
 const db_name = config.db_name || 'database';
-const app_name = config.app_name || 'acution.js';
+const app_name = config.app_name || 'auction.js';
 const debug = config.debug || true;
 const main_css = config.main_css || 'bundle.css';
 const name = config.name || 'tender';
@@ -176,14 +177,26 @@ gulp.task('build', ['all-js', 'css', 'png-images', 'icons', 'htmlPages', 'listin
 
     let fonts = gulp.src("build/fonts/*")
 	.pipe(gulp.dest(config.outDir+'/static/fonts/'));
-    
+
     let fonts2 = gulp.src("build/fonts/*")
 	.pipe(gulp.dest(config.outDir+'/fonts/'));
-
 
     return merge(css, png, fonts, vendor_js, listPage, listApp, auctionPage, auctionApp, archivePage, archiveApp, fonts, fonts2, icons);
 });
 
+gulp.task('lint', () => {
+  return gulp.src(['./src/app/auction.js',
+       './src/app/filters/*.js',
+       './src/app/translations.js',
+       './src/app/config.js',
+       './src/app/factories/*.js',
+       './src/app/controllers/AuctionCtl.js',
+       './src/app/controllers/OffCanvasCtl.js',
+       './src/app/directives/*.js'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
+});
 
 gulp.task('default', ['clean', 'build']);
 
