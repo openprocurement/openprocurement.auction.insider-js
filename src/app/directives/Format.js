@@ -35,9 +35,9 @@ angular.module('auction').directive('format', ['$filter', function ($filter) {
           ctrl.$viewValue = newviewValue;
           ctrl.$render();
         } else {
-          var plainNumber = null
+          var plainNumber = null;
         }
-        return plainNumber
+        return plainNumber;
       });
     }
   };
