@@ -158,7 +158,9 @@
                   <span class="stage-info-item stage-label ng-binding ng-scope">
                     {{auction_doc.stages[stage]['start']|date:'HH:mm:ss'}}
                   </span>
-                  <span class="stage-info-item stage-amount" ng-class="{'minimal-amount': auction_doc.current_stage == stage,'default-amount': auction_doc.current_stage != stage}">
+                  <span class="stage-info-item stage-amount"
+                        ng-class="{'minimal-amount': auction_doc.current_stage == stage || auction_doc.stages[stage].dutch_winner === true,
+                                   'default-amount': auction_doc.current_stage != stage && auction_doc.stages[stage].dutch_winner !== true}">
                     {{auction_doc.stages[stage].amount|formatnumber}}
                     <span class="amount-currency">
                       {{ auction_doc.value.currency|translate }}
