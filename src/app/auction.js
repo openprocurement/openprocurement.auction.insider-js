@@ -9,21 +9,21 @@ var appRequires = [
 ];
 
 var db = {},
-    bidder_id = "0",
-    db_url = (location.protocol + '//' + location.host + "/" +  window.db_name ) || "",
-    dataLayer = dataLayer || [];
+  bidder_id = "0",
+  db_url = (location.protocol + '//' + location.host + "/" +  window.db_name ) || "",
+  _LTracker = _LTracker || [],
+  dataLayer = dataLayer || [];
 
 angular.module('auction', appRequires)
   .constant('AuctionConfig', {
     remote_db: db_url,
     restart_retries: 10,
     default_lang: 'uk',
-    debug: false })
+    debug: false
+  });
 
-
-function logMSG(MSG)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", '/log', true);
-    xmlHttp.send(JSON.stringify(MSG));
+function logMSG(MSG) {
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.open("POST", '/log', true);
+  xmlHttp.send(JSON.stringify(MSG));
 }

@@ -46,6 +46,7 @@
   "devDependencies": {
     "gulp-bower": "0.0.13",
     "gulp-clean-css": "^3.0.4",
+    "gulp-eslint": "latest",
     "gulp-filter": "^5.0.0",
     "gulp-main-bower-files": "^1.6.2",
     "gulp-minify": "^1.0.0",
