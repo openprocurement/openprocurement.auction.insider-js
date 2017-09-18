@@ -796,7 +796,7 @@ angular.module('auction').controller('AuctionController',[
       $rootScope.sync_times_with_server();
       $rootScope.calculate_rounds();
       // $rootScope.calculate_minimal_bid_amount();
-      $rootScope.max_bid();
+      $rootScope.winners_bid_info();
       $rootScope.scroll_to_stage();
       $rootScope.show_bids_form();
       $rootScope.$apply();
@@ -852,8 +852,16 @@ angular.module('auction').controller('AuctionController',[
       });
     };
 
-    $rootScope.max_bid = function() {
-      $rootScope.max_bid_stage = Math.max.apply(Math,$rootScope.auction_doc.results.map(function(item){return item.amount;}));
+    $rootScope.winners_bid_info = function() {
+      var last_dutch_index = $rootScope.auction_doc.stages.findIndex(function(stage) {
+        return (stage.dutch_winner || "") === true;
+      });
+      var last_sealedbid_index = $rootScope.auction_doc.stages.findIndex(function(stage) {
+        return (stage.sealedbid_winner || "") === true;
+      });
+      $rootScope.dutch_winner = $rootScope.auction_doc.stages[last_dutch_index];
+      $rootScope.sealedbid_winner = $rootScope.auction_doc.stages[last_sealedbid_index];
+      $rootScope.max_bid_announce = Math.max.apply(Math,$rootScope.auction_doc.results.map(function(item){return item.amount;}));
     };
 
     $rootScope.start();
