@@ -196,13 +196,11 @@
               <i class="stage-icon"></i>
               <div class="stage-info">
                 <div class="stage-info-lining">
-                  <span class="stage-info-item stage-label"
-                        ng-if="dutch_winner.bidder_id != bidder_id">
+                  <span class="stage-info-item stage-label">
                     {{ dutch_winner.label[lang]||"-" }}
-                  </span>
-                  <span class="stage-info-item stage-label"
-                        ng-if="dutch_winner.bidder_id == bidder_id" translate>
-                    You
+                    <span ng-if="dutch_winner.bidder_id == bidder_id">
+                      (<span translate>You</span>)
+                    </span>
                   </span>
                   <span class="stage-info-item stage-amount default-amount">
                     <span class="label-price">
@@ -231,22 +229,11 @@
               <i class="stage-icon"></i>
               <div class="stage-info">
                 <div class="stage-info-lining">
-                  <span class="stage-info-item stage-label"
-                        ng-if="(bid_info.bidder_id != bidder_id) && (['sealedbid', 'pre-sealedbid'].indexOf(auction_doc.current_phase) === -1)">
+                  <span class="stage-info-item stage-label">
                     {{ bid_info.label[lang]||"-" }}
-                  </span>
-                  <span class="stage-info-item stage-label"
-                        ng-if="(bid_info.bidder_id != bidder_id) && (['sealedbid', 'pre-sealedbid'].indexOf(auction_doc.current_phase) !== -1)" translate>
-                    Dutch Winner
-                  </span>
-                  <span class="stage-info-item stage-label"
-                        ng-if="bid_info.bidder_id == bidder_id">
-                    <span translate>
-                      Dutch Winner
+                    <span ng-if="bid_info.bidder_id == bidder_id">
+                      (<span translate>You</span>)
                     </span>
-                    (<span translate>
-                      You
-                    </span>)
                   </span>
                   <span class="stage-info-item stage-amount"
                         ng-class="{'default-amount': (bid_info.bidder_id != sealedbid_winner.bidder_id),
@@ -293,13 +280,11 @@
               <i class="stage-icon"></i>
               <div class="stage-info">
                 <div class="stage-info-lining">
-                  <span class="stage-info-item stage-label"
-                        ng-if="bid_info.bidder_id != bidder_id">
+                  <span class="stage-info-item stage-label">
                     {{ bid_info.label[lang]||"-" }}
-                  </span>
-                  <span class="stage-info-item stage-label"
-                        ng-if="bid_info.bidder_id == bidder_id" translate>
-                    You
+                    <span ng-if="bid_info.bidder_id == bidder_id">
+                      (<span translate>You</span>)
+                    </span>
                   </span>
                   <span class="stage-info-item stage-amount"
                         ng-class="{'default-amount': (bid_info.amount != max_bid_announce),
@@ -350,13 +335,11 @@
               <i class="stage-icon"></i>
               <div class="stage-info">
                 <div class="stage-info-lining">
-                  <span class="stage-info-item stage-label"
-                        ng-if="bid_info.bidder_id != bidder_id">
+                  <span class="stage-info-item stage-label">
                     {{ bid_info.label[lang]||"-" }}
-                  </span>
-                  <span class="stage-info-item stage-label"
-                        ng-if="bid_info.bidder_id == bidder_id" translate>
-                    You
+                    <span ng-if="bid_info.bidder_id == bidder_id">
+                      (<span translate>You</span>)
+                    </span>
                   </span>
                   <span class="stage-info-item stage-amount"
                         ng-class="{'default-amount': (bid_info.amount != max_bid_announce),
