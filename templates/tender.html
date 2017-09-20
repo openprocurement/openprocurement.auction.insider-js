@@ -275,6 +275,8 @@
              ng-repeat="bid_info in auction_doc.results | orderBy:'-amount'">
           <div id="stage-bestbid-{{ stage + $index + 1 }}"
                class="row auction-stage stage-item stage-bids past-stage"
+               ng-class="{'sealedbid-winner': bid_info.bidder_id === sealedbid_winner.bidder_id,
+                          'dutch-winner': bid_info.dutch_winner === true}"
                ng-if="bid_info.dutch_winner === true || bid_info.bidder_id === sealedbid_winner.bidder_id">
             <div class="stage-item-lining">
               <i class="stage-icon"></i>
