@@ -202,7 +202,9 @@
                       (<span translate>You</span>)
                     </span>
                   </span>
-                  <span class="stage-info-item stage-amount default-amount">
+                  <span class="stage-info-item stage-amount"
+                        ng-class="{'default-amount': (sealedbid_winner.amount||false) >= dutch_winner.amount,
+                                   'minimal-amount': (sealedbid_winner.amount||false) < dutch_winner.amount}">
                     <span class="label-price">
                       {{dutch_winner.amount|formatnumber}}
                     </span>
@@ -221,10 +223,10 @@
         <!-- Sealedbiders list -->
         <div class="auction-round past-round"
              id="round-header-sealedbid-{{$index + 1}}"
-             ng-repeat="bid_info in auction_doc.results | orderBy:'-amount'">
+             ng-repeat="bid_info in announcement_results()"
+             ng-if="bid_info.dutch_winner !== true">
           <div id="stage-sealedbid-{{ stage + $index + 1 }}"
-               class="row auction-stage stage-item stage-bids past-stage"
-               ng-if="bid_info.dutch_winner !== true">
+               class="row auction-stage stage-item stage-bids past-stage">
             <div class="stage-item-lining">
               <i class="stage-icon"></i>
               <div class="stage-info">
@@ -272,7 +274,7 @@
         </div>
         <div class="auction-round past-round"
              id="round-header-bestbid-{{$index + 1}}"
-             ng-repeat="bid_info in auction_doc.results | orderBy:'-amount'">
+             ng-repeat="bid_info in announcement_results()">
           <div id="stage-bestbid-{{ stage + $index + 1 }}"
                class="row auction-stage stage-item stage-bids past-stage"
                ng-class="{'sealedbid-winner': bid_info.bidder_id === sealedbid_winner.bidder_id,
@@ -289,8 +291,14 @@
                     </span>
                   </span>
                   <span class="stage-info-item stage-amount"
-                        ng-class="{'default-amount': (bid_info.amount != max_bid_announce),
-                                   'minimal-amount': (bid_info.amount == max_bid_announce)}">
+                        ng-class="{'minimal-amount': ((bid_info.bidder_id == sealedbid_winner.bidder_id) &&
+                                     ((sealedbid_winner.amount||false) >= results_dutch_winner.amount)
+                                   ) || ((bid_info.bidder_id == results_dutch_winner.bidder_id) &&
+                                     ((sealedbid_winner.amount||false) < results_dutch_winner.amount)
+                                   ),'default-amount': ((bid_info.bidder_id == sealedbid_winner.bidder_id) &&
+                                     ((sealedbid_winner.amount||false) < results_dutch_winner.amount)
+                                   ) || ((bid_info.bidder_id == results_dutch_winner.bidder_id) &&
+                                     ((sealedbid_winner.amount||false) >= results_dutch_winner.amount))}">
                     <span class="label-price">
                       {{bid_info.amount|formatnumber}}
                     </span>
@@ -330,7 +338,7 @@
         </div>
         <div class="auction-round past-round"
              id="round-header-announcement-{{$index + 1}}"
-             ng-repeat="bid_info in auction_doc.results | orderBy:'-amount'">
+             ng-repeat="bid_info in announcement_results()">
           <div id="stage-announcement-{{ stage + $index + 1 }}"
                class="row auction-stage stage-item stage-bids past-stage">
             <div class="stage-item-lining">
@@ -344,8 +352,13 @@
                     </span>
                   </span>
                   <span class="stage-info-item stage-amount"
-                        ng-class="{'default-amount': (bid_info.amount != max_bid_announce),
-                                   'minimal-amount': (bid_info.amount == max_bid_announce)}">
+                        ng-class="{'minimal-amount': ((bid_info.bidder_id == sealedbid_winner.bidder_id) &&
+                                     ((sealedbid_winner.amount||false) >= results_dutch_winner.amount)
+                                   ) || ((bid_info.bidder_id == dutch_winner.bidder_id) &&
+                                     ((sealedbid_winner.amount||false) < results_dutch_winner.amount)
+                                   ), 'default-amount': !(bid_info.amount == max_bid_announce) || (
+                                     !(bid_info.bidder_id == sealedbid_winner.bidder_id) &&
+                                     ((sealedbid_winner.amount||false) >= results_dutch_winner.amount))}">
                     <span class="label-price">
                       {{bid_info.amount|formatnumber}}
                     </span>

@@ -856,12 +856,23 @@ angular.module('auction').controller('AuctionController',[
       var last_dutch_index = $rootScope.auction_doc.stages.findIndex(function(stage) {
         return (stage.dutch_winner || "") === true;
       });
+      var results_dutch_index = $rootScope.auction_doc.results.findIndex(function(stage) {
+        return (stage.dutch_winner || "") === true;
+      });
       var last_sealedbid_index = $rootScope.auction_doc.stages.findIndex(function(stage) {
         return (stage.sealedbid_winner || "") === true;
       });
       $rootScope.dutch_winner = $rootScope.auction_doc.stages[last_dutch_index];
+      $rootScope.results_dutch_winner = $rootScope.auction_doc.results[results_dutch_index];
       $rootScope.sealedbid_winner = $rootScope.auction_doc.stages[last_sealedbid_index];
       $rootScope.max_bid_announce = Math.max.apply(Math,$rootScope.auction_doc.results.map(function(item){return item.amount;}));
+      $rootScope.announcement_results = function() {
+        if (['pre-bestbid','bestbid','announcement'].indexOf($rootScope.auction_doc.current_phase) !== -1){
+          $rootScope.items = $rootScope.auction_doc.results.filter(function(item){return item.amount != -1;});
+          $rootScope.items = $filter('orderBy')($rootScope.items, 'time');
+          return $filter('orderBy')($rootScope.items, '-amount');
+        }
+      };
     };
 
     $rootScope.start();
