@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(name='openprocurement.auction.insider-js',
-      version='0.0.2a2+eauctions',
+      version='1.0.1a1',
       description='frontend application for openprocurement.auction',
       classifiers=[
           "Framework :: Pylons",
