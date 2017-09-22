@@ -1,8 +1,8 @@
-angular.module('auction').controller('AuctionController',[
+angular.module('auction').controller('AuctionController', [
   '$rootScope', 'AuctionConfig', 'AuctionUtils',
   '$timeout', '$http', '$log', '$cookies', '$cookieStore', '$window',
   '$rootScope', '$location', '$translate', '$filter', 'growl', 'growlMessages', '$aside', '$q',
-  function($rootScope, AuctionConfig, AuctionUtils,
+  function ($rootScope, AuctionConfig, AuctionUtils,
     $timeout, $http, $log, $cookies, $cookieStore, $window,
     $rootScope, $location, $translate, $filter, growl, growlMessages, $aside, $q) {
 
@@ -11,7 +11,7 @@ angular.module('auction').controller('AuctionController',[
     var evtSrc = '';
     var response_timeout = '';
 
-    if (AuctionUtils.inIframe() && 'localhost'!= location.hostname) {
+    if (AuctionUtils.inIframe() && 'localhost' != location.hostname) {
       $log.error('Starts in iframe');
       window.open(location.href, '_blank');
       return false;
@@ -33,16 +33,18 @@ angular.module('auction').controller('AuctionController',[
     $rootScope.http_error_timeout = $rootScope.default_http_error_timeout;
     $rootScope.browser_client_id = AuctionUtils.generateUUID();
 
-    $rootScope.$watch(function() {return $cookies.logglytrackingsession; }, function(newValue, oldValue) {
+    $rootScope.$watch(function () {
+      return $cookies.logglytrackingsession;
+    }, function (newValue, oldValue) {
       $rootScope.browser_session_id = $cookies.logglytrackingsession;
     });
 
     window.onunload = function () {
       $log.info("Close window");
-      if($rootScope.changes){
+      if ($rootScope.changes) {
         $rootScope.changes.cancel();
       }
-      if($rootScope.evtSrc){
+      if ($rootScope.evtSrc) {
         $rootScope.evtSrc.close();
       }
     };
@@ -54,13 +56,13 @@ angular.module('auction').controller('AuctionController',[
       tenderId: AuctionConfig.auction_doc_id
     });
 
-    $rootScope.start = function() {
+    $rootScope.start = function () {
       $log.info({
         message: "Setup connection to remote_db",
-        auctions_loggedin: $cookies.auctions_loggedin||AuctionUtils.detectIE()
+        auctions_loggedin: $cookies.auctions_loggedin || AuctionUtils.detectIE()
       });
 
-      if ($cookies.auctions_loggedin||AuctionUtils.detectIE()) {
+      if ($cookies.auctions_loggedin || AuctionUtils.detectIE()) {
         AuctionConfig.remote_db = AuctionConfig.remote_db + "_secured";
       }
 
@@ -75,23 +77,24 @@ angular.module('auction').controller('AuctionController',[
         since: 0
       };
 
-      new PouchDB(AuctionConfig.remote_db).then(function(db) {
+      new PouchDB(AuctionConfig.remote_db).then(function (db) {
         $rootScope.db = db;
         $rootScope.http_error_timeout = $rootScope.default_http_error_timeout;
         $rootScope.start_auction_process();
-      }).catch(function(error) {
+      }).catch(function (error) {
         $log.error({
           message: "Error on setup connection to remote_db",
           error_data: error
         });
         $rootScope.http_error_timeout = $rootScope.http_error_timeout * 2;
-        $timeout(function() {
+        $timeout(function () {
           $rootScope.start();
         }, $rootScope.http_error_timeout);
       });
     };
 
     $rootScope.growlMessages = growlMessages;
+    $rootScope.referenceId = 0;
     growlMessages.initDirective(0, 10);
     dataLayer.push({
       "tenderId": AuctionConfig.auction_doc_id
@@ -105,19 +108,24 @@ angular.module('auction').controller('AuctionController',[
     }
 
     /*      Time stopped events    */
-    $rootScope.$on('timer-stopped', function(event) {
+    $rootScope.$on('timer-stopped', function (event) {
       if (($rootScope.auction_doc) && (event.targetScope.timerid == 1) && ($rootScope.auction_doc.current_stage == -1)) {
         if (!$rootScope.auction_not_started) {
-          $rootScope.auction_not_started = $timeout(function() {
-            if($rootScope.auction_doc.current_stage === -1) {
-              growl.warning('Please wait for the auction start.', {ttl: 120000, disableCountDown: true});
-              $log.info({message: "Please wait for the auction start."});
+          $rootScope.auction_not_started = $timeout(function () {
+            if ($rootScope.auction_doc.current_stage === -1) {
+              growl.warning('Please wait for the auction start.', {
+                ttl: 120000,
+                disableCountDown: true
+              });
+              $log.info({
+                message: "Please wait for the auction start."
+              });
             }
           }, 10000);
         }
 
-        $timeout(function() {
-          if($rootScope.auction_doc.current_stage === -1){
+        $timeout(function () {
+          if ($rootScope.auction_doc.current_stage === -1) {
             $rootScope.sync_times_with_server();
           }
         }, 120000);
@@ -125,14 +133,14 @@ angular.module('auction').controller('AuctionController',[
     });
 
     /*      Time tick events    */
-    $rootScope.$on('timer-tick', function(event) {
+    $rootScope.$on('timer-tick', function (event) {
       if (($rootScope.auction_doc) && (event.targetScope.timerid == 1)) {
         if (((($rootScope.info_timer || {}).msg || "") === 'until your turn') && (event.targetScope.minutes == 1) && (event.targetScope.seconds == 50)) {
-          $http.post(sse_url + '/check_authorization').then(function(data) {
+          $http.post(sse_url + '/check_authorization').then(function (data) {
             $log.info({
               message: "Authorization checked"
             });
-          }, function(data) {
+          }, function (data) {
             $log.error({
               message: "Error while check_authorization"
             });
@@ -141,13 +149,13 @@ angular.module('auction').controller('AuctionController',[
               $log.error({
                 message: "Ability to submit bids has been lost. Wait until page reloads."
               });
-              $timeout(function() {
+              $timeout(function () {
                 window.location.replace(window.location.href + '/relogin');
               }, 3000);
             }
           });
         }
-        $timeout(function() {
+        $timeout(function () {
           $rootScope.time_in_title = event.targetScope.days ? (event.targetScope.days + $filter('translate')('days') + " ") : "";
           $rootScope.time_in_title += event.targetScope.hours ? (AuctionUtils.pad(event.targetScope.hours) + ":") : "";
           $rootScope.time_in_title += (AuctionUtils.pad(event.targetScope.minutes) + ":");
@@ -162,37 +170,51 @@ angular.module('auction').controller('AuctionController',[
     });
 
     /*      Kick client event    */
-    $rootScope.$on('kick_client', function(event, client_id, msg) {
+    $rootScope.$on('kick_client', function (event, client_id, msg) {
       $log.info({
         message: 'disable connection for client' + client_id
       });
       $rootScope.growlMessages.deleteMessage(msg);
       $http.post(sse_url + '/kickclient', {
         'client_id': client_id,
-      }).then(function(data) {
-        $log.info({message: 'disable connection for client ' + client_id});
+      }).then(function (data) {
+        $log.info({
+          message: 'disable connection for client ' + client_id
+        });
       });
     });
 
-    $rootScope.start_subscribe = function(argument) {
-      $log.info({message: 'Start event source'});
-      var response_timeout = $timeout(function() {
+    $rootScope.start_subscribe = function (argument) {
+      $log.info({
+        message: 'Start event source'
+      });
+      var response_timeout = $timeout(function () {
         $http.post(sse_url + '/set_sse_timeout', {
           timeout: '7'
-        }).then(function(data){
-          $log.info({message: 'Handled set_sse_timeout on event source'});
-        }, function(error){
+        }).then(function (data) {
+          $log.info({
+            message: 'Handled set_sse_timeout on event source'
+          });
+        }, function (error) {
           $log.error("Error on setting sse_timeout " + error);
         });
-        $log.info({message: 'Start set_sse_timeout on event source', timeout: response_timeout});
+        $log.info({
+          message: 'Start set_sse_timeout on event source',
+          timeout: response_timeout
+        });
       }, 20000);
 
-      $rootScope.evtSrc = new EventSource(sse_url + '/event_source', {withCredentials: true});
+      $rootScope.evtSrc = new EventSource(sse_url + '/event_source', {
+        withCredentials: true
+      });
       $rootScope.restart_retries_events = 3;
-      $rootScope.evtSrc.addEventListener('ClientsList', function(e) {
+      $rootScope.evtSrc.addEventListener('ClientsList', function (e) {
         var data = angular.fromJson(e.data);
-        $log.info({message: 'Get Clients List', clients: data});
-        $rootScope.$apply(function() {
+        $log.info({
+          message: 'Get Clients List',
+          clients: data
+        });
+        $rootScope.$apply(function () {
           var i;
           if (angular.isObject($rootScope.clients)) {
             for (i in data) {
@@ -208,7 +230,7 @@ angular.module('auction').controller('AuctionController',[
         });
       }, false);
 
-      $rootScope.evtSrc.addEventListener('Tick', function(e) {
+      $rootScope.evtSrc.addEventListener('Tick', function (e) {
         $rootScope.restart_retries_events = 3;
         var data = angular.fromJson(e.data);
         $rootScope.last_sync = new Date(data.time);
@@ -229,25 +251,31 @@ angular.module('auction').controller('AuctionController',[
         }
       }, false);
 
-      $rootScope.evtSrc.addEventListener('Identification', function(e) {
+      $rootScope.evtSrc.addEventListener('Identification', function (e) {
         if (response_timeout) {
           $timeout.cancel(response_timeout);
         }
         var data = angular.fromJson(e.data);
-        $log.info({message: "Get Identification", bidder_id: data.bidder_id, client_id: data.client_id});
+        $log.info({
+          message: "Get Identification",
+          bidder_id: data.bidder_id,
+          client_id: data.client_id
+        });
         $rootScope.start_sync_event.resolve('start');
-        $rootScope.$apply(function() {
+        $rootScope.$apply(function () {
           $rootScope.bidder_id = data.bidder_id;
           $rootScope.client_id = data.client_id;
           $rootScope.return_url = data.return_url;
           if ('coeficient' in data) {
             $rootScope.bidder_coeficient = math.fraction(data.coeficient);
-            $log.info({message: "Get coeficient " + $rootScope.bidder_coeficient});
+            $log.info({
+              message: "Get coeficient " + $rootScope.bidder_coeficient
+            });
           }
         });
       }, false);
 
-      $rootScope.evtSrc.addEventListener('RestoreBidAmount', function(e) {
+      $rootScope.evtSrc.addEventListener('RestoreBidAmount', function (e) {
         if (response_timeout) {
           $timeout.cancel(response_timeout);
         }
@@ -255,12 +283,12 @@ angular.module('auction').controller('AuctionController',[
         $log.debug({
           message: "RestoreBidAmount"
         });
-        $rootScope.$apply(function() {
+        $rootScope.$apply(function () {
           $rootScope.form.bid = data.last_amount;
         });
       }, false);
 
-      $rootScope.evtSrc.addEventListener('KickClient', function(e) {
+      $rootScope.evtSrc.addEventListener('KickClient', function (e) {
         var data = angular.fromJson(e.data);
         $log.info({
           message: "Kicked"
@@ -268,7 +296,7 @@ angular.module('auction').controller('AuctionController',[
         window.location.replace(window.location.protocol + '//' + window.location.host + window.location.pathname + '/logout');
       }, false);
 
-      $rootScope.evtSrc.addEventListener('Close', function(e) {
+      $rootScope.evtSrc.addEventListener('Close', function (e) {
         $timeout.cancel(response_timeout);
         $log.info({
           message: "Handle close event source",
@@ -281,7 +309,7 @@ angular.module('auction').controller('AuctionController',[
           }, 500);
           var params = AuctionUtils.parseQueryString(location.search);
           if (params.loggedin) {
-            $timeout(function() {
+            $timeout(function () {
               window.location.replace(window.location.protocol + '//' + window.location.host + window.location.pathname);
             }, 1000);
           }
@@ -290,7 +318,7 @@ angular.module('auction').controller('AuctionController',[
         $rootScope.evtSrc.close();
       }, false);
 
-      $rootScope.evtSrc.onerror = function(e) {
+      $rootScope.evtSrc.onerror = function (e) {
         $timeout.cancel(response_timeout);
         $log.error({
           message: "Handle event source error",
@@ -313,13 +341,13 @@ angular.module('auction').controller('AuctionController',[
       };
     };
 
-    $rootScope.changeLanguage = function(langKey) {
+    $rootScope.changeLanguage = function (langKey) {
       $translate.use(langKey);
       $rootScope.lang = langKey;
     };
 
     // Bidding form msgs
-    $rootScope.closeAlert = function(msg_id) {
+    $rootScope.closeAlert = function (msg_id) {
       for (var i = 0; i < $rootScope.alerts.length; i++) {
         if ($rootScope.alerts[i].msg_id == msg_id) {
           $rootScope.alerts.splice(i, 1);
@@ -328,22 +356,22 @@ angular.module('auction').controller('AuctionController',[
       }
     };
 
-    $rootScope.auto_close_alert = function(msg_id) {
-      $timeout(function() {
+    $rootScope.auto_close_alert = function (msg_id) {
+      $timeout(function () {
         $rootScope.closeAlert(msg_id);
       }, 4000);
     };
 
-    $rootScope.get_round_number = function(pause_index) {
+    $rootScope.get_round_number = function (pause_index) {
       return AuctionUtils.get_round_data(pause_index, $rootScope.auction_doc, $rootScope.Rounds());
     };
 
-    $rootScope.show_bids_form = function(argument) {
+    $rootScope.show_bids_form = function (argument) {
       if ((angular.isNumber($rootScope.auction_doc.current_stage)) && ($rootScope.auction_doc.current_stage >= 0)) {
-        var last_dutch_index = $rootScope.auction_doc.stages.findIndex(function(stage) {
+        var last_dutch_index = $rootScope.auction_doc.stages.findIndex(function (stage) {
           return (stage.dutch_winner || "") === true;
         });
-        if (($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].type.substring(0,5) === 'dutch') && $rootScope.bidder_id) {
+        if (($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].type.substring(0, 5) === 'dutch') && $rootScope.bidder_id) {
           $log.info({
             message: "Allow view bid form dutch"
           });
@@ -371,12 +399,12 @@ angular.module('auction').controller('AuctionController',[
       return $rootScope.view_bids_form;
     };
 
-    $rootScope.sync_times_with_server = function(start) {
+    $rootScope.sync_times_with_server = function (start) {
       $http.get('/get_current_server_time', {
         'params': {
           '_nonce': Math.random().toString()
         }
-      }).then(function(data) {
+      }).then(function (data) {
         $rootScope.last_sync = new Date(new Date(data.headers().date));
         $rootScope.info_timer = AuctionUtils.prepare_info_timer_data($rootScope.last_sync, $rootScope.auction_doc, $rootScope.bidder_id, $rootScope.Rounds());
 
@@ -397,7 +425,7 @@ angular.module('auction').controller('AuctionController',[
           if ($rootScope.progres_timer.countdown_seconds < 900) {
             $rootScope.start_changes_feed = true;
           } else {
-            $timeout(function() {
+            $timeout(function () {
               $rootScope.follow_login = true;
               $rootScope.start_changes_feed = true;
             }, ($rootScope.progres_timer.countdown_seconds - 900) * 1000);
@@ -410,28 +438,28 @@ angular.module('auction').controller('AuctionController',[
             $rootScope.follow_login = true;
           } else {
             $rootScope.follow_login = false;
-            $timeout(function() {
+            $timeout(function () {
               $rootScope.follow_login = true;
             }, ($rootScope.progres_timer.countdown_seconds - 900) * 1000);
           }
           $rootScope.login_params = params;
           delete $rootScope.login_params.wait;
-          $rootScope.login_url =  sse_url + '/login?' + AuctionUtils.stringifyQueryString($rootScope.login_params);
+          $rootScope.login_url = sse_url + '/login?' + AuctionUtils.stringifyQueryString($rootScope.login_params);
         } else {
           $rootScope.follow_login_allowed = false;
         }
-      }, function(data, status, headers, config) {
+      }, function (data, status, headers, config) {
         $log.error("get_current_server_time error");
       });
     };
 
-    $rootScope.warning_post_bid = function(){
+    $rootScope.warning_post_bid = function () {
       growl.error('Unable to place a bid. Check that no more than 2 auctions are simultaneously opened in your browser.');
     };
 
-    $rootScope.post_bid = function(bid) {
+    $rootScope.post_bid = function (bid) {
       var bid_amount;
-      if($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].type.substring(0,5) === 'dutch') {
+      if ($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].type.substring(0, 5) === 'dutch') {
         bid_amount = parseFloat($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].amount || "0");
         $log.info({
           message: "Start post dutchbid",
@@ -457,7 +485,7 @@ angular.module('auction').controller('AuctionController',[
         //   });
         // }
         $rootScope.form.active = true;
-        $timeout(function() {
+        $timeout(function () {
           $rootScope.form.active = false;
         }, 5000);
 
@@ -468,9 +496,9 @@ angular.module('auction').controller('AuctionController',[
         $http.post(sse_url + '/postbid', {
           'bid': bid_amount,
           'bidder_id': $rootScope.bidder_id || bidder_id || "0"
-        }).then(function(success) {
+        }).then(function (success) {
           // success
-          if ($rootScope.post_bid_timeout){
+          if ($rootScope.post_bid_timeout) {
             $timeout.cancel($rootScope.post_bid_timeout);
             delete $rootScope.post_bid_timeout;
           }
@@ -537,13 +565,13 @@ angular.module('auction').controller('AuctionController',[
             }
             $rootScope.auto_close_alert(msg_id);
           } // success ends here
-        }, function(error) {
+        }, function (error) {
           $log.info({
             message: "Handle error on post bid",
             bid_data: error.status
           });
 
-          if ($rootScope.post_bid_timeout){
+          if ($rootScope.post_bid_timeout) {
             $timeout.cancel($rootScope.post_bid_timeout);
             delete $rootScope.post_bid_timeout;
           }
@@ -557,7 +585,7 @@ angular.module('auction').controller('AuctionController',[
             $log.error({
               message: "Ability to submit bids has been lost. Wait until page reloads, and retry."
             });
-            relogin = function() {
+            relogin = function () {
               window.location.replace(window.location.href + '/relogin?amount=' + $rootScope.form.bid);
             };
             $timeout(relogin, 3000);
@@ -572,11 +600,11 @@ angular.module('auction').controller('AuctionController',[
       }
     };
 
-    $rootScope.edit_bid = function() {
+    $rootScope.edit_bid = function () {
       $rootScope.allow_bidding = true;
     };
 
-    $rootScope.max_bid_amount = function() {
+    $rootScope.max_bid_amount = function () {
       var amount = 0;
       if ((angular.isString($rootScope.bidder_id)) && (angular.isObject($rootScope.auction_doc))) {
         var current_stage_obj = $rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage] || null;
@@ -594,10 +622,10 @@ angular.module('auction').controller('AuctionController',[
       return amount;
     };
 
-    $rootScope.calculate_minimal_bid_amount = function() {
+    $rootScope.calculate_minimal_bid_amount = function () {
       if ((angular.isObject($rootScope.auction_doc)) && (angular.isArray($rootScope.auction_doc.stages)) && (angular.isArray($rootScope.auction_doc.initial_bids))) {
         var bids = [];
-        var filter_func = function(item, index) {
+        var filter_func = function (item, index) {
           if (!angular.isUndefined(item.amount)) {
             bids.push(item);
           }
@@ -619,9 +647,9 @@ angular.module('auction').controller('AuctionController',[
       }
     };
 
-    $rootScope.start_sync = function() {
+    $rootScope.start_sync = function () {
       $rootScope.start_changes = new Date();
-      $rootScope.changes = $rootScope.db.changes($rootScope.changes_options).on('change', function(resp) {
+      $rootScope.changes = $rootScope.db.changes($rootScope.changes_options).on('change', function (resp) {
         $rootScope.restart_retries = AuctionConfig.restart_retries;
         if (resp.id == AuctionConfig.auction_doc_id) {
           $rootScope.replace_document(resp.doc);
@@ -629,7 +657,7 @@ angular.module('auction').controller('AuctionController',[
             $rootScope.changes.cancel();
           }
         }
-      }).on('error', function(err) {
+      }).on('error', function (err) {
         $log.error({
           message: "Changes error",
           error_data: err
@@ -637,7 +665,7 @@ angular.module('auction').controller('AuctionController',[
 
         $rootScope.end_changes = new Date();
 
-        if ((($rootScope.end_changes - $rootScope.start_changes) > 40000)||($rootScope.force_heartbeat)) {
+        if ((($rootScope.end_changes - $rootScope.start_changes) > 40000) || ($rootScope.force_heartbeat)) {
           $rootScope.force_heartbeat = true;
         } else {
           $rootScope.changes_options['heartbeat'] = false;
@@ -647,7 +675,7 @@ angular.module('auction').controller('AuctionController',[
           });
         }
 
-        $timeout(function() {
+        $timeout(function () {
           if ($rootScope.restart_retries != AuctionConfig.restart_retries) {
             growl.warning('Internet connection is lost. Attempt to restart after 1 sec', {
               ttl: 1000
@@ -670,8 +698,8 @@ angular.module('auction').controller('AuctionController',[
       });
     };
 
-    $rootScope.start_auction_process = function() {
-      $rootScope.db.get(AuctionConfig.auction_doc_id, function(err, doc) {
+    $rootScope.start_auction_process = function () {
+      $rootScope.db.get(AuctionConfig.auction_doc_id, function (err, doc) {
         if (err) {
           if (err.status == 404) {
             $log.error({
@@ -685,7 +713,7 @@ angular.module('auction').controller('AuctionController',[
               error_data: err
             });
             $rootScope.http_error_timeout = $rootScope.http_error_timeout * 2;
-            $timeout(function() {
+            $timeout(function () {
               $rootScope.start_auction_process();
             }, $rootScope.http_error_timeout);
           }
@@ -699,7 +727,9 @@ angular.module('auction').controller('AuctionController',[
         if (doc.current_stage >= -1 && params.wait) {
           $log.info("login allowed " + doc.current_stage);
           $rootScope.follow_login_allowed = true;
-          $log.info({message: 'client wait for login'});
+          $log.info({
+            message: 'client wait for login'
+          });
         } else {
           $rootScope.follow_login_allowed = false;
         }
@@ -709,7 +739,7 @@ angular.module('auction').controller('AuctionController',[
         $rootScope.document_exists = true;
 
         if (AuctionUtils.UnsupportedBrowser()) {
-          $timeout(function() {
+          $timeout(function () {
             $rootScope.unsupported_browser = true;
             growl.error($filter('translate')('Your browser is out of date, and this site may not work properly.') + '<a style="color: rgb(234, 4, 4); text-decoration: underline;" href="http://browser-update.org/uk/update.html">' + $filter('translate')('Learn how to update your browser.') + '</a>', {
               ttl: -1,
@@ -720,7 +750,7 @@ angular.module('auction').controller('AuctionController',[
 
         $rootScope.scroll_to_stage();
         if ($rootScope.auction_doc.current_stage != ($rootScope.auction_doc.stages.length - 1)) {
-          if ($cookieStore.get('auctions_loggedin')||AuctionUtils.detectIE()) {
+          if ($cookieStore.get('auctions_loggedin') || AuctionUtils.detectIE()) {
             $log.info({
               message: 'Start private session'
             });
@@ -729,9 +759,9 @@ angular.module('auction').controller('AuctionController',[
             $log.info({
               message: 'Start anonymous session'
             });
-            if ($rootScope.auction_doc.current_stage == - 1){
-              $rootScope.$watch('start_changes_feed', function(newValue, oldValue){
-                if(newValue && !($rootScope.sync)){
+            if ($rootScope.auction_doc.current_stage == -1) {
+              $rootScope.$watch('start_changes_feed', function (newValue, oldValue) {
+                if (newValue && !($rootScope.sync)) {
                   $log.info({
                     message: 'Start changes feed'
                   });
@@ -744,7 +774,7 @@ angular.module('auction').controller('AuctionController',[
 
             $log.info("LOGIN ALLOWED " + $rootScope.follow_login_allowed);
             if (!$rootScope.follow_login_allowed) {
-              $timeout(function() {
+              $timeout(function () {
                 growl.info($filter('translate')('You are an observer and cannot bid.'), {
                   ttl: -1,
                   disableCountDown: true
@@ -754,7 +784,7 @@ angular.module('auction').controller('AuctionController',[
           }
 
           $rootScope.restart_retries = AuctionConfig.restart_retries;
-          $rootScope.start_sync_event.promise.then(function() {
+          $rootScope.start_sync_event.promise.then(function () {
             $rootScope.sync = $rootScope.start_sync();
           });
         } else {
@@ -766,14 +796,14 @@ angular.module('auction').controller('AuctionController',[
       });
     };
 
-    $rootScope.restart_changes = function() {
+    $rootScope.restart_changes = function () {
       $rootScope.changes.cancel();
-      $timeout(function() {
+      $timeout(function () {
         $rootScope.start_sync();
       }, 1000);
     };
 
-    $rootScope.replace_document = function(new_doc) {
+    $rootScope.replace_document = function (new_doc) {
       if ((angular.isUndefined($rootScope.auction_doc)) || (new_doc.current_stage - $rootScope.auction_doc.current_stage === 0) || (new_doc.current_stage === -1)) {
         if (angular.isUndefined($rootScope.auction_doc)) {
           $log.info({
@@ -802,8 +832,8 @@ angular.module('auction').controller('AuctionController',[
       $rootScope.$apply();
     };
 
-    $rootScope.Rounds = function() {
-      switch($rootScope.auction_doc.current_phase) {
+    $rootScope.Rounds = function () {
+      switch ($rootScope.auction_doc.current_phase) {
       case "dutch":
         return $rootScope.DutchRounds;
       case "pre-sealedbid":
@@ -817,11 +847,11 @@ angular.module('auction').controller('AuctionController',[
       }
     };
 
-    $rootScope.calculate_rounds = function(argument) {
+    $rootScope.calculate_rounds = function (argument) {
       $rootScope.DutchRounds = [];
       $rootScope.SealedRounds = [];
       $rootScope.BestBidRounds = [];
-      $rootScope.auction_doc.stages.forEach(function(item, index) {
+      $rootScope.auction_doc.stages.forEach(function (item, index) {
         if (item.type.startsWith('dutch')) {
           $rootScope.DutchRounds.push(index);
         }
@@ -834,15 +864,15 @@ angular.module('auction').controller('AuctionController',[
       });
     };
 
-    $rootScope.scroll_to_stage = function() {
+    $rootScope.scroll_to_stage = function () {
       AuctionUtils.scroll_to_stage($rootScope.auction_doc, $rootScope.Rounds());
     };
 
-    $rootScope.array = function(int) {
+    $rootScope.array = function (int) {
       return new Array(int);
     };
 
-    $rootScope.open_menu = function() {
+    $rootScope.open_menu = function () {
       var modalInstance = $aside.open({
         templateUrl: 'templates/menu.html',
         controller: 'OffCanvasController',
@@ -852,23 +882,27 @@ angular.module('auction').controller('AuctionController',[
       });
     };
 
-    $rootScope.winners_bid_info = function() {
-      var last_dutch_index = $rootScope.auction_doc.stages.findIndex(function(stage) {
+    $rootScope.winners_bid_info = function () {
+      var last_dutch_index = $rootScope.auction_doc.stages.findIndex(function (stage) {
         return (stage.dutch_winner || "") === true;
       });
-      var results_dutch_index = $rootScope.auction_doc.results.findIndex(function(stage) {
+      var results_dutch_index = $rootScope.auction_doc.results.findIndex(function (stage) {
         return (stage.dutch_winner || "") === true;
       });
-      var last_sealedbid_index = $rootScope.auction_doc.stages.findIndex(function(stage) {
+      var last_sealedbid_index = $rootScope.auction_doc.stages.findIndex(function (stage) {
         return (stage.sealedbid_winner || "") === true;
       });
       $rootScope.dutch_winner = $rootScope.auction_doc.stages[last_dutch_index];
       $rootScope.results_dutch_winner = $rootScope.auction_doc.results[results_dutch_index];
       $rootScope.sealedbid_winner = $rootScope.auction_doc.stages[last_sealedbid_index];
-      $rootScope.max_bid_announce = Math.max.apply(Math,$rootScope.auction_doc.results.map(function(item){return item.amount;}));
-      $rootScope.announcement_results = function() {
-        if (['pre-bestbid','bestbid','announcement'].indexOf($rootScope.auction_doc.current_phase) !== -1){
-          $rootScope.items = $rootScope.auction_doc.results.filter(function(item){return item.amount != -1;});
+      $rootScope.max_bid_announce = Math.max.apply(Math, $rootScope.auction_doc.results.map(function (item) {
+        return item.amount;
+      }));
+      $rootScope.announcement_results = function () {
+        if (['pre-bestbid', 'bestbid', 'announcement'].indexOf($rootScope.auction_doc.current_phase) !== -1) {
+          $rootScope.items = $rootScope.auction_doc.results.filter(function (item) {
+            return item.amount != -1;
+          });
           $rootScope.items = $filter('orderBy')($rootScope.items, 'time');
           return $filter('orderBy')($rootScope.items, '-amount');
         }
