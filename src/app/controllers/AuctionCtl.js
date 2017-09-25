@@ -51,7 +51,7 @@ angular.module('auction').controller('AuctionController',[
       message: "Start session",
       browser_client_id: $rootScope.browser_client_id,
       user_agent: navigator.userAgent,
-      tenderId: AuctionConfig.auction_doc_id
+      auctionID: AuctionConfig.auction_doc_id
     });
 
     $rootScope.start = function() {
@@ -94,7 +94,7 @@ angular.module('auction').controller('AuctionController',[
     $rootScope.growlMessages = growlMessages;
     growlMessages.initDirective(0, 10);
     dataLayer.push({
-      "tenderId": AuctionConfig.auction_doc_id
+      "auctionID": AuctionConfig.auction_doc_id
     });
 
     if (($translate.storage().get($translate.storageKey()) === "undefined") || ($translate.storage().get($translate.storageKey()) === undefined)) {
