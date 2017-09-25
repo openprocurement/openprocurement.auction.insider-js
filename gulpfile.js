@@ -28,7 +28,7 @@ function  interceptErrors(error) {
 
 const config = JSON.parse(fs.readFileSync('./config.json'));
 const db_name = config.db_name || 'database';
-const app_name = config.app_name || 'acution.js';
+const app_name = config.app_name || 'auction.js';
 const devel = ('devel' in config) ? config.devel : true;
 const main_css = config.main_css || 'bundle.css';
 const name = config.name || 'tender';
@@ -64,7 +64,6 @@ gulp.task('bower-main', () => {
 
 
 gulp.task('all-js', ['bower-main'], () => {
-    // TODO: uglify only on debug == false
     return gulp.src([
 	    config.buildDir + '/vendor/angular/angular.min.js',
 	    config.buildDir + '/vendor/**/**/*.js',
@@ -89,6 +88,7 @@ gulp.task('css', () => {
 	.pipe(gulp.dest(config.buildDir));
 });
 
+
 gulp.task('htmlPages', () => {
     return merge(config.html.map((page) => {
 	return gulp.src('./templates/base.html')
@@ -110,6 +110,7 @@ gulp.task('htmlPages', () => {
 
     }));
 });
+
 
 
 gulp.task('listingApp', () => {
@@ -181,7 +182,6 @@ gulp.task('build', ['all-js', 'css', 'png-images', 'icons', 'htmlPages', 'listin
 
     let fonts = gulp.src("build/fonts/*")
 	.pipe(gulp.dest(config.outDir+'/static/fonts/'));
-    
     return merge(css, images, fonts, vendor_js, listPage, listApp, auctionPage, auctionApp, archivePage, archiveApp, fonts);
 });
 
@@ -199,7 +199,7 @@ gulp.task('lint', () => {
     .pipe(eslint.failAfterError());
 });
 
-gulp.task('default', ['clean', 'build']);
+gulp.task('default', ['build']);
 
 gulp.task('clean', function () {
     del.sync([config.buildDir + '*/**', config.outDir + '*/**'], {force: true});
