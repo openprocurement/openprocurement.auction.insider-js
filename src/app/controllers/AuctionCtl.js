@@ -466,7 +466,7 @@ angular.module('auction').controller('AuctionController',[
         }
 
         $http.post(sse_url + '/postbid', {
-          'bid': bid_amount,
+          'bid': String(bid_amount), // It will convert to Decimal
           'bidder_id': $rootScope.bidder_id || bidder_id || "0"
         }).then(function(success) {
           // success
