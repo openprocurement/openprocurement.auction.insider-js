@@ -101,10 +101,7 @@ gulp.task('htmlPages', () => {
 
 gulp.task('listingApp', () => {
   // TODO: uglify
-  return gulp.src(['./src/app/index.js',
-		     './src/app/config.js',
-		     './src/app/controllers/ListingCtrl.js'
-		    ])
+  return gulp.src(config.listingApp)
     .pipe(concat('index.js'))
     .pipe(devel ? util.noop() : uglify({
       mangle: false
@@ -115,9 +112,7 @@ gulp.task('listingApp', () => {
 
 gulp.task('archiveApp', () => {
   // TODO: uglify
-  return gulp.src(['./src/app/archive.js',
-		     './src/app/config.js',
-		     './src/app/controllers/ArchiveCtl.js'])
+  return gulp.src(config.archiveApp)
     .pipe(concat('archive.js'))
     .pipe(devel ? util.noop() : uglify({
       mangle: false
@@ -127,14 +122,7 @@ gulp.task('archiveApp', () => {
 
 
 gulp.task('auctionApp', () => {
-  return gulp.src(['./src/app/auction.js',
-		     './src/app/filters/*.js',
-		     './src/app/translations.js',
-		     './src/app/config.js',
-		     './src/app/factories/*.js',
-		     './src/app/controllers/AuctionCtl.js',
-		     './src/app/controllers/OffCanvasCtl.js',
-		     './src/app/directives/*.js'])
+  return gulp.src(config.auctionApp)
     .pipe(concat(app_name))
     .pipe(devel ? util.noop() : uglify({
       mangle: false
@@ -179,14 +167,7 @@ gulp.task('build', ['all-js', 'css', 'png-images', 'icons', 'htmlPages', 'listin
 });
 
 gulp.task('lint', () => {
-  return gulp.src(['./src/app/auction.js',
-       './src/app/filters/*.js',
-       './src/app/translations.js',
-       './src/app/config.js',
-       './src/app/factories/*.js',
-       './src/app/controllers/AuctionCtl.js',
-       './src/app/controllers/OffCanvasCtl.js',
-       './src/app/directives/*.js'])
+  return gulp.src(config.appUtils)
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
