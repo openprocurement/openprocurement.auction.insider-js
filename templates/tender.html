@@ -130,7 +130,7 @@
             <div class="stage-item-lining">
               <div class="stage-info">
                 <div class="stage-info-lining">
-                  <span translate class="stage-info-item stage-label">Dutch Auction</span>
+                  <span translate class="stage-info-item stage-label">Dutch part</span>
                 </div>
               </div>
             </div>
@@ -181,7 +181,7 @@
             <div class="stage-item-lining">
               <div class="stage-info">
                 <div class="stage-info-lining">
-                  <span translate class="stage-info-item stage-label">Sealedbid Auction</span>
+                  <span translate class="stage-info-item stage-label">Sealed bid part</span>
                 </div>
               </div>
             </div>
@@ -212,7 +212,7 @@
                       {{ auction_doc.value.currency|translate }}
                     </span>
                     <span class="label-minimum" translate>
-                      dutch winner
+                      Dutch winner
                     </span>
                   </span>
                 </div>
@@ -248,7 +248,7 @@
                     </span>
                     <span class="label-minimum"
                           ng-if="bid_info.bidder_id == sealedbid_winner.bidder_id" translate>
-                      sealedbid winner
+                      Sealed bid winner
                     </span>
                   </span>
                 </div>
@@ -266,7 +266,7 @@
             <div class="stage-item-lining">
               <div class="stage-info">
                 <div class="stage-info-lining">
-                  <span translate class="stage-info-item stage-label">Bestbid Auction</span>
+                  <span translate class="stage-info-item stage-label">Best bid part</span>
                 </div>
               </div>
             </div>
@@ -307,11 +307,11 @@
                     </span>
                     <span class="label-minimum"
                           ng-if="(bid_info.dutch_winner || false) == true" translate>
-                      dutch winner
+                      Dutch winner
                     </span>
                     <span class="label-minimum"
                           ng-if="bid_info.bidder_id == sealedbid_winner.bidder_id" translate>
-                      sealedbid winner
+                      Sealed bid winner
                     </span>
                   </span>
                 </div>
@@ -367,11 +367,11 @@
                     </span>
                     <span class="label-minimum"
                           ng-if="(bid_info.dutch_winner || false) == true" translate>
-                      dutch winner
+                      Dutch winner
                     </span>
                     <span class="label-minimum"
                           ng-if="bid_info.bidder_id == sealedbid_winner.bidder_id" translate>
-                      sealedbid winner
+                      Sealed bid winner
                     </span>
                   </span>
                 </div>

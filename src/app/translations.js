@@ -86,7 +86,12 @@ angular.module('auction').config(['$translateProvider',
       'to General': 'to General',
       'The proposal you have submitted coincides with a proposal of the other participant. His proposal will be considered first, since it has been submitted earlier.': 'The proposal you have submitted coincides with a proposal of the other participant. His proposal will be considered first, since it has been submitted earlier.',
       'Waiting for the disclosure of the participants\' names': 'Waiting for the disclosure of the participants\' names',
-      'Unable to place a bid. Check that no more than 2 auctions are simultaneously opened in your browser.': 'Unable to place a bid. Check that no more than 2 auctions are simultaneously opened in your browser.'
+      'Unable to place a bid. Check that no more than 2 auctions are simultaneously opened in your browser.': 'Unable to place a bid. Check that no more than 2 auctions are simultaneously opened in your browser.',
+      'Dutch part': 'Dutch part',
+      'Sealed bid part': 'Sealed bid part',
+      'Best bid part': 'Best bid part',
+      'Dutch winner':'Dutch winner',
+      'Sealed bid winner': 'Sealed bid winner'
     });
 
     $translateProvider.translations('uk', {
@@ -174,7 +179,12 @@ angular.module('auction').config(['$translateProvider',
       'to General': 'до Загальної',
       'The proposal you have submitted coincides with a proposal of the other participant. His proposal will be considered first, since it has been submitted earlier.': 'Подана вами пропозиція співпадає з пропозицією іншого учасника. Його пропозиція розглядатиметься першою, оскільки вона подана раніше.',
       'Waiting for the disclosure of the participants\' names': 'Очікуємо на розкриття імен учасників',
-      'Unable to place a bid. Check that no more than 2 auctions are simultaneously opened in your browser.': 'Не вдається зробити ставку. Перевірте, що в переглядачі відкрито не більше 2-ох аукціонів.'
+      'Unable to place a bid. Check that no more than 2 auctions are simultaneously opened in your browser.': 'Не вдається зробити ставку. Перевірте, що в переглядачі відкрито не більше 2-ох аукціонів.',
+      'Dutch part': 'Голландський етап',
+      'Sealed bid part': 'Етап подання закритих цінових пропозицій',
+      'Best bid part': 'Етап подання відкритих цінових пропозицій',
+      'Dutch winner':'Переможець голландського етапу',
+      'Sealed bid winner': 'Переможець закритих цінових пропозицій'
     });
 
     $translateProvider.translations('ru', {
@@ -260,7 +270,12 @@ angular.module('auction').config(['$translateProvider',
       'to General': 'к Общей',
       'The proposal you have submitted coincides with a proposal of the other participant. His proposal will be considered first, since it has been submitted earlier.': 'Поданное вами предложение совпадает с предложением другого участника. Его предложение будет рассматриваться первым, поскольку оно подано раньше.',
       'Waiting for the disclosure of the participants\' names': 'Ожидаем раскрытия имен участников',
-      'Unable to place a bid. Check that no more than 2 auctions are simultaneously opened in your browser.': 'Невозможно сделать ставку. Проверьте, что в браузере открыто не более 2-х аукционов.'
+      'Unable to place a bid. Check that no more than 2 auctions are simultaneously opened in your browser.': 'Невозможно сделать ставку. Проверьте, что в браузере открыто не более 2-х аукционов.',
+      'Dutch part': 'Голландский этап',
+      'Sealed bid part': 'Этап подачи закрытых ценовых предложений',
+      'Best bid part': 'Этап подачи открытых ценовых предложений',
+      'Dutch winner':'Победитель голландского этапа',
+      'Sealed bid winner': 'Победитель закрытых ценовых предложений'
     });
 
   }
