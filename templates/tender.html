@@ -58,8 +58,8 @@
              class="header-auction-item navbar-brand pull-right round-information"
              ng-click="scroll_to_stage()"
              ng-if="get_round_number(auction_doc.current_stage).type == 'pause'">
-          <span class="round-number">
-            {{get_round_number(auction_doc.current_stage).data[0]}} &#8594; {{get_round_number(auction_doc.current_stage).data[1]}}
+          <span class="title-part">
+            {{get_round_number(auction_doc.current_stage).data[0]}} &#8594; {{get_round_number(auction_doc.current_stage).data[1]|translate}}
           </span>
         </div>
 
@@ -77,8 +77,8 @@
              class="header-auction-item navbar-brand pull-right round-information"
              ng-click="scroll_to_stage()"
              ng-if="get_round_number(auction_doc.current_stage).type == 'round'">
-          <p class="round-label" translate>Round</p>
-          <p class="round-number">{{get_round_number(auction_doc.current_stage).data}}</p>
+          <p class="title-part">{{get_round_number(auction_doc.current_stage).data|translate}}</p>
+          <p class="round-label" translate>Part</p>
         </div>
 
         <div id="round_information_block"

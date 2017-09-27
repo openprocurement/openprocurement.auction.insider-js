@@ -36,7 +36,6 @@ body {
 .header-auction-item-visual {
     display: block;
     max-height: 61px;
-    line-height: normal;
     overflow: hidden;
 }
 
@@ -67,7 +66,7 @@ body {
     padding: 0 0 0 10px;
 }
 .timer-item {
-    font-size: 23px;
+    font-size: 22px;
 }
 
 /* Round information */
@@ -84,6 +83,11 @@ body {
 }
 .round-information p {
     margin: 0;
+}
+.title-part {
+    font-size: 19px;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
 /* Progress bar */
@@ -340,6 +344,7 @@ body {
     }
     .round-information {
         width: auto;
+        min-width: 80px;
     }
     .round-number,
     #round_information_block {

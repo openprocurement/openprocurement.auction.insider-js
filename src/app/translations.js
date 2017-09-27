@@ -91,7 +91,10 @@ angular.module('auction').config(['$translateProvider',
       'Sealed bid part': 'Sealed bid part',
       'Best bid part': 'Best bid part',
       'Dutch winner':'Dutch winner',
-      'Sealed bid winner': 'Sealed bid winner'
+      'Sealed bid winner': 'Sealed bid winner',
+      'Part': 'Part',
+      'sealedbid': 'Sealed Bid',
+      'bestbid': 'Best Bid'
     });
 
     $translateProvider.translations('uk', {
@@ -184,7 +187,10 @@ angular.module('auction').config(['$translateProvider',
       'Sealed bid part': 'Етап подання закритих цінових пропозицій',
       'Best bid part': 'Етап подання відкритих цінових пропозицій',
       'Dutch winner':'Переможець голландського етапу',
-      'Sealed bid winner': 'Переможець закритих цінових пропозицій'
+      'Sealed bid winner': 'Переможець етапу закритих цінових пропозицій',
+      'Part': 'Етап',
+      'sealedbid': 'Sealed Bid',
+      'bestbid': 'Best Bid'
     });
 
     $translateProvider.translations('ru', {
@@ -275,7 +281,10 @@ angular.module('auction').config(['$translateProvider',
       'Sealed bid part': 'Этап подачи закрытых ценовых предложений',
       'Best bid part': 'Этап подачи открытых ценовых предложений',
       'Dutch winner':'Победитель голландского этапа',
-      'Sealed bid winner': 'Победитель закрытых ценовых предложений'
+      'Sealed bid winner': 'Победитель этапа закрытых ценовых предложений',
+      'Part': 'Этап',
+      'sealedbid': 'Sealed Bid',
+      'bestbid': 'Best Bid'
     });
 
   }
