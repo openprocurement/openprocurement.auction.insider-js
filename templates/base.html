@@ -28,7 +28,8 @@
 
 
   </head>
-<body ng-cloak>
+<body ng-class="{'authorization':  view_bids_form}"
+      ng-cloak>
     @@if (name == 'index') {
         @@include('./index.html')
     }
@@ -42,6 +43,6 @@
     @@for (var scr in scripts) {
         <script src="`+scripts[scr]+`"></script>
     }
-	
+
   </body>
 </html>

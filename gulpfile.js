@@ -14,7 +14,11 @@ const gulp          = require('gulp'),
       fs            = require("fs"),
       eslint        = require('gulp-eslint'),
       merge         = require('merge-stream'),
+      less          = require('gulp-less'),
+      LessAutoprefix = require('less-plugin-autoprefix'),
       server        = require('karma').Server;
+
+var autoprefix = new LessAutoprefix({ browsers: ['last 2 versions'] });
 
 function  interceptErrors(error) {
     let args = Array.prototype.slice.call(arguments);
@@ -80,7 +84,17 @@ gulp.task('all-js', ['bower-main'], () => {
  });
 
 
-gulp.task('css', () => {
+gulp.task('less', () => {
+  return gulp.src('src/assets/css/starter-template.less')
+    .pipe(less({
+      plugins: [autoprefix]
+    }))
+    .on('error', interceptErrors)
+    .pipe(gulp.dest('src/assets/css'));
+});
+
+
+gulp.task('css', ['less'], () => {
     return gulp.src(config.styles)
 	.pipe(concat(main_css))
 	.pipe(cleanCSS())
@@ -151,7 +165,7 @@ gulp.task('auctionApp', () => {
 });
 
 
-gulp.task('build', ['all-js', 'css', 'png-images', 'icons', 'htmlPages', 'listingApp', 'archiveApp', 'auctionApp', 'fonts'], () => {
+gulp.task('build', ['all-js', 'less', 'css', 'png-images', 'icons', 'htmlPages', 'listingApp', 'archiveApp', 'auctionApp', 'fonts'], () => {
 
     let css = gulp.src(`${config.buildDir}/${main_css}`)
 	.pipe(gulp.dest(config.outDir + '/static/css/'));
