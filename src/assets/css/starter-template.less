@@ -1,9 +1,16 @@
+@screen-sm-max: 767px;
+@screen-sm-min: 768px;
+@gray-color: #e5e5e5;
+
+
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
 }
 body {
-    padding-top: 73px;
-    padding-bottom: 196px;
+    padding: 73px 0 74px;
+    &.authorization {
+      padding-bottom: 196px;
+    }
 }
 .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4,
 .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8,
@@ -36,7 +43,6 @@ body {
 .header-auction-item-visual {
     display: block;
     max-height: 61px;
-    line-height: normal;
     overflow: hidden;
 }
 
@@ -55,19 +61,13 @@ body {
     height: 8px;
     width: 36px;
 }
-/*.header-auction .navbar-collapse {
-  -webkit-box-shadow: 0 8px 6px -6px #aaa;
-  -moz-box-shadow: 0 8px 6px -6px #aaa;
-  box-shadow: 0 8px 6px -6px #aaa;
-  }*/
-
 /* Timer */
 .round-info {
     font-size: 17px;
     padding: 0 0 0 10px;
 }
 .timer-item {
-    font-size: 23px;
+    font-size: 22px;
 }
 
 /* Round information */
@@ -85,6 +85,11 @@ body {
 .round-information p {
     margin: 0;
 }
+.title-part {
+    font-size: 19px;
+    font-weight: 700;
+    white-space: nowrap;
+}
 
 /* Progress bar */
 .progress-fixed-top {
@@ -97,30 +102,70 @@ body {
 }
 
 /*----- Stage -----*/
+.stage-header {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: normal;
+  margin: 0;
+  padding: 25px 12px;
+  @media (max-width: @screen-sm-max) {
+    border-bottom: 1px solid @gray-color;
+  }
+}
+
 .stage-item {
-    border-style: solid;
-    border-color: #e5e5e5;
-    border-width: 0 0 1px 0;
-    font-size: 18px;
-    padding: 0 0 0 5px;
+  border-color: @gray-color;
+  border-style: solid;
+  border-width: 0 0 1px 0;
+  font-size: 18px;
+  padding: 0 0 0 5px;
+  position: relative;
+  @media (min-width: @screen-sm-min) {
+    border-radius: 10px;
+    border-width: 1px;
+    margin-bottom: 4px;
+    padding: 5px 5px 5px 12px;
+  }
 }
-.stage-round {
-    padding: 0 0 0 2px;
+.stage-item-lining {
+  display: table;
+  width: 100%;
 }
-.stage-item-lining,
+.stage-info {
+  display: table-cell;
+  vertical-align: middle;
+}
 .stage-info-lining {
-    display: table;
-    width: 100%;
+  .stage-item-lining;
+}
+.stage-info-item {
+  display: table-cell;
+  height: 45px;
+  vertical-align: middle;
 }
 .stage-icon {
-    background-image: url(../img/future_stage.png);
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    background-size: 36px 36px;
-    display: table-cell;
-    height: 37px;
-    vertical-align: middle;
-    width: 37px;
+  background-image: url(../img/future_stage.png);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: 36px 36px;
+  display: table-cell;
+  height: 37px;
+  vertical-align: middle;
+  width: 37px;
+  @media (min-width: @screen-sm-min) {
+    background-size: 46px 46px;
+    height: 47px;
+    width: 47px;
+  }
+  .past-round & {
+    background-image: url(../img/past_round_stage.png);
+  }
+  .current-round & {
+    background-image: url(../img/past_stage.png);
+  }
+  .current-round .current-stage & {
+    background-image: url(../img/current_stage.png);
+  }
 }
 .stage-icon-visual {
     display: table-cell;
@@ -133,33 +178,40 @@ body {
     width: 37px;
     height: 37px;
 }
-.past-round .past-stage .stage-icon {
-    background-image: url(../img/past_round_stage.png);
+.stage-label {
+  line-height: 16px;
+  padding: 5px 5px 5px 6px;
+  @media (min-width: @screen-sm-min) {
+    padding-left: 12px;
+  }
 }
-.current-round .past-stage .stage-icon {
-    background-image: url(../img/past_stage.png);
-}
-.current-round .current-stage .stage-icon {
-    background-image: url(../img/current_stage.png);
-}
-.current-round .current-stage .stage-amount {
+.stage-amount {
+  font-size: 18px;
+  line-height: 18px;
+  padding: 5px 8px;
+  position: relative;
+  text-align: center;
+  width: 150px;
+  .current-round .current-stage & {
     color: #bbb;
     font-size: 16px;
+  }
+  @media (min-width: @screen-sm-min) {
+    border-radius: 6px;
+    font-size: 22px;
+    width: 360px;
+  }
 }
-.stage-info {
-    display: table-cell;
-    padding: 0 0 0 5px;
-    vertical-align: middle;
+.default-amount {
+  background-color: #f2f2f2;
 }
-.stage-info-item {
-    display: table-cell;
-    height: 45px;
-    vertical-align: middle;
+.amount-currency {
+  @media (min-width: @screen-sm-min) {
+    font-size: 16px;
+  }
 }
-.stage-label {
-    line-height: 16px;
-    padding: 0 5px 0 0;
-}
+
+
 .stage-round .stage-label {
     font-weight: bold;
     height: 74px;
@@ -167,19 +219,7 @@ body {
 .current-round .future-stage .stage-label {
     color: #333;
 }
-.stage-item {
-    position: relative;
-}
-.stage-amount {
-    border-radius: 6px 0 0 6px;
-    font-size: 18px;
-    line-height: 18px;
-    white-space: nowrap;
-    width: 150px;
-    text-align: center;
-    padding: 4px 5px 0;
-    position: relative;
-}
+
 .minimal-amount {
     background-color: #fcc;
 }
@@ -190,6 +230,9 @@ body {
     line-height: 16px;
     text-align: center;
     padding: 2px 0 0;
+    @media (max-width: @screen-sm-max) {
+      line-height: 12px;
+    }
 }
 .auction-with-two-prices .label-minimum {
     width: 100%;
@@ -243,9 +286,6 @@ body {
 .normalized-price-group input {
     border-radius: 0;
 }
-/*.fixed-bottom.ng-hide:not(.ng-hide-animate) {*/
-/*  display: block !important;*/
-/*  }*/
 .price-inform-block {
     float: left;
     width: 100%;
@@ -307,11 +347,6 @@ body {
         padding-right: 5px;
         padding-left: 5px;
     }
-    .stage-amount {
-        -webkit-border-radius: 6px;
-        -moz-border-radius: 6px;
-        border-radius: 6px;
-    }
     .price-inform-block {
         display: none;
     }
@@ -340,6 +375,7 @@ body {
     }
     .round-information {
         width: auto;
+        min-width: 80px;
     }
     .round-number,
     #round_information_block {
@@ -457,44 +493,19 @@ body {
     .header-auction .navbar-collapse.collapse.in {
         display: block !important; /* fix bootstrap.min.css */
     }
-    .default-amount {
-        background-color: #f2f2f2;
-    }
     /*----- Stage -----*/
-    .stage-item {
-        border-width: 1px;
-        border-radius: 10px;
-        margin-bottom: 4px;
-        padding: 5px 5px 5px 12px;
-    }
-    .stage-item.stage-round {
-        border-width: 0;
-    }
-    .stage-icon {
-        background-size: 46px 46px;
-        height: 47px;
-        width: 47px;
-    }
+
     .stage-icon-visual,
     .stage-icon-svg {
         height: 47px;
         width: 47px;
     }
-    .stage-info {
-        padding: 0 0 0 16px;
-    }
     .stage-info-item {
         height: 53px;
     }
-    .stage-amount {
-        border-radius: 6px;
-        font-size: 22px;
-        width: 360px;
-    }
-    .amount-currency {
-        font-size: 16px;
-    }
 }
+
+
 @media (min-width: 992px) {
     .container {
         width: 896px;
@@ -551,7 +562,7 @@ body {
 }
 
 .modal-backdrop{
-    top: 70px;
+    top: 69px;
 }
 
 

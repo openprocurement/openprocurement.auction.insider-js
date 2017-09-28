@@ -58,8 +58,8 @@
              class="header-auction-item navbar-brand pull-right round-information"
              ng-click="scroll_to_stage()"
              ng-if="get_round_number(auction_doc.current_stage).type == 'pause'">
-          <span class="round-number">
-            {{get_round_number(auction_doc.current_stage).data[0]}} &#8594; {{get_round_number(auction_doc.current_stage).data[1]}}
+          <span class="title-part">
+            {{get_round_number(auction_doc.current_stage).data[0]}} &#8594; {{get_round_number(auction_doc.current_stage).data[1]|translate}}
           </span>
         </div>
 
@@ -77,8 +77,8 @@
              class="header-auction-item navbar-brand pull-right round-information"
              ng-click="scroll_to_stage()"
              ng-if="get_round_number(auction_doc.current_stage).type == 'round'">
-          <p class="round-label" translate>Round</p>
-          <p class="round-number">{{get_round_number(auction_doc.current_stage).data}}</p>
+          <p class="title-part">{{get_round_number(auction_doc.current_stage).data|translate}}</p>
+          <p class="round-label" translate>Part</p>
         </div>
 
         <div id="round_information_block"
@@ -119,274 +119,224 @@
           </li>
         </ul>
       </div>
-    </div>
 
-    <!-- Start stage item lining -->
-    <div ng-if="auction_doc.current_stage >= 0">
-      <!-- Start Dutch Stage -->
-      <div ng-show="['dutch', 'pre-started', 'pre-announcement', 'announcement'].indexOf(auction_doc.current_phase) !== -1">
-        <div class="row">
-          <div class="col-xs-12 stage-item stage-round">
-            <div class="stage-item-lining">
-              <div class="stage-info">
-                <div class="stage-info-lining">
-                  <span translate class="stage-info-item stage-label">Dutch Auction</span>
+      <!-- Start stage item lining -->
+      <div class="col-xs-12" ng-if="auction_doc.current_stage >= 0">
+        <!-- Start Dutch Stage -->
+        <div ng-show="['dutch', 'pre-started', 'pre-announcement', 'announcement'].indexOf(auction_doc.current_phase) !== -1">
+          <h3 id="round-header-dutch" class="stage-header" translate>Dutch part</h3>
+          <div ng-repeat="stage in DutchRounds"
+               id="stage-{{ $index + 1 }}"
+               ng-class="{'past-round':  auction_doc.stages[stage].passed == true,
+                          'current-round': auction_doc.current_stage == stage}">
+            <div class="stage-item"
+                 ng-class="{'current-stage': auction_doc.current_stage == -1}">
+              <div class="stage-item-lining">
+                <i ng-if="auction_doc.current_stage != stage" class="stage-icon"></i>
+                <div class="stage-icon-visual" ng-if="auction_doc.current_stage == stage">
+                  <svg class="stage-icon-svg" viewbox="0 0 48 48">
+                    <svg-timer></svg-timer>
+                  </svg>
+                </div>
+                <div class="stage-info">
+                  <div class="stage-info-lining">
+                    <span class="stage-info-item stage-label">
+                      {{auction_doc.stages[stage]['start']|date:'HH:mm:ss'}}
+                    </span>
+                    <span class="stage-info-item stage-amount"
+                          ng-class="{'minimal-amount': (auction_doc.current_stage == stage) || (auction_doc.stages[stage].dutch_winner === true),
+                                     'default-amount': (auction_doc.current_stage != stage) && (auction_doc.stages[stage].dutch_winner !== true)}">
+                      {{auction_doc.stages[stage].amount|formatnumber}}
+                      <span class="amount-currency">
+                        {{ auction_doc.value.currency|translate }}
+                      </span>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div ng-repeat="stage in DutchRounds"
-             class="auction-round"
-             id="round-header-{{$index + 1}}"
-             ng-class="{'past-round':  auction_doc.stages[stage].passed == true,
-                        'current-round': auction_doc.current_stage == stage,
-                        'future-round': (auction_doc.stages[stage].passed || false) === true }">
-          <div id="stage-{{ stage + $index + 1 }}"
-               class="row auction-stage stage-item stage-bids"
-               ng-class="{'current-stage': auction_doc.current_stage == -1,
-                          'past-stage':  auction_doc.current_stage > -1}">
-            <div class="stage-item-lining">
-              <i ng-if="auction_doc.current_stage != (stage)" class="stage-icon"></i>
-              <div class="stage-icon-visual" ng-if="auction_doc.current_stage == (stage)">
-                <svg class="stage-icon-svg" viewbox="0 0 48 48">
-                  <svg-timer></svg-timer>
-                </svg>
+        <!-- End Dutch Stage -->
+        <div ng-if="auction_doc.results.length > 0">
+          <!-- Start Sealedbid Stage -->
+          <div ng-show="['sealedbid', 'pre-sealedbid', 'pre-announcement', 'announcement'].indexOf(auction_doc.current_phase) !== -1">
+            <h3 id="round-header-sealedbid" class="stage-header" translate>Sealed bid part</h3>
+            <!-- Dutch Winner -->
+            <div id="stage-sealedbid-dutch-winner" class="auction-round past-round">
+              <div class="stage-item">
+                <div class="stage-item-lining">
+                  <i class="stage-icon"></i>
+                  <div class="stage-info">
+                    <div class="stage-info-lining">
+                      <span class="stage-info-item stage-label">
+                        {{ dutch_winner.label[lang]||"-" }}
+                        <span ng-if="dutch_winner.bidder_id == bidder_id">
+                          (<span translate>You</span>)
+                        </span>
+                      </span>
+                      <span class="stage-info-item stage-amount"
+                            ng-class="{'default-amount': (sealedbid_winner.amount||false) >= dutch_winner.amount,
+                                       'minimal-amount': (sealedbid_winner.amount||false) < dutch_winner.amount}">
+                        <span class="label-price">
+                          {{dutch_winner.amount|formatnumber}}
+                        </span>
+                        <span class="amount-currency">
+                          {{ auction_doc.value.currency|translate }}
+                        </span>
+                        <span class="label-minimum" translate>
+                          Dutch winner
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="stage-info">
-                <div class="stage-info-lining">
-                  <span class="stage-info-item stage-label ng-binding ng-scope">
-                    {{auction_doc.stages[stage]['start']|date:'HH:mm:ss'}}
-                  </span>
-                  <span class="stage-info-item stage-amount"
-                        ng-class="{'minimal-amount': auction_doc.current_stage == stage || auction_doc.stages[stage].dutch_winner === true,
-                                   'default-amount': auction_doc.current_stage != stage && auction_doc.stages[stage].dutch_winner !== true}">
-                    {{auction_doc.stages[stage].amount|formatnumber}}
-                    <span class="amount-currency">
-                      {{ auction_doc.value.currency|translate }}
-                    </span>
-                  </span>
+            </div>
+            <!-- Sealedbiders list -->
+            <div id="stage-sealedbid-{{ $index + 1 }}"
+                 class="auction-round past-round"
+                 ng-repeat="bid_info in announcement_results()"
+                 ng-if="bid_info.dutch_winner !== true">
+              <div class="stage-item">
+                <div class="stage-item-lining">
+                  <i class="stage-icon"></i>
+                  <div class="stage-info">
+                    <div class="stage-info-lining">
+                      <span class="stage-info-item stage-label">
+                        {{ bid_info.label[lang]||"-" }}
+                        <span ng-if="bid_info.bidder_id == bidder_id">
+                          (<span translate>You</span>)
+                        </span>
+                      </span>
+                      <span class="stage-info-item stage-amount"
+                            ng-class="{'default-amount': (bid_info.bidder_id != sealedbid_winner.bidder_id),
+                                       'minimal-amount': (bid_info.bidder_id == sealedbid_winner.bidder_id)}">
+                        <span class="label-price">
+                          {{bid_info.amount|formatnumber}}
+                        </span>
+                        <span class="amount-currency">
+                          {{ auction_doc.value.currency|translate }}
+                        </span>
+                        <span class="label-minimum"
+                              ng-if="bid_info.bidder_id == sealedbid_winner.bidder_id" translate>
+                          Sealed bid winner
+                        </span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <!-- End Dutch Stage -->
-      <!-- Start Sealedbid Stage -->
-      <div ng-show="['sealedbid', 'pre-sealedbid', 'pre-announcement', 'announcement'].indexOf(auction_doc.current_phase) !== -1"
-           ng-if="auction_doc.results.length > 0">
-        <div class="row">
-          <div class="col-xs-12 stage-item stage-round">
-            <div class="stage-item-lining">
-              <div class="stage-info">
-                <div class="stage-info-lining">
-                  <span translate class="stage-info-item stage-label">Sealedbid Auction</span>
+          <!-- End Sealedbid Stage -->
+          <!-- Start Bestbid Stage -->
+          <div ng-show="['bestbid', 'pre-bestbid', 'pre-announcement', 'announcement'].indexOf(auction_doc.current_phase) !== -1">
+            <h3 id="round-header-bestbid" class="stage-header" translate>Best bid part</h3>
+            <div id="stage-bestbid-{{ $index + 1 }}"
+                 class="auction-round past-round"
+                 ng-repeat="bid_info in announcement_results()">
+              <div class="stage-item"
+                   ng-class="{'sealedbid-winner': bid_info.bidder_id === sealedbid_winner.bidder_id,
+                              'dutch-winner': bid_info.dutch_winner === true}"
+                   ng-if="bid_info.dutch_winner === true || bid_info.bidder_id === sealedbid_winner.bidder_id">
+                <div class="stage-item-lining">
+                  <i class="stage-icon"></i>
+                  <div class="stage-info">
+                    <div class="stage-info-lining">
+                      <span class="stage-info-item stage-label">
+                        {{ bid_info.label[lang]||"-" }}
+                        <span ng-if="bid_info.bidder_id == bidder_id">
+                          (<span translate>You</span>)
+                        </span>
+                      </span>
+                      <span class="stage-info-item stage-amount"
+                            ng-class="{'minimal-amount': ((bid_info.bidder_id == sealedbid_winner.bidder_id) &&
+                                         ((sealedbid_winner.amount||false) >= results_dutch_winner.amount)
+                                       ) || ((bid_info.bidder_id == results_dutch_winner.bidder_id) &&
+                                         ((sealedbid_winner.amount||false) < results_dutch_winner.amount)
+                                       ),'default-amount': ((bid_info.bidder_id == sealedbid_winner.bidder_id) &&
+                                         ((sealedbid_winner.amount||false) < results_dutch_winner.amount)
+                                       ) || ((bid_info.bidder_id == results_dutch_winner.bidder_id) &&
+                                         ((sealedbid_winner.amount||false) >= results_dutch_winner.amount))}">
+                        <span class="label-price">
+                          {{bid_info.amount|formatnumber}}
+                        </span>
+                        <span class="amount-currency">
+                          {{ auction_doc.value.currency|translate }}
+                        </span>
+                        <span class="label-minimum"
+                              ng-if="(bid_info.dutch_winner || false) == true" translate>
+                          Dutch winner
+                        </span>
+                        <span class="label-minimum"
+                              ng-if="bid_info.bidder_id == sealedbid_winner.bidder_id" translate>
+                          Sealed bid winner
+                        </span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <!-- Dutch Winner -->
-        <div class="auction-round past-round"
-             id="round-header-sealedbid-dutch-winner">
-          <div id="stage-sealedbid-dutch-winner"
-               class="row auction-stage stage-item stage-bids past-stage">
-            <div class="stage-item-lining">
-              <i class="stage-icon"></i>
-              <div class="stage-info">
-                <div class="stage-info-lining">
-                  <span class="stage-info-item stage-label">
-                    {{ dutch_winner.label[lang]||"-" }}
-                    <span ng-if="dutch_winner.bidder_id == bidder_id">
-                      (<span translate>You</span>)
-                    </span>
-                  </span>
-                  <span class="stage-info-item stage-amount"
-                        ng-class="{'default-amount': (sealedbid_winner.amount||false) >= dutch_winner.amount,
-                                   'minimal-amount': (sealedbid_winner.amount||false) < dutch_winner.amount}">
-                    <span class="label-price">
-                      {{dutch_winner.amount|formatnumber}}
-                    </span>
-                    <span class="amount-currency">
-                      {{ auction_doc.value.currency|translate }}
-                    </span>
-                    <span class="label-minimum" translate>
-                      dutch winner
-                    </span>
-                  </span>
+          <!-- End Bestbid Stage -->
+          <!-- Start Announcement -->
+          <div ng-show="['announcement'].indexOf(auction_doc.current_phase) !== -1"
+               id="results-header" class="current-round">
+            <h3 id="round-header-announcement" class="stage-header" translate>Announcement</h3>
+            <div class="past-round"
+                 id="stage-announcement-{{ $index + 1 }}"
+                 ng-repeat="bid_info in announcement_results()">
+              <div class="stage-item">
+                <div class="stage-item-lining">
+                  <i class="stage-icon"></i>
+                  <div class="stage-info">
+                    <div class="stage-info-lining">
+                      <span class="stage-info-item stage-label">
+                        {{ bid_info.label[lang]||"-" }}
+                        <span ng-if="bid_info.bidder_id == bidder_id">
+                          (<span translate>You</span>)
+                        </span>
+                      </span>
+                      <span class="stage-info-item stage-amount"
+                            ng-class="{'minimal-amount': ((bid_info.bidder_id == sealedbid_winner.bidder_id) &&
+                                         ((sealedbid_winner.amount||false) >= results_dutch_winner.amount)
+                                       ) || ((bid_info.bidder_id == dutch_winner.bidder_id) &&
+                                         ((sealedbid_winner.amount||false) < results_dutch_winner.amount)
+                                       ), 'default-amount': !(bid_info.amount == max_bid_announce) || (
+                                         !(bid_info.bidder_id == sealedbid_winner.bidder_id) &&
+                                         ((sealedbid_winner.amount||false) >= results_dutch_winner.amount))}">
+                        <span class="label-price">
+                          {{bid_info.amount|formatnumber}}
+                        </span>
+                        <span class="amount-currency">
+                          {{ auction_doc.value.currency|translate }}
+                        </span>
+                        <span class="label-minimum"
+                              ng-if="(bid_info.dutch_winner || false) == true" translate>
+                          Dutch winner
+                        </span>
+                        <span class="label-minimum"
+                              ng-if="bid_info.bidder_id == sealedbid_winner.bidder_id" translate>
+                          Sealed bid winner
+                        </span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <!-- Sealedbiders list -->
-        <div class="auction-round past-round"
-             id="round-header-sealedbid-{{$index + 1}}"
-             ng-repeat="bid_info in announcement_results()"
-             ng-if="bid_info.dutch_winner !== true">
-          <div id="stage-sealedbid-{{ stage + $index + 1 }}"
-               class="row auction-stage stage-item stage-bids past-stage">
-            <div class="stage-item-lining">
-              <i class="stage-icon"></i>
-              <div class="stage-info">
-                <div class="stage-info-lining">
-                  <span class="stage-info-item stage-label">
-                    {{ bid_info.label[lang]||"-" }}
-                    <span ng-if="bid_info.bidder_id == bidder_id">
-                      (<span translate>You</span>)
-                    </span>
-                  </span>
-                  <span class="stage-info-item stage-amount"
-                        ng-class="{'default-amount': (bid_info.bidder_id != sealedbid_winner.bidder_id),
-                                   'minimal-amount': (bid_info.bidder_id == sealedbid_winner.bidder_id)}">
-                    <span class="label-price">
-                      {{bid_info.amount|formatnumber}}
-                    </span>
-                    <span class="amount-currency">
-                      {{ auction_doc.value.currency|translate }}
-                    </span>
-                    <span class="label-minimum"
-                          ng-if="bid_info.bidder_id == sealedbid_winner.bidder_id" translate>
-                      sealedbid winner
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- End Sealedbid Stage -->
-      <!-- Start Bestbid Stage -->
-      <div ng-show="['bestbid', 'pre-bestbid', 'pre-announcement', 'announcement'].indexOf(auction_doc.current_phase) !== -1"
-           ng-if="auction_doc.results.length > 0">
-        <div class="row">
-          <div class="col-xs-12 stage-item stage-round">
-            <div class="stage-item-lining">
-              <div class="stage-info">
-                <div class="stage-info-lining">
-                  <span translate class="stage-info-item stage-label">Bestbid Auction</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="auction-round past-round"
-             id="round-header-bestbid-{{$index + 1}}"
-             ng-repeat="bid_info in announcement_results()">
-          <div id="stage-bestbid-{{ stage + $index + 1 }}"
-               class="row auction-stage stage-item stage-bids past-stage"
-               ng-class="{'sealedbid-winner': bid_info.bidder_id === sealedbid_winner.bidder_id,
-                          'dutch-winner': bid_info.dutch_winner === true}"
-               ng-if="bid_info.dutch_winner === true || bid_info.bidder_id === sealedbid_winner.bidder_id">
-            <div class="stage-item-lining">
-              <i class="stage-icon"></i>
-              <div class="stage-info">
-                <div class="stage-info-lining">
-                  <span class="stage-info-item stage-label">
-                    {{ bid_info.label[lang]||"-" }}
-                    <span ng-if="bid_info.bidder_id == bidder_id">
-                      (<span translate>You</span>)
-                    </span>
-                  </span>
-                  <span class="stage-info-item stage-amount"
-                        ng-class="{'minimal-amount': ((bid_info.bidder_id == sealedbid_winner.bidder_id) &&
-                                     ((sealedbid_winner.amount||false) >= results_dutch_winner.amount)
-                                   ) || ((bid_info.bidder_id == results_dutch_winner.bidder_id) &&
-                                     ((sealedbid_winner.amount||false) < results_dutch_winner.amount)
-                                   ),'default-amount': ((bid_info.bidder_id == sealedbid_winner.bidder_id) &&
-                                     ((sealedbid_winner.amount||false) < results_dutch_winner.amount)
-                                   ) || ((bid_info.bidder_id == results_dutch_winner.bidder_id) &&
-                                     ((sealedbid_winner.amount||false) >= results_dutch_winner.amount))}">
-                    <span class="label-price">
-                      {{bid_info.amount|formatnumber}}
-                    </span>
-                    <span class="amount-currency">
-                      {{ auction_doc.value.currency|translate }}
-                    </span>
-                    <span class="label-minimum"
-                          ng-if="(bid_info.dutch_winner || false) == true" translate>
-                      dutch winner
-                    </span>
-                    <span class="label-minimum"
-                          ng-if="bid_info.bidder_id == sealedbid_winner.bidder_id" translate>
-                      sealedbid winner
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- End Bestbid Stage -->
-      <!-- Start Announcement -->
-      <div ng-show="['announcement'].indexOf(auction_doc.current_phase) !== -1"
-           ng-if="auction_doc.results.length > 0"
-           id="results-header">
-        <div class="row">
-          <div class="col-xs-12 stage-item stage-round">
-            <div class="stage-item-lining">
-              <div class="stage-info">
-                <div class="stage-info-lining">
-                  <span translate class="stage-info-item stage-label">Announcement</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="auction-round past-round"
-             id="round-header-announcement-{{$index + 1}}"
-             ng-repeat="bid_info in announcement_results()">
-          <div id="stage-announcement-{{ stage + $index + 1 }}"
-               class="row auction-stage stage-item stage-bids past-stage">
-            <div class="stage-item-lining">
-              <i class="stage-icon"></i>
-              <div class="stage-info">
-                <div class="stage-info-lining">
-                  <span class="stage-info-item stage-label">
-                    {{ bid_info.label[lang]||"-" }}
-                    <span ng-if="bid_info.bidder_id == bidder_id">
-                      (<span translate>You</span>)
-                    </span>
-                  </span>
-                  <span class="stage-info-item stage-amount"
-                        ng-class="{'minimal-amount': ((bid_info.bidder_id == sealedbid_winner.bidder_id) &&
-                                     ((sealedbid_winner.amount||false) >= results_dutch_winner.amount)
-                                   ) || ((bid_info.bidder_id == dutch_winner.bidder_id) &&
-                                     ((sealedbid_winner.amount||false) < results_dutch_winner.amount)
-                                   ), 'default-amount': !(bid_info.amount == max_bid_announce) || (
-                                     !(bid_info.bidder_id == sealedbid_winner.bidder_id) &&
-                                     ((sealedbid_winner.amount||false) >= results_dutch_winner.amount))}">
-                    <span class="label-price">
-                      {{bid_info.amount|formatnumber}}
-                    </span>
-                    <span class="amount-currency">
-                      {{ auction_doc.value.currency|translate }}
-                    </span>
-                    <span class="label-minimum"
-                          ng-if="(bid_info.dutch_winner || false) == true" translate>
-                      dutch winner
-                    </span>
-                    <span class="label-minimum"
-                          ng-if="bid_info.bidder_id == sealedbid_winner.bidder_id" translate>
-                      sealedbid winner
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <!-- End Announcement -->
         </div>
       </div>
-      <!-- End Announcement -->
-    </div>
-    <!-- End stage item lining -->
+      <!-- End stage item lining -->
 
-    <div class="row" ng-if="auction_doc.current_stage == (auction_doc.stages.length - 1)">
-      <br/>
-      <a ng-if="return_url" class="btn btn-block btn-success" href="{{ return_url }}" translate>Return to Tender</a>
+      <div ng-if="auction_doc.current_stage == (auction_doc.stages.length - 1)">
+        <br/>
+        <a ng-if="return_url" class="btn btn-block btn-success" href="{{ return_url }}" translate>Return to Tender</a>
+      </div>
     </div>
   </div>
 
