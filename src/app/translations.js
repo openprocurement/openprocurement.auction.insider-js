@@ -58,9 +58,9 @@ angular.module('auction').config(['$translateProvider',
       'until the auction starts': 'until the auction starts',
       'until your turn': 'until your turn',
       'until your turn ends': 'until your turn ends',
-      'until the round starts': 'until the round starts',
+      'until the round starts': 'until the part starts',
       'until the step ends': 'until the step ends',
-      'until the round ends': 'until the round ends',
+      'until the round ends': 'until the part ends',
       'until the results announcement': 'until the results announcement',
       'Аuction was completed': 'Аuction was completed on',
       'prohibit connection': 'prohibit connection',
@@ -94,7 +94,8 @@ angular.module('auction').config(['$translateProvider',
       'Sealed bid winner': 'Sealed bid winner',
       'Part': 'Part',
       'sealedbid': 'Sealed Bid',
-      'bestbid': 'Best Bid'
+      'bestbid': 'Best Bid',
+      'dutch_0': 'Dutch'
     });
 
     $translateProvider.translations('uk', {
@@ -154,9 +155,9 @@ angular.module('auction').config(['$translateProvider',
       'until the auction starts': 'до початку аукціону',
       'until your turn': 'до вашої черги',
       'until your turn ends': 'до закінчення вашої черги',
-      'until the round starts': 'до початку раунду',
+      'until the round starts': 'до початку етапу',
       'until the step ends': 'до закінчення кроку',
-      'until the round ends': 'до закінчення раунду',
+      'until the round ends': 'до закінчення етапу',
       'until the results announcement': 'до оголошення результатів',
       'Аuction was completed': 'Аукціон завершився',
       'prohibit connection': 'заборонити підключення',
@@ -190,7 +191,8 @@ angular.module('auction').config(['$translateProvider',
       'Sealed bid winner': 'Переможець етапу закритих цінових пропозицій',
       'Part': 'Етап',
       'sealedbid': 'Sealed Bid',
-      'bestbid': 'Best Bid'
+      'bestbid': 'Best Bid',
+      'dutch_0': 'Голландського'
     });
 
     $translateProvider.translations('ru', {
@@ -248,9 +250,9 @@ angular.module('auction').config(['$translateProvider',
       'until the auction starts': 'до начала аукциона',
       'until your turn': 'до вашей очереди',
       'until your turn ends': 'до завершения вашей очереди',
-      'until the round starts': 'до начала раунда',
+      'until the round starts': 'до начала этапа',
       'until the step ends': ' до окончания шага',
-      'until the round ends': ' до окончания раунда',
+      'until the round ends': ' до окончания этапа',
       'until the results announcement': 'до объявления результатов',
       'Аuction was completed': 'Аукцион закончился',
       'prohibit connection': 'запретить подключение',
@@ -284,7 +286,8 @@ angular.module('auction').config(['$translateProvider',
       'Sealed bid winner': 'Победитель этапа закрытых ценовых предложений',
       'Part': 'Этап',
       'sealedbid': 'Sealed Bid',
-      'bestbid': 'Best Bid'
+      'bestbid': 'Best Bid',
+      'dutch_0': 'Голландского'
     });
 
   }

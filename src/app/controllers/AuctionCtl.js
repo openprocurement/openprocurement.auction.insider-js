@@ -804,6 +804,7 @@ angular.module('auction').controller('AuctionController',[
 
     $rootScope.Rounds = function() {
       switch($rootScope.auction_doc.current_phase) {
+      case "pre-started":
       case "dutch":
         return $rootScope.DutchRounds;
       case "pre-sealedbid":
@@ -822,7 +823,7 @@ angular.module('auction').controller('AuctionController',[
       $rootScope.SealedRounds = [];
       $rootScope.BestBidRounds = [];
       $rootScope.auction_doc.stages.forEach(function(item, index) {
-        if (item.type.startsWith('dutch')) {
+        if ((item.type === 'pre-started') || (item.type.substring(0,5)) == ('dutch')) {
           $rootScope.DutchRounds.push(index);
         }
         if ((item.type === 'pre-sealedbid') || (item.type === 'sealedbid')) {
