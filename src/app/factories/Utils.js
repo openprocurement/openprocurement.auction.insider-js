@@ -77,7 +77,7 @@ angular.module('auction').factory('AuctionUtils', [
           'msg': 'until the round starts'
         };
       }
-      if ((auction.stages[auction.current_stage].type.startsWith('dutch'))) {
+      if ((auction.stages[auction.current_stage].type.substring(0,5) == ('dutch'))) {
         return {
           'countdown': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
           'start_time': false,
@@ -197,7 +197,7 @@ angular.module('auction').factory('AuctionUtils', [
         }
       } else {
         for (var i in Rounds) {
-          if (auction_doc.current_phase.startsWith('pre')) {
+          if (auction_doc.current_phase.substring(0,3) == ('pre')) {
             return {
               'type': 'pause',
               'data': ['', auction_doc.stages[auction_doc.current_stage + 1].type]
