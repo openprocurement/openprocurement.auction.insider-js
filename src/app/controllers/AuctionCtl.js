@@ -358,6 +358,7 @@ angular.module('auction').controller('AuctionController',[
           $rootScope.view_bids_form = true;
           return $rootScope.view_bids_form;
         }
+
         if (($rootScope.auction_doc.current_phase === 'bestbid') && ($rootScope.auction_doc.stages[last_dutch_index].bidder_id === $rootScope.bidder_id)) {
           $log.info({
             message: "Allow view bid form bestbid"
@@ -438,7 +439,7 @@ angular.module('auction').controller('AuctionController',[
           bid_data: bid_amount
         });
       } else {
-        bid_amount = parseFloat(bid) || parseFloat($rootScope.form.bid) || 0;
+        bid_amount = parseFloat(bid) || parseFloat($rootScope.form.bid).toFixed(2) || 0;
         $log.info({
           message: "Start post sealebid",
           bid_data: bid_amount
@@ -455,12 +456,6 @@ angular.module('auction').controller('AuctionController',[
         //     msg: 'The proposal you have submitted coincides with a proposal of the other participant. His proposal will be considered first, since it has been submitted earlier.'
         //   });
         // }
-
-        if($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].type.substring(0,5) === 'dutch') {
-          bid_amount = parseFloat($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].amount || "0");
-        } else {
-          bid_amount = parseFloat(bid) || parseFloat($rootScope.form.bid) || 0;
-        }
 
         $rootScope.form.active = true;
         $timeout(function() {
