@@ -52,9 +52,12 @@
     "gulp-filter": "^5.0.0",
     "gulp-main-bower-files": "^1.6.2",
     "gulp-minify": "^1.0.0",
-    "jasmine": "^2.6.0"
+    "gulp-tar": "^2.0.0",
+    "jasmine": "^2.6.0",
+    "run-sequence": "^2.2.0"
   },
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "pack": "gulp pack"
   }
 }
