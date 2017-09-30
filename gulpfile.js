@@ -125,31 +125,6 @@ gulp.task('htmlPages', () => {
     }));
 });
 
-
-
-gulp.task('listingApp', () => {
-    // TODO: uglify
-    return gulp.src(['./src/app/index.js',
-		     './src/app/config.js',
-		     './src/app/controllers/ListingCtrl.js'
-		    ])
-	.pipe(concat('index.js'))
-        .pipe(devel ? util.noop() : uglify({ mangle: false}))
-	.pipe(gulp.dest(config.buildDir));
-});
-
-
-gulp.task('archiveApp', () => {
-    // TODO: uglify
-    return gulp.src(['./src/app/archive.js',
-		     './src/app/config.js',
-		     './src/app/controllers/ArchiveCtl.js'])
-	.pipe(concat('archive.js'))
-        .pipe(devel ? util.noop() : uglify({ mangle: false}))
-	.pipe(gulp.dest(config.buildDir));
-});
-
-
 gulp.task('auctionApp', () => {
     return gulp.src(['./src/app/auction.js',
 		     './src/app/filters/*.js',
@@ -165,24 +140,12 @@ gulp.task('auctionApp', () => {
 });
 
 
-gulp.task('build', ['all-js', 'less', 'css', 'png-images', 'icons', 'htmlPages', 'listingApp', 'archiveApp', 'auctionApp', 'fonts'], () => {
+gulp.task('build', ['all-js', 'less', 'css', 'png-images', 'icons', 'htmlPages', 'auctionApp', 'fonts'], () => {
 
     let css = gulp.src(`${config.buildDir}/${main_css}`)
 	.pipe(gulp.dest(config.outDir + '/static/css/'));
 
-    let listPage = gulp.src(`${config.buildDir}/index.html`)
-	.pipe(gulp.dest(config.outDir));
-
-    let listApp = gulp.src(`${config.buildDir}/index.js`)
-	.pipe(gulp.dest(config.outDir + '/static/'));
-
     let vendor_js = gulp.src(`${config.buildDir}/vendor.js`)
-	.pipe(gulp.dest(config.outDir + '/static/'));
-
-    let archivePage = gulp.src(`${config.buildDir}/archive.html`)
-	.pipe(gulp.dest(config.outDir));
-
-    let archiveApp = gulp.src(`${config.buildDir}/archive.js`)
 	.pipe(gulp.dest(config.outDir + '/static/'));
 
     let auctionPage = gulp.src(`${config.buildDir}/${name}.html`)
@@ -196,7 +159,7 @@ gulp.task('build', ['all-js', 'less', 'css', 'png-images', 'icons', 'htmlPages',
 
     let fonts = gulp.src("build/fonts/*")
 	.pipe(gulp.dest(config.outDir+'/static/fonts/'));
-    return merge(css, images, fonts, vendor_js, listPage, listApp, auctionPage, auctionApp, archivePage, archiveApp, fonts);
+    return merge(css, images, fonts, vendor_js, auctionPage, auctionApp, fonts);
 });
 
 gulp.task('lint', () => {
