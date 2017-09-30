@@ -358,6 +358,7 @@ angular.module('auction').controller('AuctionController',[
           $rootScope.view_bids_form = true;
           return $rootScope.view_bids_form;
         }
+
         if (($rootScope.auction_doc.current_phase === 'bestbid') && ($rootScope.auction_doc.stages[last_dutch_index].bidder_id === $rootScope.bidder_id)) {
           $log.info({
             message: "Allow view bid form bestbid"
@@ -438,16 +439,15 @@ angular.module('auction').controller('AuctionController',[
           bid_data: bid_amount
         });
       } else {
-        bid_amount = parseFloat(bid) || parseFloat($rootScope.form.bid) || 0;
+        bid_amount = parseFloat(bid) || parseFloat($rootScope.form.bid).toFixed(2) || 0;
         $log.info({
           message: "Start post sealebid",
-          bid_data: parseFloat(bid) || parseFloat($rootScope.form.bid) || 0
+          bid_data: bid_amount
         });
       }
 
       if ($rootScope.form.BidsForm.$valid) {
         $rootScope.alerts = [];
-        //var bid_amount = parseFloat(bid) || parseFloat($rootScope.form.bid) || 0;
         // if (bid_amount == $rootScope.minimal_bid.amount) {
         //   var msg_id = Math.random();
         //   $rootScope.alerts.push({
@@ -456,6 +456,7 @@ angular.module('auction').controller('AuctionController',[
         //     msg: 'The proposal you have submitted coincides with a proposal of the other participant. His proposal will be considered first, since it has been submitted earlier.'
         //   });
         // }
+
         $rootScope.form.active = true;
         $timeout(function() {
           $rootScope.form.active = false;
@@ -466,7 +467,7 @@ angular.module('auction').controller('AuctionController',[
         }
 
         $http.post(sse_url + '/postbid', {
-          'bid': String(bid_amount), // It will convert to Decimal
+          'bid': bid_amount,
           'bidder_id': $rootScope.bidder_id || bidder_id || "0"
         }).then(function(success) {
           // success
@@ -521,7 +522,6 @@ angular.module('auction').controller('AuctionController',[
                 msg: 'Bid canceled'
               });
               $rootScope.form.bid = "";
-              $rootScope.form.full_price = '';
               $rootScope.form.bid_temp = '';
             } else {
               $log.info({
@@ -851,6 +851,21 @@ angular.module('auction').controller('AuctionController',[
         size: 'lg',
         backdrop: true
       });
+    };
+
+    $rootScope.calculate_bid_temp = function() {
+      $rootScope.form.bid_temp = Number(math.fraction(($rootScope.form.bid * 100).toFixed(2), 100));
+      $log.debug("Set bid_temp:", $rootScope.form);
+    };
+
+    $rootScope.set_bid_from_temp = function() {
+      $rootScope.form.bid = $rootScope.form.bid_temp;
+      if ($rootScope.form.bid){
+        $rootScope.form.BidsForm.bid.$setViewValue(math.format($rootScope.form.bid, {
+          notation: 'fixed',
+          precision: 2
+        }).replace(/(\d)(?=(\d{3})+\.)/g, '$1 ').replace(/\./g, ","));
+      }
     };
 
     $rootScope.winners_bid_info = function() {
