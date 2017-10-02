@@ -18,6 +18,7 @@ const gulp          = require('gulp'),
       less          = require('gulp-less'),
       LessAutoprefix = require('less-plugin-autoprefix'),
       pack          = require('gulp-tar'),
+      gzip          = require('gulp-gzip'),
       sequence      = require('run-sequence'),
       server        = require('karma').Server;
 
@@ -167,20 +168,14 @@ gulp.task('build', (done) => {
 });
 
 
-gulp.task('tar', () => {
+gulp.task('pack', () => {
    return gulp.src([`${config.buildDir}/**/*`])
-   	.pipe(pack(`${packageName}.tar.gz`))
+   	.pipe(pack(`${packageName}.tar`))
+	.pipe(gzip())
 	.pipe(gulp.dest('dist'))
 	.on("error", interceptErrors)
 });
 
-
-
-gulp.task('pack', (done) => {
-   return sequence('vendor', 'bundle', 'tar', () => {
-     done();
-   });
-});
 
 gulp.task('lint', () => {
   return gulp.src(['./src/app/auction.js',
