@@ -134,10 +134,12 @@ angular.module('auction').factory('AuctionUtils', [
       }
       if (auction.current_phase == 'pre-sealedbid'){
         var until_seconds = (new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000;
-        var last_dutch_index = auction.stages.findIndex(function(stage) {
-          return (stage.dutch_winner || "") === true;
-        });
-        console.log(last_dutch_index);
+        for (var i = 0; i < auction.stages.length; ++i) {
+            if (auction.stages[i].dutch_winner === true) {
+                var last_dutch_index = i;
+                break;
+            }
+        }
         return {
           'countdown_seconds': until_seconds + Math.random(),
           'rounds_seconds': ((new Date(auction.stages[auction.current_stage + 1].start) - new Date(auction.stages[last_dutch_index].start)) / 1000),

@@ -340,9 +340,13 @@ angular.module('auction').controller('AuctionController',[
 
     $rootScope.show_bids_form = function(argument) {
       if ((angular.isNumber($rootScope.auction_doc.current_stage)) && ($rootScope.auction_doc.current_stage >= 0)) {
-        var last_dutch_index = $rootScope.auction_doc.stages.findIndex(function(stage) {
-          return (stage.dutch_winner || "") === true;
-        });
+        var last_dutch_index;
+        for (var i = 0; i < $rootScope.auction_doc.stages.length; ++i) {
+            if ($rootScope.auction_doc.stages[i].dutch_winner === true) {
+                last_dutch_index = i;
+                break;
+            }
+        }
         if (($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].type.substring(0,5) === 'dutch') && $rootScope.bidder_id) {
           $log.info({
             message: "Allow view bid form dutch"
@@ -869,15 +873,27 @@ angular.module('auction').controller('AuctionController',[
     };
 
     $rootScope.winners_bid_info = function() {
-      var last_dutch_index = $rootScope.auction_doc.stages.findIndex(function(stage) {
-        return (stage.dutch_winner || "") === true;
-      });
-      var results_dutch_index = $rootScope.auction_doc.results.findIndex(function(stage) {
-        return (stage.dutch_winner || "") === true;
-      });
-      var last_sealedbid_index = $rootScope.auction_doc.stages.findIndex(function(stage) {
-        return (stage.sealedbid_winner || "") === true;
-      });
+      var last_dutch_index,
+        results_dutch_index,
+        last_sealedbid_index;
+      for (var i = 0; i < $rootScope.auction_doc.stages.length; ++i) {
+          if ($rootScope.auction_doc.stages[i].dutch_winner === true) {
+              last_dutch_index = i;
+              break;
+          }
+      }
+      for (var i = 0; i < $rootScope.auction_doc.results.length; ++i) {
+          if ($rootScope.auction_doc.results[i].dutch_winner === true) {
+              results_dutch_index = i;
+              break;
+          }
+      }
+      for (var i = 0; i < $rootScope.auction_doc.stages.length; ++i) {
+          if ($rootScope.auction_doc.stages[i].sealedbid_winner === true) {
+              last_sealedbid_index = i;
+              break;
+          }
+      }
       $rootScope.dutch_winner = $rootScope.auction_doc.stages[last_dutch_index];
       $rootScope.results_dutch_winner = $rootScope.auction_doc.results[results_dutch_index];
       $rootScope.sealedbid_winner = $rootScope.auction_doc.stages[last_sealedbid_index];
