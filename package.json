@@ -1,6 +1,6 @@
 {
-  "name": "auction",
-  "version": "1.0.2a1",
+  "name": "openprocurement.auction.insider-js",
+  "version": "1.0.4a1",
   "description": "Angular frontend for Openprocurement Auction",
   "directories": {
     "test": "tests"
