@@ -1,8 +1,9 @@
 {
-  "styles": ["src/lib/angular-growl-2/build/angular-growl.min.css",
-             "src/assets/css/starter-template.css"],
-  "fonts": "src/assets/fonts/*",
-  "packages":[
+  "styles": [
+    "node_modules/angular-growl-v2/build/angular-growl.css",
+    "src/assets/css/starter-template.css"
+  ],
+  "packages": [
     "node_modules/event-source-polyfill/eventsource.min.js",
     "node_modules/jquery/dist/jquery.min.js",
     "node_modules/angular/angular.min.js",
@@ -25,21 +26,47 @@
     "node_modules/mathjs/dist/math.min.js",
     "node_modules/ua-parser-js/dist/ua-parser.min.js"
   ],
-  "html": [
-    {"name": "tender",  "scripts": ["/dutch/static/vendor.js", "/dutch/static/auction_app_dutch.js"], "title": "Auction Software", "controller": "AuctionController"}
+  "auctionApp": ["./src/app/auction.js",
+    "./src/app/filters/*.js",
+    "./src/app/translations.js",
+    "./src/app/config.js",
+    "./src/app/factories/*.js",
+    "./src/app/controllers/AuctionCtl.js",
+    "./src/app/controllers/OffCanvasCtl.js",
+    "./src/app/directives/*.js"
   ],
-  "js": {
-    "listApp": "src/app/index_app_dutch.js",
-    "archiveApp": "src/app/archive_app_dutch.js",
-    "auctionApp": "src/app/auction_app_dutch.js"
-  },
+  "appUtils": ["./src/app/auction.js",
+    "./src/app/filters/*.js",
+    "./src/app/translations.js",
+    "./src/app/config.js",
+    "./src/app/factories/*.js",
+    "./src/app/controllers/AuctionCtl.js",
+    "./src/app/controllers/OffCanvasCtl.js",
+    "./src/app/directives/*.js"
+  ],
+  "fonts": "src/assets/fonts/*",
+  "html": [{
+      "name": "insider",
+      "scripts": [
+        "/static/vendor.js",
+        "/static/insider.js"
+      ],
+      "styles": [
+        "/static/css/insider.css"
+      ],
+      "title": "Auction Software",
+      "controller": "AuctionController"
+    }
+  ],
   "img": {
     "png": "src/assets/img/img/*.png",
     "icons": "src/assets/img/*.png"
   },
-  "outDir": "/home/yarsanich/auctions/no-static/openprocurement.auction.buildout/parts/dutch/",
-
+  "outDir": "/data/gvizdyk/zoo/op.auctions/dutch-buildout/parts/",
   "buildDir": "build",
-  "dbUrl": "http://localhost:9000/auctions",
-  "auctions_server":  "http://localhost:9001"
+  "app_name": "insider.js",
+  "main_css": "insider.css",
+  "db_name": "database",
+  "name": "insider",
+  "devel": "1"
 }

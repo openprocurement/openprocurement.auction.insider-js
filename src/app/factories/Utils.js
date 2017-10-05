@@ -77,7 +77,7 @@ angular.module('auction').factory('AuctionUtils', [
           'msg': 'until the round starts'
         };
       }
-      if ((auction.stages[auction.current_stage].type.startsWith('dutch'))) {
+      if ((auction.stages[auction.current_stage].type.substring(0,5) == ('dutch'))) {
         return {
           'countdown': ((new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000) + Math.random(),
           'start_time': false,
@@ -134,10 +134,12 @@ angular.module('auction').factory('AuctionUtils', [
       }
       if (auction.current_phase == 'pre-sealedbid'){
         var until_seconds = (new Date(auction.stages[auction.current_stage + 1].start) - current_time) / 1000;
-        var last_dutch_index = auction.stages.findIndex(function(stage) {
-          return (stage.dutch_winner || "") === true;
-        });
-        console.log(last_dutch_index);
+        for (var i = 0; i < auction.stages.length; ++i) {
+            if (auction.stages[i].dutch_winner === true) {
+                var last_dutch_index = i;
+                break;
+            }
+        }
         return {
           'countdown_seconds': until_seconds + Math.random(),
           'rounds_seconds': ((new Date(auction.stages[auction.current_stage + 1].start) - new Date(auction.stages[last_dutch_index].start)) / 1000),
@@ -152,7 +154,7 @@ angular.module('auction').factory('AuctionUtils', [
 
     // characters 100 true
     function prepare_title_ending_data(auction, lang) {
-      var ending = auction.tenderID + " - " + $filter('characters')((auction['title_' + lang] || auction['title'] || auction['title_en'] || auction['title_ru'] || ""), 50, true);
+      var ending = auction.auctionID + " - " + $filter('characters')((auction['title_' + lang] || auction['title'] || auction['title_en'] || auction['title_ru'] || ""), 50, true);
       ending += " - ";
       ending += $filter('characters')(auction.procuringEntity['name_' + lang] || auction.procuringEntity['name'] || auction.procuringEntity['name_en'] || auction.procuringEntity['name_ru'] || "", 50, true);
       return ending;
@@ -197,7 +199,7 @@ angular.module('auction').factory('AuctionUtils', [
         }
       } else {
         for (var i in Rounds) {
-          if (auction_doc.current_phase.startsWith('pre')) {
+          if (auction_doc.current_phase.substring(0,3) == ('pre')) {
             return {
               'type': 'pause',
               'data': ['', auction_doc.stages[auction_doc.current_stage + 1].type]
