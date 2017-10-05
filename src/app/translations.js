@@ -95,7 +95,8 @@ angular.module('auction').config(['$translateProvider',
       'Part': 'Part',
       'sealedbid': 'Sealed Bid',
       'bestbid': 'Best Bid',
-      'dutch_0': 'Dutch'
+      'dutch_0': 'Dutch',
+      'Bid value can\'t be less or equal current amount': 'Bid value can\'t be less or equal current amount'
     });
 
     $translateProvider.translations('uk', {
@@ -192,7 +193,8 @@ angular.module('auction').config(['$translateProvider',
       'Part': 'Етап',
       'sealedbid': 'Sealed Bid',
       'bestbid': 'Best Bid',
-      'dutch_0': 'Голландського'
+      'dutch_0': 'Голландського',
+      'Bid value can\'t be less or equal current amount': 'Значення пропозиції не може бути меншою чи рівною поточній сумі'
     });
 
     $translateProvider.translations('ru', {
@@ -287,7 +289,8 @@ angular.module('auction').config(['$translateProvider',
       'Part': 'Этап',
       'sealedbid': 'Sealed Bid',
       'bestbid': 'Best Bid',
-      'dutch_0': 'Голландского'
+      'dutch_0': 'Голландского',
+      'Bid value can\'t be less or equal current amount': 'Значение предложения не может быть меньше или равной текущей сумме'
     });
 
   }
