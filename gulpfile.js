@@ -12,7 +12,6 @@ const gulp = require('gulp'),
   uglify = require('gulp-uglify'),
   rename = require("gulp-rename"),
   fs = require("fs"),
-  yarn = require("gulp-yarn"),
   merge = require('merge-stream'),
   eslint = require('gulp-eslint'),
   less = require('gulp-less'),
@@ -45,7 +44,7 @@ const imgDir = `${staticRoot}/img/`;
 const cssDir = `${staticRoot}/css/`;
 const packageName = 'openprocurement.auction.insider-js';
 const tmpDir = '/tmp/insider';
-const buildDeps = ['yarn', 'all-js', 'less', 'css', 'png-images', 'icons', 'htmlPages', 'auctionApp', 'fonts'];
+const buildDeps = ['all-js', 'less', 'css', 'png-images', 'icons', 'htmlPages', 'auctionApp', 'fonts'];
 
 
 gulp.task('fonts', () => {
@@ -69,13 +68,6 @@ gulp.task('icons', () => {
   return gulp.src(config.img.icons)
     .on('error', interceptErrors)
     .pipe(gulp.dest(dest));
-});
-
-
-gulp.task('yarn', () => {
-  return gulp.src(['./package.json'])
-    .pipe(yarn())
-    .on('error', util.log);
 });
 
 
@@ -167,20 +159,24 @@ gulp.task('clean', function () {
 });
 
 
+gulp.task('bundle', buildDeps);
+
+
+gulp.task('copyToDest', () => {
+  return gulp.src([`${config.buildDir}/**/*`])
+    .on("error", interceptErrors)
+    .pipe(gulp.dest(config.outDir));
+});
+
+
 gulp.task('build', (done) => {
-  return sequence(buildDeps, 'copyToDest', () => {
+  return sequence('bundle', 'copyToDest', () => {
     done();
   });
 });
 
 
-gulp.task('copyToDest', ['build'], () => {
-  return gulp.src(`${config.buildDir}/**/*`)
-    .pipe(gulp.dest(config.outDir));
-});
-
-
-gulp.task('default', ['clean', 'build']);
+gulp.task('default', ['build']);
 
 
 gulp.task('test', function (done) {
