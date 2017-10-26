@@ -75,6 +75,9 @@ gulp.task('all-js', () => {
   let dest = path.join(config.buildDir, staticRoot);
   return gulp.src(config.packages)
     .pipe(concat('vendor.js'))
+    .pipe(devel ? util.noop() : uglify({
+      mangle: false
+    }))
     .pipe(gulp.dest(dest))
     .on('error', util.log);
 });
