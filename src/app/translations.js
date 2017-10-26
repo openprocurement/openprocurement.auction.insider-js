@@ -96,7 +96,9 @@ angular.module('auction').config(['$translateProvider',
       'sealedbid': 'Sealed Bid',
       'bestbid': 'Best Bid',
       'dutch_0': 'Dutch',
-      'Bid value can\'t be less or equal current amount': 'Bid value can\'t be less or equal current amount'
+      'Bid value can\'t be less or equal current amount': 'Bid value can\'t be less or equal current amount',
+      'Please wait for the bestbid part to place a bid.': 'Please wait for the bestbid part to place a bid.',
+      'You are not allowed to place bids during the bestbid part.': 'You are not allowed to place bids during the bestbid part.'
     });
 
     $translateProvider.translations('uk', {
@@ -194,7 +196,9 @@ angular.module('auction').config(['$translateProvider',
       'sealedbid': 'Sealed Bid',
       'bestbid': 'Best Bid',
       'dutch_0': 'Голландського',
-      'Bid value can\'t be less or equal current amount': 'Значення пропозиції не може бути меншою чи рівною поточній сумі'
+      'Bid value can\'t be less or equal current amount': 'Значення пропозиції не може бути меншою чи рівною поточній сумі',
+      'Please wait for the bestbid part to place a bid.': 'Щоб подати ставку, будь ласка, дочекайтесь етапу подання відкритих цінових пропозицій.',
+      'You are not allowed to place bids during the bestbid part.': 'Ви не маєте змоги робити ставки на етапі подання відкритих цінових пропозицій.'
     });
 
     $translateProvider.translations('ru', {
@@ -290,7 +294,9 @@ angular.module('auction').config(['$translateProvider',
       'sealedbid': 'Sealed Bid',
       'bestbid': 'Best Bid',
       'dutch_0': 'Голландского',
-      'Bid value can\'t be less or equal current amount': 'Значение предложения не может быть меньше или равной текущей сумме'
+      'Bid value can\'t be less or equal current amount': 'Значение предложения не может быть меньше или равной текущей сумме',
+      'Please wait for the bestbid part to place a bid.': 'Чтобы сделать ставку, пожалуйста, дождитесь этапа открытых ценовых предложений.',
+      'You are not allowed to place bids during the bestbid part.': 'Вы не имеете возможности делать ставки на этапе открытых ценовых предложений.'
     });
 
   }

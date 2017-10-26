@@ -286,6 +286,9 @@ angular.module('auction').controller('AuctionController',[
             }, 1000);
           }
         }
+        if ($rootScope.msg_sealedbid) {
+          $rootScope.msg_sealedbid.destroy();
+        }
         $rootScope.start_sync_event.resolve('start');
         $rootScope.evtSrc.close();
       }, false);
@@ -340,13 +343,6 @@ angular.module('auction').controller('AuctionController',[
 
     $rootScope.show_bids_form = function(argument) {
       if ((angular.isNumber($rootScope.auction_doc.current_stage)) && ($rootScope.auction_doc.current_stage >= 0)) {
-        var last_dutch_index;
-        for (var i = 0; i < $rootScope.auction_doc.stages.length; ++i) {
-            if ($rootScope.auction_doc.stages[i].dutch_winner === true) {
-                last_dutch_index = i;
-                break;
-            }
-        }
         if (($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].type.substring(0,5) === 'dutch') && $rootScope.bidder_id) {
           $log.info({
             message: "Allow view bid form dutch"
@@ -354,7 +350,7 @@ angular.module('auction').controller('AuctionController',[
           $rootScope.view_bids_form = true;
           return $rootScope.view_bids_form;
         }
-        if ($rootScope.bidder_id && ($rootScope.auction_doc.current_phase === 'sealedbid') && ($rootScope.auction_doc.stages[last_dutch_index].bidder_id != $rootScope.bidder_id)) {
+        if ($rootScope.bidder_id && ($rootScope.auction_doc.current_phase === 'sealedbid') && ($rootScope.auction_doc.stages[$rootScope.last_dutch_index()].bidder_id != $rootScope.bidder_id)) {
           $log.info({
             message: "Allow view bid form sealedbid"
           });
@@ -362,8 +358,20 @@ angular.module('auction').controller('AuctionController',[
           $rootScope.view_bids_form = true;
           return $rootScope.view_bids_form;
         }
-
-        if (($rootScope.auction_doc.current_phase === 'bestbid') && ($rootScope.auction_doc.stages[last_dutch_index].bidder_id === $rootScope.bidder_id)) {
+        if (($rootScope.auction_doc.current_phase === 'sealedbid') && ($rootScope.auction_doc.stages[$rootScope.last_dutch_index()].bidder_id === $rootScope.bidder_id)) {
+          $rootScope.msg_dutch_winner = growl.info('Please wait for the bestbid part to place a bid.', {
+            ttl: -1
+          });
+        }
+        if (($rootScope.auction_doc.current_phase !== 'sealedbid') && $rootScope.msg_dutch_winner) {
+          $rootScope.msg_dutch_winner.destroy();
+        }
+        if (($rootScope.auction_doc.current_phase === 'bestbid') && ($rootScope.auction_doc.current_stage === ($rootScope.auction_doc.stages.length - 2)) && ($rootScope.auction_doc.stages[$rootScope.last_sealedbid_index()].bidder_id === $rootScope.bidder_id)) {
+          $rootScope.msg_sealedbid = growl.info('You are not allowed to place bids during the bestbid part.', {
+            ttl: -1
+          });
+        }
+        if (($rootScope.auction_doc.current_phase === 'bestbid') && ($rootScope.auction_doc.stages[$rootScope.last_dutch_index()].bidder_id === $rootScope.bidder_id)) {
           $log.info({
             message: "Allow view bid form bestbid"
           });
@@ -871,32 +879,31 @@ angular.module('auction').controller('AuctionController',[
         }).replace(/(\d)(?=(\d{3})+\.)/g, '$1 ').replace(/\./g, ","));
       }
     };
-
+    $rootScope.last_dutch_index = function() {
+      for (var i = 0; i < $rootScope.auction_doc.stages.length; ++i) {
+        if ($rootScope.auction_doc.stages[i].dutch_winner === true) {
+          return i;
+        }
+      }
+    }
+    $rootScope.last_sealedbid_index = function() {
+      for (var i = 0; i < $rootScope.auction_doc.stages.length; ++i) {
+        if ($rootScope.auction_doc.stages[i].sealedbid_winner === true) {
+          return i;
+        }
+      }
+    }
     $rootScope.winners_bid_info = function() {
-      var last_dutch_index,
-        results_dutch_index,
-        last_sealedbid_index;
-      for (var i = 0; i < $rootScope.auction_doc.stages.length; ++i) {
-          if ($rootScope.auction_doc.stages[i].dutch_winner === true) {
-              last_dutch_index = i;
-              break;
-          }
-      }
+      var results_dutch_index;
       for (var i = 0; i < $rootScope.auction_doc.results.length; ++i) {
-          if ($rootScope.auction_doc.results[i].dutch_winner === true) {
-              results_dutch_index = i;
-              break;
-          }
+        if ($rootScope.auction_doc.results[i].dutch_winner === true) {
+          results_dutch_index = i;
+          break;
+        }
       }
-      for (var i = 0; i < $rootScope.auction_doc.stages.length; ++i) {
-          if ($rootScope.auction_doc.stages[i].sealedbid_winner === true) {
-              last_sealedbid_index = i;
-              break;
-          }
-      }
-      $rootScope.dutch_winner = $rootScope.auction_doc.stages[last_dutch_index];
+      $rootScope.dutch_winner = $rootScope.auction_doc.stages[$rootScope.last_dutch_index()];
       $rootScope.results_dutch_winner = $rootScope.auction_doc.results[results_dutch_index];
-      $rootScope.sealedbid_winner = $rootScope.auction_doc.stages[last_sealedbid_index];
+      $rootScope.sealedbid_winner = $rootScope.auction_doc.stages[$rootScope.last_sealedbid_index()];
       $rootScope.max_bid_announce = Math.max.apply(Math,$rootScope.auction_doc.results.map(function(item){return item.amount;}));
       $rootScope.announcement_results = function() {
         if (['pre-bestbid','bestbid','announcement'].indexOf($rootScope.auction_doc.current_phase) !== -1){
