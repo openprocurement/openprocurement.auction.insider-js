@@ -238,8 +238,7 @@
                  ng-repeat="bid_info in announcement_results()">
               <div class="stage-item"
                    ng-class="{'sealedbid-winner': bid_info.bidder_id === sealedbid_winner.bidder_id,
-                              'dutch-winner': bid_info.dutch_winner === true}"
-                   ng-if="bid_info.dutch_winner === true || bid_info.bidder_id === sealedbid_winner.bidder_id">
+                              'dutch-winner': bid_info.dutch_winner === true}">
                 <div class="stage-item-lining">
                   <i class="stage-icon"></i>
                   <div class="stage-info">
