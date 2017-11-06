@@ -238,8 +238,7 @@
                  ng-repeat="bid_info in announcement_results()">
               <div class="stage-item"
                    ng-class="{'sealedbid-winner': bid_info.bidder_id === sealedbid_winner.bidder_id,
-                              'dutch-winner': bid_info.dutch_winner === true}"
-                   ng-if="bid_info.dutch_winner === true || bid_info.bidder_id === sealedbid_winner.bidder_id">
+                              'dutch-winner': bid_info.dutch_winner === true}">
                 <div class="stage-item-lining">
                   <i class="stage-icon"></i>
                   <div class="stage-info">
@@ -416,7 +415,7 @@
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true" ng-click="growlMessages.deleteMessage(message)" ng-show="!message.disableCloseButton">&times;</button>
       <button type="button" class="close" aria-hidden="true" ng-show="showCountDown(message)">{{message.countdown}}</button>
       <h4 class="growl-title" ng-show="message.title" ng-bind="message.title"></h4>
-      <div class="growl-message"><span ngh-replace id="dir" content="message.text"></span></div>
+      <div class="growl-message"><span ngh-replace id="dir" content="message.text.toString()"></span></div>
     </div>
   </div>
 </script>
