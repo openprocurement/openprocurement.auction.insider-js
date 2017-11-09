@@ -230,7 +230,10 @@ angular.module('auction').factory('AuctionUtils', [
     // Scroll functionality
     function scroll_to_stage(auction_doc, Rounds) {
       $timeout(function() {
-        var current_round = 0;
+        var current_round = 0,
+          scroll_tag_id,
+          round_elem,
+          round_elem_dimensions;
         for (var index in Rounds) {
           if ((auction_doc.current_stage >= Rounds[index]) && (auction_doc.current_stage <= Rounds[index])) {
             current_round = parseInt(index) + 1;
@@ -238,21 +241,24 @@ angular.module('auction').factory('AuctionUtils', [
           }
         }
         if (auction_doc.current_stage >= 0) {
-          if (current_round) {
-            var scroll_tag_id = 'round-header-' + current_round.toString();
-            var round_elem = document.getElementById(scroll_tag_id);
+          if (current_round && (auction_doc.current_phase === 'dutch')) {
+            scroll_tag_id = 'round-header-dutch';
+            round_elem = document.getElementById(scroll_tag_id);
+          } else if (current_round && (auction_doc.current_phase !== 'dutch')) {
+            scroll_tag_id = 'round-header-' + current_round.toString();
+            round_elem = document.getElementById(scroll_tag_id);
           } else {
-            var scroll_tag_id = 'results-header';
-            var round_elem = document.getElementById(scroll_tag_id);
+            scroll_tag_id = 'results-header';
+            round_elem = document.getElementById(scroll_tag_id);
           }
         }
         if (round_elem) {
-          var round_elem_dimensions = round_elem.getBoundingClientRect();
+          round_elem_dimensions = round_elem.parentElement.getBoundingClientRect();
           if (($window.innerHeight - 169) < round_elem_dimensions.height) {
             if (current_round) {
-              var scroll_tag_id = 'stage-' + auction_doc.current_stage.toString();
+              scroll_tag_id = 'stage-' + auction_doc.current_stage.toString();
             } else {
-              var scroll_tag_id = 'results-header';
+              scroll_tag_id = 'results-header';
             }
             var stage_elem = document.getElementById(scroll_tag_id);
             if (stage_elem){
@@ -262,7 +268,7 @@ angular.module('auction').factory('AuctionUtils', [
             }
           } else {
             round_elem.scrollIntoView(true);
-            var round_elem_dimensions = document.getElementById(scroll_tag_id).getBoundingClientRect();
+            round_elem_dimensions = document.getElementById(scroll_tag_id).getBoundingClientRect();
             $window.scrollBy(0, round_elem_dimensions.top - 96);
           }
         }
