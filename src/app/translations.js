@@ -99,7 +99,8 @@ angular.module('auction').config(['$translateProvider',
       'Bid value can\'t be less or equal current amount': 'Bid value can\'t be less or equal current amount',
       'Please wait for the bestbid part to place a bid.': 'Please wait for the bestbid part to place a bid.',
       'You are not allowed to place bids during the bestbid part.': 'You are not allowed to place bids during the bestbid part.',
-      'Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).': 'Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).'
+      'Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).': 'Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).',
+      'Please use the correct link to view the auction.': 'Please use the correct link to view the auction.'
     });
 
     $translateProvider.translations('uk', {
@@ -200,7 +201,8 @@ angular.module('auction').config(['$translateProvider',
       'Bid value can\'t be less or equal current amount': 'Значення пропозиції не може бути меншою чи рівною поточній сумі',
       'Please wait for the bestbid part to place a bid.': 'Щоб подати ставку, будь ласка, дочекайтесь етапу подання відкритих цінових пропозицій.',
       'You are not allowed to place bids during the bestbid part.': 'Ви не маєте змоги робити ставки на етапі подання відкритих цінових пропозицій.',
-      'Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).': 'Ваша заявка повинна перевищувати заявку переможця попередньої стадії як мінімум на 1 крок (1% від початкової вартості).'
+      'Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).': 'Ваша заявка повинна перевищувати заявку переможця попередньої стадії як мінімум на 1 крок (1% від початкової вартості).',
+      'Please use the correct link to view the auction.': 'Будь ласка, використовуйте правильне посилання для перегляду аукціону.'
     });
 
     $translateProvider.translations('ru', {
@@ -299,7 +301,8 @@ angular.module('auction').config(['$translateProvider',
       'Bid value can\'t be less or equal current amount': 'Значение предложения не может быть меньше или равной текущей сумме',
       'Please wait for the bestbid part to place a bid.': 'Чтобы сделать ставку, пожалуйста, дождитесь этапа открытых ценовых предложений.',
       'You are not allowed to place bids during the bestbid part.': 'Вы не имеете возможности делать ставки на этапе открытых ценовых предложений.',
-      'Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).': 'Ваша ставка должна превышать ставку победителя предыдущего этапа как минимум на 1 шаг (1% от изначальной стоимости).'
+      'Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).': 'Ваша ставка должна превышать ставку победителя предыдущего этапа как минимум на 1 шаг (1% от изначальной стоимости).',
+      'Please use the correct link to view the auction.': 'Пожалуйста, используйте правильную ссылку для просмотра аукциона.'
     });
 
   }

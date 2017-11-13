@@ -704,6 +704,14 @@ angular.module('auction').controller('AuctionController',[
           return;
         }
 
+      if (doc.procurementMethodType !== 'dgfInsider') {
+        $log.error({
+          message: 'Please use the correct link to view the auction.'
+        });
+        $rootScope.document_not_found = true;
+        var msg_correct_link = $filter('translate')('Please use the correct link to view the auction.');
+        document.body.insertAdjacentHTML('afterbegin', '<div class="container alert alert-danger" role="alert">' + msg_correct_link + '</div>');
+      } else {
         $rootScope.http_error_timeout = $rootScope.default_http_error_timeout;
         var params = AuctionUtils.parseQueryString(location.search);
         $rootScope.start_sync_event = $q.defer();
@@ -775,6 +783,7 @@ angular.module('auction').controller('AuctionController',[
             message: 'Auction ends already'
           });
         }
+      }
       });
     };
 
