@@ -526,7 +526,6 @@ angular.module('auction').controller('AuctionController',[
             msg_id = Math.random();
             if (bid == -1) {
               $rootScope.alerts = [];
-              $rootScope.allow_bidding = true;
               $log.info({
                 message: "Handle cancel bid response on post bid"
               });
@@ -535,6 +534,8 @@ angular.module('auction').controller('AuctionController',[
                 type: 'success',
                 msg: 'Bid canceled'
               });
+              window.localStorage.clear();
+              $rootScope.allow_bidding = true;
               $rootScope.form.bid = "";
               $rootScope.form.bid_temp = '';
             } else {
