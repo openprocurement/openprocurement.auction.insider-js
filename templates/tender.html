@@ -69,7 +69,7 @@
              ng-if="get_round_number(auction_doc.current_stage).type == 'step'">
           <p class="round-label" translate>Step</p>
           <span class="round-number">
-            {{get_round_number(auction_doc.current_stage).data[0]}} &#8594; {{get_round_number(auction_doc.current_stage).data[1]}}
+            {{get_round_number(auction_doc.current_stage).data[0]}}
           </span>
         </div>
 
@@ -357,56 +357,50 @@
       </div>
     </div>
 
-    <div ng-show="view_bids_form" class="panel panel-default bg-warning fixed-bottom" ng-class="{'auction-with-one-price': (auction_doc.auction_type||'default') == 'default'}">
+    <div ng-show="view_bids_form" class="bids-form panel panel-default bg-warning fixed-bottom" ng-class="{'auction-with-one-price': (auction_doc.auction_type||'default') == 'default'}">
       <div class="panel-body bg-warning">
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="container">
-              <alert ng-repeat="alert in alerts" type="{{alert.type}}" class="bids-form-alert" close="closeAlert(alert.msg_id)"><span class="bids-form-alert-msg">{{ alert.msg | translate }}</span></alert>
-              <div ng-if="['bestbid'].indexOf(auction_doc.current_phase) !== -1"
-                   class="alert alert-danger"
-                   role="alert"
-                   translate>
-                Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).
-              </div>
-              <form id="BidsForm" name="form.BidsForm" role="form" ng-class="{'text-center': auction_doc.stages[auction_doc.current_stage].type.substring(0,5) === 'dutch'}">
-                <label for="bid"><span translate>Your proposal</span>:</label>
-                <div class="input-group main-price-block">
-                  <!-- Start Dutch Bid -->
-                  <div ng-if="auction_doc.stages[auction_doc.current_stage].type.substring(0,5) === 'dutch'">
-                    <div class="lead">
-                      <strong>
-                        {{ auction_doc.stages[auction_doc.current_stage].amount|formatnumber }}
-                        {{ auction_doc.value.currency|translate }}
-                      </strong>
-                    </div>
-                    <button id="place-bid-button"
-                            type="submit"
-                            class="btn btn-success btn-lg btn-block"
-                            ng-if="allow_bidding"
-                            ng-click="post_bid()"
-                            ng-class="{'active': form.active}" translate>
-                      Place a bid
-                    </button>
-                  </div>
-                  <!-- End Dutch Bid -->
-                  <!-- Start Seale Bid -->
-                  <div class="full-price-group col-md-8 col-sm-8" ng-if="['bestbid', 'sealedbid'].indexOf(auction_doc.current_phase) !== -1">
-                    <input id="bid-amount-input" ng-disabled="!allow_bidding" min="0" ng-focus="$root.form.bid_temp = $root.form.bid" ng-blur="set_bid_from_temp()" ng-change="calculate_bid_temp()" class="form-control" id="bid" name="bid" ng-model="$root.form.bid" required format>
-                  </div>
-                  <!-- End Seale Bid -->
-                  <!-- Start Submit For Form -->
-                  <div class="input-group-btn col-md-4 col-sm-4 pull-right" ng-if="auction_doc.stages[auction_doc.current_stage].type.substring(0,5) != 'dutch'">
-                    <button id="place-bid-button" type="submit" ng-if="allow_bidding" ng-click="post_bid()" class="btn btn-success" ng-class="{'active': form.active}" translate>Place a bid</button>
-                    <button id="edit-bid-button" type="submit" ng-if="!allow_bidding" ng-click="edit_bid()" class="btn btn-link" translate>Edit</button>
-                    <button id="cancel-bid-button" type="submit" ng-if="!allow_bidding" ng-click="post_bid(-1)" class="btn btn-danger" ng-class="{'active': form.active}" translate>Cancel Bid</button>
-                    <button id="clear-bid-button" type="submit" ng-if="allow_bidding" ng-click="($root.form.bid_temp = null);($root.form.bid = null)" class="btn btn-primary" translate>Clear</button>
-                  </div>
-                  <!-- End Submit For Form -->
-                </div>
-              </form>
-            </div>
+        <div class="container">
+          <alert ng-repeat="alert in alerts" type="{{alert.type}}" class="bids-form-alert" close="closeAlert(alert.msg_id)"><span class="bids-form-alert-msg">{{ alert.msg | translate }}</span></alert>
+          <div ng-if="['bestbid'].indexOf(auction_doc.current_phase) !== -1"
+               class="alert alert-danger"
+               role="alert"
+               translate>
+            Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).
           </div>
+          <form id="BidsForm" class="row" name="form.BidsForm" role="form" ng-class="{'text-center': auction_doc.stages[auction_doc.current_stage].type.substring(0,5) === 'dutch'}">
+            <label class="col-md-12 col-sm-12 col-xs-12" for="bid"><span translate>Your proposal</span>:</label>
+            <!-- Start Dutch Bid -->
+            <div class="col-md-12 col-sm-12 col-xs-12" ng-if="auction_doc.stages[auction_doc.current_stage].type.substring(0,5) === 'dutch'">
+              <div class="lead">
+                <strong>
+                  {{ auction_doc.stages[auction_doc.current_stage].amount|formatnumber }}
+                  {{ auction_doc.value.currency|translate }}
+                </strong>
+              </div>
+              <button id="place-bid-button"
+                      type="submit"
+                      class="btn btn-success btn-lg btn-block"
+                      ng-if="allow_bidding"
+                      ng-click="post_bid()"
+                      ng-class="{'active': form.active}" translate>
+                Place a bid
+              </button>
+            </div>
+            <!-- End Dutch Bid -->
+            <!-- Start Seale Bid -->
+            <div class="col-md-8 col-sm-8 col-xs-12" ng-if="['bestbid', 'sealedbid'].indexOf(auction_doc.current_phase) !== -1">
+              <input id="bid-amount-input" ng-disabled="!allow_bidding" min="0" ng-focus="$root.form.bid_temp = $root.form.bid" ng-blur="set_bid_from_temp()" ng-change="calculate_bid_temp()" class="form-control" id="bid" name="bid" ng-model="$root.form.bid" required format>
+            </div>
+            <!-- End Seale Bid -->
+            <!-- Start Submit For Form -->
+            <div class="col-md-4 col-sm-4 col-xs-12 text-right" ng-if="auction_doc.stages[auction_doc.current_stage].type.substring(0,5) != 'dutch'">
+              <button id="place-bid-button" type="submit" ng-if="allow_bidding" ng-click="post_bid()" class="btn btn-success" ng-class="{'active': form.active}" translate>Place a bid</button>
+              <button id="edit-bid-button" type="submit" ng-if="!allow_bidding" ng-click="edit_bid()" class="btn btn-link" translate>Edit</button>
+              <button id="cancel-bid-button" type="submit" ng-if="!allow_bidding" ng-click="post_bid(-1)" class="btn btn-danger" ng-class="{'active': form.active}" translate>Cancel Bid</button>
+              <button id="clear-bid-button" type="submit" ng-if="allow_bidding" ng-click="($root.form.bid_temp = null);($root.form.bid = null)" class="btn btn-primary" translate>Clear</button>
+            </div>
+            <!-- End Submit For Form -->
+          </form>
         </div>
       </div>
     </div>
