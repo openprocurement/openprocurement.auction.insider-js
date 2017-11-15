@@ -12,11 +12,23 @@ body {
       padding-bottom: 196px;
     }
 }
-.col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4,
-.col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8,
-.col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
-    padding-right: 0;
-    padding-left: 0;
+@media (min-width: 992px) {
+    .container {
+        width: 926px;
+    }
+}
+@media (min-width: 1200px) {
+    .container {
+        width: 926px;
+    }
+}
+@media (max-width: @screen-sm-max) {
+    .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4,
+    .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8,
+    .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
+        padding-right: 0;
+        padding-left: 0;
+    }
 }
 
 /*----- Header -----*/
@@ -112,7 +124,6 @@ body {
     border-bottom: 1px solid @gray-color;
   }
 }
-
 .stage-item {
   border-color: @gray-color;
   border-style: solid;
@@ -270,7 +281,6 @@ body {
 }
 
 /*----- Fixed bottom -----*/
-
 .fixed-bottom {
     bottom: 0;
     left: 0;
@@ -278,9 +288,6 @@ body {
     position: fixed;
     width: 100%;
     border-radius: 0;
-}
-.fixed-bottom .panel-body {
-    padding: 15px 15px 20px;
 }
 .full-price-group input,
 .normalized-price-group input {
@@ -290,19 +297,6 @@ body {
     float: left;
     width: 100%;
     padding-bottom: 2px;
-}
-.main-price-block {
-    display: block;
-    float: left;
-    width: 100%;
-}
-.main-price-block .input-group-btn {
-    width: 33.33333333%;
-    text-align: right;
-}
-.main-price-block .full-price-group span,
-.main-price-block .normalized-price-group span {
-    display: none;
 }
 .full-price-group > span:first-child,
 .normalized-price-group > span:first-child {
@@ -326,42 +320,14 @@ body {
     padding: 0px 0 6px;
     font: 14px "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
-#BidsForm label {
-    font-size: 18px;
-    font-weight: normal;
-}
-#edit-bid-button,
-#place-bid-button {
-    margin-right: 15px;
-}
 .btn {
     border-radius: 0;
-}
-.auction-with-one-price .input-group-btn {
-    padding-top: 0;
 }
 
 /*Mobile view */
 @media (max-width: 768px) {
-    .fixed-bottom .container {
-        padding-right: 5px;
-        padding-left: 5px;
-    }
     .price-inform-block {
         display: none;
-    }
-    .main-price-block .full-price-group span,
-    .main-price-block .normalized-price-group span {
-        display: inline-block;
-    }
-    .main-price-block {
-        float: none;
-        display: table;
-    }
-    .main-price-block .input-group-btn {
-        float: none !important;
-        width: 1%;
-        text-align: center;
     }
     .normalized-price-group {
         padding-left: 0;
@@ -369,9 +335,6 @@ body {
     .bidder-coeficient-wrap {
         padding: 5px 0;
         clear: both;
-    }
-    .fixed-bottom .panel-body {
-        padding: 10px 15px 5px;
     }
     .round-information {
         width: auto;
@@ -385,40 +348,15 @@ body {
     #round_information_block {
         padding: 0 6px;
     }
-    .input-group-btn {
-        padding: 24px 0 10px;
-        display: table-cell;
-        vertical-align: top;
-    }
     .bidder-coeficient-wrap {
         text-align: left;
     }
-    .full-price-group .max_bid_amount, .normalized-price-group .max_bid_amount {
+    .full-price-group .max_bid_amount,
+    .normalized-price-group .max_bid_amount {
         display: inline-block;
     }
     .normalized-price-group .max_bid_amount {
         padding-left: 5px;
-    }
-    /*.normalized-price-group.not-allow-bidding {*/
-    /*  margin-top: 5px;*/
-    /*  }*/
-    #cancel-bid-button,
-    #place-bid-button,
-    #edit-bid-button,
-    #clear-bid-button {
-        border-radius: 0px;
-        white-space: normal;
-        float: left;
-        padding: 6px 12px;
-    }
-    #place-bid-button {
-        margin-right: 0;
-    }
-    #clear-bid-button {
-        margin-top: 30px;
-    }
-    #edit-bid-button {
-        margin-top: 5px;
     }
     .full-price-group span {
         padding-bottom: 2px;
@@ -429,37 +367,8 @@ body {
     .normalized-price-group span {
         float: left;
     }
-    .auction-with-one-price .input-group {
-        display: block;
-    }
-    .auction-with-one-price .input-group-btn {
-        padding-top: 15px;
-        clear: both;
-        display: block;
-        float: left;
-        width: 100%;
-    }
-    .auction-with-one-price #cancel-bid-button,
-    .auction-with-one-price #place-bid-button,
-    .auction-with-one-price #edit-bid-button,
-    .auction-with-one-price #clear-bid-button {
-        white-space: nowrap;
-        margin: 0 15px 0 0;
-    }
-    #edit-bid-button {
-        margin-top: 0;
-        width: 100%;
-        margin-bottom: 15px;
-    }
-    #cancel-bid-button {
-        margin-top: 35px;
-    }
-    .auction-with-one-price #edit-bid-button {
-        width: auto;
-    }
 }
 @media (max-width: 480px) {
-
     .full-price-group>span:first-child,
     .normalized-price-group>span:first-child,
     .full-price-group .max_bid_amount,
@@ -467,17 +376,8 @@ body {
         display: block;
         width: 100%;
     }
-    #edit-bid-button {
-        margin-top: 20px;
-    }
     .normalized-price-group .max_bid_amount {
         padding-left: 0;
-    }
-    .input-group-btn {
-        padding: 26px 0 10px;
-    }
-    #clear-bid-button {
-        margin-top: 70px;
     }
 }
 /*Desctop view */
@@ -494,7 +394,6 @@ body {
         display: block !important; /* fix bootstrap.min.css */
     }
     /*----- Stage -----*/
-
     .stage-icon-visual,
     .stage-icon-svg {
         height: 47px;
@@ -502,18 +401,6 @@ body {
     }
     .stage-info-item {
         height: 53px;
-    }
-}
-
-
-@media (min-width: 992px) {
-    .container {
-        width: 896px;
-    }
-}
-@media (min-width: 1200px) {
-    .container {
-        width: 896px;
     }
 }
 
@@ -572,7 +459,6 @@ body {
 
 @font-face {
     font-family: 'Glyphicons Halflings';
-
     src: url('../fonts/glyphicons-halflings-regular.eot');
     src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
@@ -588,7 +474,59 @@ body {
 .tooltip{
     z-index: 1020;
 }
-
 .header-auction.navbar-fixed-top {
     z-index:99;
+}
+
+// ***
+// * Bids form
+// ***
+.bids-form {
+    label {
+        font-size: 18px;
+        font-weight: normal;
+    }
+    .text-right {
+        @media (max-width: @screen-sm-max) {
+            text-align: left;
+        }
+        .btn {
+            margin: 0 0 5px 10px;
+            &:first-child {
+                margin: 0 0 5px;
+            }
+        }
+    }
+    .container {
+        @media (max-width: @screen-sm-max) {
+            padding-right: 4px;
+            padding-left: 4px;
+        }
+    }
+    .row {
+        @media (max-width: @screen-sm-max) {
+            margin-left: -4px;
+            margin-right: -4px;
+        }
+    }
+    .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9,
+    .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9,
+    .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9,
+    .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+        @media (max-width: @screen-sm-max) {
+            padding-left: 4px;
+            padding-right: 4px;
+        }
+    }
+    .panel-body {
+        padding: 15px 15px 20px;
+        @media (max-width: @screen-sm-max) {
+            padding: 15px 0 10px;
+        }
+    }
+    .form-control {
+        @media (max-width: @screen-sm-max) {
+            margin-bottom: 10px;
+        }
+    }
 }
