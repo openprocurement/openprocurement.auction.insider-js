@@ -380,7 +380,7 @@
       <div ng-show="view_bids_form" class="bids-form panel panel-default bg-warning fixed-bottom" ng-class="{'auction-with-one-price': (auction_doc.auction_type||'default') == 'default'}">
         <div class="panel-body bg-warning">
           <div class="container">
-            <alert ng-repeat="alert in alerts" type="{{alert.type}}" class="bids-form-alert" close="closeAlert(alert.msg_id)"><span class="bids-form-alert-msg">{{ alert.msg | translate }}</span></alert>
+            <div uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" ng-class="'alert-' + (alert.type || 'warning')" class="bids-form-alert" close="closeAlert(alert.msg_id)"><span class="bids-form-alert-msg">{{ alert.msg | translate }}</span></div>
             <div ng-if="['bestbid'].indexOf(auction_doc.current_phase) !== -1"
                  class="alert alert-danger"
                  role="alert"
