@@ -271,11 +271,10 @@
                         <span class="stage-info-item stage-amount"
                               ng-class="{'minimal-amount': ((bid_info.bidder_id == sealedbid_winner.bidder_id) &&
                                            ((sealedbid_winner.amount||false) >= results_dutch_winner.amount)
-                                         ) || ((bid_info.bidder_id == results_dutch_winner.bidder_id) &&
+                                         ) || ((bid_info.bidder_id == dutch_winner.bidder_id) &&
                                            ((sealedbid_winner.amount||false) < results_dutch_winner.amount)
-                                         ),'default-amount': ((bid_info.bidder_id == sealedbid_winner.bidder_id) &&
-                                           ((sealedbid_winner.amount||false) < results_dutch_winner.amount)
-                                         ) || ((bid_info.bidder_id == results_dutch_winner.bidder_id) &&
+                                         ), 'default-amount': !(bid_info.amount == max_bid_announce) || (
+                                           !(bid_info.bidder_id == sealedbid_winner.bidder_id) &&
                                            ((sealedbid_winner.amount||false) >= results_dutch_winner.amount))}">
                           <span class="label-price">
                             {{bid_info.amount|fraction}}
