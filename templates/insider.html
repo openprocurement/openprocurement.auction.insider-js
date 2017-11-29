@@ -375,12 +375,6 @@
         <div class="panel-body bg-warning">
           <div class="container">
             <div uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" ng-class="'alert-' + (alert.type || 'warning')" class="bids-form-alert" close="closeAlert(alert.msg_id)"><span class="bids-form-alert-msg">{{ alert.msg | translate }}</span></div>
-            <div ng-if="['bestbid'].indexOf(auction_doc.current_phase) !== -1"
-                 class="alert alert-danger"
-                 role="alert"
-                 translate>
-              The amount you suggest should not be less than the greatest bid made during the previous stage.
-            </div>
             <form id="BidsForm" class="row" name="form.BidsForm" role="form" ng-class="{'text-center': auction_doc.stages[auction_doc.current_stage].type.substring(0,5) === 'dutch'}">
               <label class="col-md-12 col-sm-12 col-xs-12" for="bid"><span translate>Your proposal</span>:</label>
               <!-- Start Dutch Bid -->
