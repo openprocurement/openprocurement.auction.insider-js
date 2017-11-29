@@ -7,7 +7,7 @@ angular.module('auction').filter('formatnumber', ['$filter', function($filter) {
       return math.format(Number(val), {
         notation: 'fixed',
         precision: 2
-      }).replace(/(\d)(?=(\d{3})+\.)/g, "$1'").replace(/\./g, ",");
+      }).replace(/(\d)(?=(\d{3})+\.)/g, "$1'").replace(/\./g, ".");
     };
     if (isInteger(val)) {
       return format_number(math.eval(math.format(math.fraction(val))).toFixed(2));
