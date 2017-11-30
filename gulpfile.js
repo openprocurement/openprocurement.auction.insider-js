@@ -7,6 +7,7 @@ const gulp = require('gulp'),
   uglify = require('gulp-uglify'),
   fs = require('fs'),
   less = require('gulp-less'),
+  eslint = require('gulp-eslint'),
   lessAutoprefix = require('less-plugin-autoprefix'),
   sourcemaps = require('gulp-sourcemaps'),
   render = require('gulp-nunjucks-render'),
@@ -47,6 +48,12 @@ gulp.task('js:tenders', () => {
     .pipe(gulp.dest(config.buildDir + '/static/js'));
 });
 
+gulp.task('js:lint', () => {
+  return gulp.src(config.modules.tenders.js)
+    .pipe(eslint())
+    .pipe(eslint.format());
+});
+
 gulp.task('css:all', () => {
   let autoprefix = new lessAutoprefix({ browsers: ['last 2 versions'] });
   return gulp.src(config.styles)
@@ -75,7 +82,7 @@ gulp.task('revision', ['base:all', 'js:vendor', 'js:tenders', 'css:all', 'html:a
     .pipe(revdel())
     .pipe(rev.manifest())
     .pipe(gulp.dest(config.buildDir));
-})
+});
 
 gulp.task('revreplace', ['revision'], function() {
   let manifest = gulp.src(config.buildDir + '/rev-manifest.json');
@@ -92,7 +99,7 @@ gulp.task('build', ['revreplace'], () => {
 gulp.task('build:buildout', ['clean', 'build'], () => {
   return gulp.src(config.outDir + '/**/*.*')
     .pipe(gulp.dest(config.buildout_outDir));
-})
+});
 
 gulp.task('default', ['build:buildout']);
 
