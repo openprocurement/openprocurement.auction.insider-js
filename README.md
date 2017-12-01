@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/openprocurement/openprocurement.auction.insider-js.svg?branch=master)](https://travis-ci.org/openprocurement/openprocurement.auction.insider-js)
-
+[![Build Status](https://travis-ci.org/openprocurement/openprocurement.auction.insider-js.svg?branch=master)](https://travis-ci.org/openprocurement/openprocurement.auction.insider-js) 
 [![Coverage Status](https://coveralls.io/repos/github/openprocurement/openprocurement.auction.insider-js/badge.svg?branch=master)](https://coveralls.io/github/openprocurement/openprocurement.auction.insider-js?branch=master)
 
 ## Openprocurement Insider Auction
