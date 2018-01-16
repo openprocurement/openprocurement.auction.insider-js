@@ -5,7 +5,7 @@ describe('auctionTest', function () {
   var controller, scope, AuctionUtils;
 
   beforeEach(inject(function(_$controller_, _$rootScope_, AuctionUtils){
-    scope = _$rootScope_.$new();
+    scope = _$rootScope_;
     controller = _$controller_('AuctionController', {$scope: scope, AuctionUtils: AuctionUtils});
   }));
 
@@ -54,19 +54,6 @@ describe('auctionTest', function () {
   //   expect(scope.max_bid_amount()).toBe(2);
 
   // });
-//$scope.calculate_minimal_bid_amount
-  it('should be Defined', function () {
-    expect(scope.calculate_minimal_bid_amount).toBeDefined();
-  });
-  // it('should find minimal bid', function () {
-  //   scope.auction_doc = {};
-  //   scope.auction_doc.stages = [];
-  //   scope.auction_doc.initial_bids = [{amount:1},{amount:2},{amount:3}];
-  //   scope.calculate_minimal_bid_amount();
-  //   expect(scope.minimal_bid).toBeDefined(1);
-  //   scope.auction_doc.initial_bids = [{amount:100000},{amount:200000},{amount:300000},{amount:200000},{amount:300000},{amount:300000},{amount:200000},{amount:300000}];
-  //   expect(scope.minimal_bid).toBeDefined(100000);
-  // });
 //$scope.start_sync
   it('should be Defined', function () {
     expect(scope.start_sync).toBeDefined();
@@ -108,6 +95,34 @@ describe('auctionTest', function () {
   it('should be Defined', function () {
     expect(scope.open_menu).toBeDefined();
   });
+
+  // $rootScope.show_bids_form
+  it('should be Defined', function() {
+    expect(scope.show_bids_form).toBeDefined();
+  });
+  it('should work correct minimal amount bid for sealedbid: helper text', function() {
+    scope.auction_doc = { current_stage: 12, current_phase: 'sealedbid', stages: [] };
+    scope.auction_doc.stages[12] = { type: 'sealedbid' };
+    scope.auction_doc.stages[3] = { bidder_id: 'id2' };
+    scope.dutch_winner = { amount: 100 };
+    scope.bidder_id = 'id1';
+    scope.last_dutch_index = function() { return 3 };
+    scope.show_bids_form();
+    expect(scope.minimal_bid_amount).toBe(100.01);
+  });
+  it('should work correct minimal amount bid for bestbid: helper text', function() {
+    scope.auction_doc = { current_stage: 12, current_phase: 'bestbid', stages: [], value: {} };
+    scope.auction_doc.stages[12] = { type: 'bestbid' };
+    scope.auction_doc.stages[3] = { bidder_id: 'id2' };
+    scope.auction_doc.value = { amount: 100 };
+    scope.dutch_winner = { amount: 100 };
+    scope.sealedbid_winner = { amount: 200 };
+    scope.bidder_id = 'id2';
+    scope.last_dutch_index = function() { return 3 };
+    scope.show_bids_form();
+    expect(scope.minimal_bid_amount).toBe(201);
+  });
+
 //$scope.calculate_bid_temp
   it('should be Defined', function () {
     expect(scope.calculate_bid_temp).toBeDefined();

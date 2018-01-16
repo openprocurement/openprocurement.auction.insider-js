@@ -341,7 +341,7 @@ angular.module('auction').controller('AuctionController',[
       return AuctionUtils.get_round_data(pause_index, $rootScope.auction_doc, $rootScope.Rounds());
     };
 
-    $rootScope.show_bids_form = function(argument) {
+    $rootScope.show_bids_form = function() {
       if ((angular.isNumber($rootScope.auction_doc.current_stage)) && ($rootScope.auction_doc.current_stage >= 0)) {
         if (($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].type.substring(0,5) === 'dutch') && $rootScope.bidder_id) {
           $log.info({
