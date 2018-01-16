@@ -354,6 +354,7 @@ angular.module('auction').controller('AuctionController',[
           $log.info({
             message: "Allow view bid form sealedbid"
           });
+          $rootScope.minimal_bid_amount = $rootScope.dutch_winner.amount + 0.01;
           $rootScope.max_bid_amount();
           $rootScope.view_bids_form = true;
           return $rootScope.view_bids_form;
@@ -375,6 +376,9 @@ angular.module('auction').controller('AuctionController',[
           $log.info({
             message: "Allow view bid form bestbid"
           });
+          var sealedbid_winner_amount = $rootScope.sealedbid_winner.amount;
+          var one_percent_value_amount = $rootScope.auction_doc.value.amount * 0.01;
+          $rootScope.minimal_bid_amount = sealedbid_winner_amount + one_percent_value_amount;
           $rootScope.max_bid_amount();
           $rootScope.view_bids_form = true;
           return $rootScope.view_bids_form;
@@ -609,31 +613,6 @@ angular.module('auction').controller('AuctionController',[
       return amount;
     };
 
-    $rootScope.calculate_minimal_bid_amount = function() {
-      if ((angular.isObject($rootScope.auction_doc)) && (angular.isArray($rootScope.auction_doc.stages)) && (angular.isArray($rootScope.auction_doc.initial_bids))) {
-        var bids = [];
-        var filter_func = function(item, index) {
-          if (!angular.isUndefined(item.amount)) {
-            bids.push(item);
-          }
-        };
-
-        $rootScope.auction_doc.stages.forEach(filter_func);
-        $rootScope.auction_doc.initial_bids.forEach(filter_func);
-        // $rootScope.minimal_bid = bids.sort(function(a, b) {
-        //   if ($rootScope.auction_doc.auction_type == 'meat') {
-        //     var diff = math.fraction(a.amount_features) - math.fraction(b.amount_features);
-        //   } else {
-        //     var diff = a.amount - b.amount;
-        //   }
-        //   if (diff == 0) {
-        //     return Date.parse(b.time || "") - Date.parse(a.time || "");
-        //   }
-        //   return diff;
-        // })[bids.length - 1];
-      }
-    };
-
     $rootScope.start_sync = function() {
       $rootScope.start_changes = new Date();
       $rootScope.changes = $rootScope.db.changes($rootScope.changes_options).on('change', function(resp) {
@@ -819,7 +798,6 @@ angular.module('auction').controller('AuctionController',[
       }
       $rootScope.sync_times_with_server();
       $rootScope.calculate_rounds();
-      // $rootScope.calculate_minimal_bid_amount();
       $rootScope.winners_bid_info();
       $rootScope.scroll_to_stage();
       $rootScope.show_bids_form();
