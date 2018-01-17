@@ -376,7 +376,10 @@
           <div class="container">
             <div uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" ng-class="'alert-' + (alert.type || 'warning')" class="bids-form-alert" close="closeAlert(alert.msg_id)"><span class="bids-form-alert-msg">{{ alert.msg | translate }}</span></div>
             <form id="BidsForm" class="row" name="form.BidsForm" role="form" ng-class="{'text-center': auction_doc.stages[auction_doc.current_stage].type.substring(0,5) === 'dutch'}">
-              <label class="col-md-12 col-sm-12 col-xs-12" for="bid"><span translate>Your proposal</span>:</label>
+              <label class="col-md-12 col-sm-12 col-xs-12" for="bid">
+                <span translate>Your proposal</span>:
+                <span class="text-small" ng-if="['bestbid', 'sealedbid'].indexOf(auction_doc.current_phase) !== -1">{{ minimal_bid_amount | fraction }} {{'or higher'|translate}}</span>
+              </label>
               <!-- Start Dutch Bid -->
               <div class="col-md-12 col-sm-12 col-xs-12" ng-if="auction_doc.stages[auction_doc.current_stage].type.substring(0,5) === 'dutch'">
                 <div class="lead">
