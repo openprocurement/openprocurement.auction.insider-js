@@ -29,9 +29,57 @@ describe('Unit: Testing AuctionUtils "stringifyQueryString" ', function() {
   }]));
 });
 
+// prepare_info_timer_data
+describe('Unit: Testing AuctionUtils "prepare_info_timer_data" ', function() {
+  it('should be Defined', angular.mock.inject(['AuctionUtils', function(AuctionUtils) {
+    expect(AuctionUtils.prepare_info_timer_data).toBeDefined();
+  }]));
+  it('should be defined auctions end date (same time zone)', angular.mock.inject(['AuctionUtils', function(AuctionUtils) {
+    var auction = {
+      endDate: '2018-02-07T10:04:30.647632+02:00',
+      current_stage: 12,
+      current_phase: 'announcement',
+      stages: []
+    };
+    auction.stages[12] = { type: 'announcement' };
+    expect(AuctionUtils.prepare_info_timer_data('', auction, '', '')).toEqual({
+      'countdown': false,
+      'start_time': new Date('2018-02-07T10:04:30.647632+02:00'),
+      'msg': 'Аuction was completed'
+    });
+  }]));
+  it('should be defined auctions end date (different time zone)', angular.mock.inject(['AuctionUtils', function(AuctionUtils) {
+    var auction = {
+      endDate: '2018-02-07T10:04:30.647632+00:00',
+      current_stage: 12,
+      current_phase: 'announcement',
+      stages: []
+    };
+    auction.stages[12] = { type: 'announcement' };
+    expect(AuctionUtils.prepare_info_timer_data('', auction, '', '')).toEqual({
+      'countdown': false,
+      'start_time': new Date('2018-02-07T12:04:30.647632+02:00'),
+      'msg': 'Аuction was completed'
+    });
+  }]));
+  it('should be defined auctions end date if not define *endDate* in the document', angular.mock.inject(['AuctionUtils', function(AuctionUtils) {
+    var auction = {
+      current_stage: 12,
+      current_phase: 'announcement',
+      stages: []
+    };
+    auction.stages[11] = { start: '2018-02-07T10:04:30.647632+02:00' };
+    auction.stages[12] = { type: 'announcement' };
+    expect(AuctionUtils.prepare_info_timer_data('', auction, '', '')).toEqual({
+      'countdown': false,
+      'start_time': new Date('2018-02-07T10:04:30.647632+02:00'),
+      'msg': 'Аuction was completed'
+    });
+  }]));
+});
+
 //prepare_title_ending_data
 describe('Unit: Testing AuctionUtils "prepare_title_ending_data" ', function() {
-
   it('should be Defined', angular.mock.inject(['AuctionUtils', function(AuctionUtils) {
     expect(AuctionUtils.prepare_title_ending_data).toBeDefined();
   }]));
@@ -103,7 +151,7 @@ describe('Unit: Testing AuctionUtils "detectIE" ', function() {
   it('should be Defined', angular.mock.inject(['AuctionUtils', function(AuctionUtils) {
     expect(AuctionUtils.detectIE).toBeDefined();
   }]));
-  
+
   it('should detect MSIE or Trident or Edge ', angular.mock.inject(['AuctionUtils', function(AuctionUtils) {
     var ua = window.navigator.userAgent;
     var regEx = /MSIE|Trident|Edge/;
