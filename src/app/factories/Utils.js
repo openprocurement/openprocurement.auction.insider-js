@@ -99,7 +99,12 @@ angular.module('auction').factory('AuctionUtils', [
       }
       if ((auction.stages[auction.current_stage].type || '') == "announcement") {
         var client_time = new Date();
-        var ends_time = new Date(auction.stages[auction.current_stage - 1].start);
+        var ends_time;
+        if(angular.isDefined(auction.endDate)){
+          ends_time = new Date(auction.endDate);
+        } else {
+          ends_time = new Date(auction.stages[auction.current_stage - 1].start);
+        }
         if (client_time < ends_time) {
           ends_time = client_time;
         }
