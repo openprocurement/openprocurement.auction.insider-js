@@ -29,6 +29,7 @@
   "scripts": {
     "develop": "npm install yarn --ignore-scripts && yarn --ignore-scripts",
     "build": "gulp",
+    "release": "chmod u+x release.sh && ./release.sh",
     "js:lint": "gulp js:lint",
     "js:test": "karma start"
   },
