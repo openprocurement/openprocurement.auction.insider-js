@@ -636,7 +636,7 @@ angular.module('auction').controller('AuctionController',[
         if ((($rootScope.end_changes - $rootScope.start_changes) > 40000)||($rootScope.force_heartbeat)) {
           $rootScope.force_heartbeat = true;
         } else {
-          $rootScope.changes_options['heartbeat'] = false;
+          $rootScope.changes_options.heartbeat = false;
           $log.info({
             message: "Change heartbeat to false (Use timeout)",
             heartbeat: false
@@ -896,14 +896,14 @@ angular.module('auction').controller('AuctionController',[
           return i;
         }
       }
-    }
+    };
     $rootScope.last_sealedbid_index = function() {
       for (var i = 0; i < $rootScope.auction_doc.stages.length; ++i) {
         if ($rootScope.auction_doc.stages[i].sealedbid_winner === true) {
           return i;
         }
       }
-    }
+    };
     $rootScope.winners_bid_info = function() {
       var results_dutch_index;
       for (var i = 0; i < $rootScope.auction_doc.results.length; ++i) {
