@@ -460,7 +460,7 @@ angular.module('auction').controller('AuctionController',[
           message: "Start post sealebid or bestbid",
           bid_data: bid_amount
         });
-        $rootScope.bid_id_input = document.getElementById("bid-amount-input");
+        $rootScope.bid_id_input = document.getElementById('bid-amount-input_' + $rootScope.bidder_id);
         window.localStorage.setItem($rootScope.bid_id_input.id, $rootScope.bid_id_input.value);
       }
 
@@ -538,7 +538,9 @@ angular.module('auction').controller('AuctionController',[
                 type: 'success',
                 msg: 'Bid canceled'
               });
-              window.localStorage.clear();
+              if (window.localStorage.getItem('bid-amount-input_' + $rootScope.bidder_id) !== null) {
+                window.localStorage.removeItem('bid-amount-input_' + $rootScope.bidder_id);
+              }
               $rootScope.allow_bidding = true;
               $rootScope.form.bid = "";
               $rootScope.form.bid_temp = '';
@@ -806,7 +808,9 @@ angular.module('auction').controller('AuctionController',[
         window.addEventListener('load', $rootScope.load_post_bid(), true);
       }
       if (['pre-started','pre-sealedbid','pre-bestbid'].indexOf($rootScope.auction_doc.current_phase) !== -1){
-        window.localStorage.clear();
+        if (window.localStorage.getItem('bid-amount-input_' + $rootScope.bidder_id) !== null) {
+          window.localStorage.removeItem('bid-amount-input_' + $rootScope.bidder_id);
+        }
       }
     };
 

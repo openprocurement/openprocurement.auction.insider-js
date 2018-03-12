@@ -400,7 +400,7 @@
               <!-- End Dutch Bid -->
               <!-- Start Seale Bid -->
               <div class="col-md-8 col-sm-8 col-xs-12" ng-if="['bestbid', 'sealedbid'].indexOf(auction_doc.current_phase) !== -1">
-                <input id="bid-amount-input" ng-disabled="!allow_bidding" min="0" ng-focus="$root.form.bid_temp = $root.form.bid" ng-blur="set_bid_from_temp()" ng-change="calculate_bid_temp()" class="form-control" id="bid" name="bid" ng-model="$root.form.bid" required format>
+                <input id="{{'bid-amount-input_' + bidder_id }}" ng-disabled="!allow_bidding" min="0" ng-focus="$root.form.bid_temp = $root.form.bid" ng-blur="set_bid_from_temp()" ng-change="calculate_bid_temp()" class="form-control" id="bid" name="bid" ng-model="$root.form.bid" required format>
               </div>
               <!-- End Seale Bid -->
               <!-- Start Submit For Form -->
