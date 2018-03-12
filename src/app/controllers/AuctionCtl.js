@@ -1,10 +1,10 @@
 angular.module('auction').controller('AuctionController',[
   '$rootScope', 'AuctionConfig', 'AuctionUtils',
   '$timeout', '$http', '$log', '$cookies', '$cookieStore', '$window',
-  '$rootScope', '$location', '$translate', '$filter', 'growl', 'growlMessages', '$aside', '$q',
+  '$location', '$translate', '$filter', 'growl', 'growlMessages', '$aside', '$q',
   function($rootScope, AuctionConfig, AuctionUtils,
     $timeout, $http, $log, $cookies, $cookieStore, $window,
-    $rootScope, $location, $translate, $filter, growl, growlMessages, $aside, $q) {
+    $location, $translate, $filter, growl, growlMessages, $aside, $q) {
 
     var base_url = window.location.href.replace(window.location.search, '');
     $rootScope.here = base_url;
