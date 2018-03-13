@@ -807,10 +807,8 @@ angular.module('auction').controller('AuctionController',[
       if (['sealedbid','bestbid'].indexOf($rootScope.auction_doc.current_phase) !== -1){
         window.addEventListener('load', $rootScope.load_post_bid(), true);
       }
-      if (['pre-started','pre-sealedbid','pre-bestbid'].indexOf($rootScope.auction_doc.current_phase) !== -1){
-        if (window.localStorage.getItem('bid-amount-input_' + $rootScope.bidder_id) !== null) {
-          window.localStorage.removeItem('bid-amount-input_' + $rootScope.bidder_id);
-        }
+      if ((['pre-started','pre-sealedbid','pre-bestbid'].indexOf($rootScope.auction_doc.current_phase) !== -1) && (window.localStorage.getItem('bid-amount-input_' + $rootScope.bidder_id) !== null)) {
+        window.localStorage.removeItem('bid-amount-input_' + $rootScope.bidder_id);
       }
     };
 
