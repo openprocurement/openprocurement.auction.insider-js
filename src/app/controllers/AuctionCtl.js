@@ -1,10 +1,10 @@
 angular.module('auction').controller('AuctionController',[
   '$rootScope', 'AuctionConfig', 'AuctionUtils',
   '$timeout', '$http', '$log', '$cookies', '$cookieStore', '$window',
-  '$rootScope', '$location', '$translate', '$filter', 'growl', 'growlMessages', '$aside', '$q',
+  '$location', '$translate', '$filter', 'growl', 'growlMessages', '$aside', '$q',
   function($rootScope, AuctionConfig, AuctionUtils,
     $timeout, $http, $log, $cookies, $cookieStore, $window,
-    $rootScope, $location, $translate, $filter, growl, growlMessages, $aside, $q) {
+    $location, $translate, $filter, growl, growlMessages, $aside, $q) {
 
     var base_url = window.location.href.replace(window.location.search, '');
     $rootScope.here = base_url;
@@ -460,7 +460,7 @@ angular.module('auction').controller('AuctionController',[
           message: "Start post sealebid or bestbid",
           bid_data: bid_amount
         });
-        $rootScope.bid_id_input = document.getElementById("bid-amount-input");
+        $rootScope.bid_id_input = document.getElementById('bid-amount-input_' + $rootScope.bidder_id);
         window.localStorage.setItem($rootScope.bid_id_input.id, $rootScope.bid_id_input.value);
       }
 
@@ -538,7 +538,9 @@ angular.module('auction').controller('AuctionController',[
                 type: 'success',
                 msg: 'Bid canceled'
               });
-              window.localStorage.clear();
+              if (window.localStorage.getItem('bid-amount-input_' + $rootScope.bidder_id) !== null) {
+                window.localStorage.removeItem('bid-amount-input_' + $rootScope.bidder_id);
+              }
               $rootScope.allow_bidding = true;
               $rootScope.form.bid = "";
               $rootScope.form.bid_temp = '';
@@ -634,7 +636,7 @@ angular.module('auction').controller('AuctionController',[
         if ((($rootScope.end_changes - $rootScope.start_changes) > 40000)||($rootScope.force_heartbeat)) {
           $rootScope.force_heartbeat = true;
         } else {
-          $rootScope.changes_options['heartbeat'] = false;
+          $rootScope.changes_options.heartbeat = false;
           $log.info({
             message: "Change heartbeat to false (Use timeout)",
             heartbeat: false
@@ -805,8 +807,8 @@ angular.module('auction').controller('AuctionController',[
       if (['sealedbid','bestbid'].indexOf($rootScope.auction_doc.current_phase) !== -1){
         window.addEventListener('load', $rootScope.load_post_bid(), true);
       }
-      if (['pre-started','pre-sealedbid','pre-bestbid'].indexOf($rootScope.auction_doc.current_phase) !== -1){
-        window.localStorage.clear();
+      if ((['pre-started','pre-sealedbid','pre-bestbid'].indexOf($rootScope.auction_doc.current_phase) !== -1) && (window.localStorage.getItem('bid-amount-input_' + $rootScope.bidder_id) !== null)) {
+        window.localStorage.removeItem('bid-amount-input_' + $rootScope.bidder_id);
       }
     };
 
@@ -892,14 +894,14 @@ angular.module('auction').controller('AuctionController',[
           return i;
         }
       }
-    }
+    };
     $rootScope.last_sealedbid_index = function() {
       for (var i = 0; i < $rootScope.auction_doc.stages.length; ++i) {
         if ($rootScope.auction_doc.stages[i].sealedbid_winner === true) {
           return i;
         }
       }
-    }
+    };
     $rootScope.winners_bid_info = function() {
       var results_dutch_index;
       for (var i = 0; i < $rootScope.auction_doc.results.length; ++i) {
