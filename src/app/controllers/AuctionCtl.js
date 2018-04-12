@@ -460,8 +460,6 @@ angular.module('auction').controller('AuctionController',[
           message: "Start post sealebid or bestbid",
           bid_data: bid_amount
         });
-        $rootScope.bid_id_input = document.getElementById('bid-amount-input_' + $rootScope.bidder_id);
-        window.localStorage.setItem($rootScope.bid_id_input.id, $rootScope.bid_id_input.value);
       }
 
       if ($rootScope.form.BidsForm.$valid) {
@@ -555,6 +553,10 @@ angular.module('auction').controller('AuctionController',[
                 msg: 'Bid placed'
               });
               $rootScope.allow_bidding = false;
+              if($rootScope.auction_doc.stages[$rootScope.auction_doc.current_stage].type.substring(0,5) !== 'dutch') {
+                $rootScope.bid_id_input = document.getElementById('bid-amount-input_' + $rootScope.bidder_id);
+                window.localStorage.setItem($rootScope.bid_id_input.id, bid);
+              }
             }
             $rootScope.auto_close_alert(msg_id);
           } // success ends here
@@ -819,7 +821,7 @@ angular.module('auction').controller('AuctionController',[
         element = document.getElementById(key);
         if (element) {
           $rootScope.new_value = window.localStorage.getItem(key);
-          $rootScope.form.BidsForm.bid.$setViewValue($rootScope.new_value);
+          $rootScope.form.BidsForm.bid.$setViewValue($rootScope.new_value.replace(/(\d)(?=(\d{3})+\.)/g, '$1 ').replace(/\./g, ","));
           $rootScope.allow_bidding = false;
         }
       }
