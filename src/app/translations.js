@@ -103,7 +103,8 @@ angular.module('auction').config(['$translateProvider',
       'Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).': 'Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).',
       'Please use the correct link to view the auction.': 'Please use the correct link to view the auction.',
       'Auction has not started and will be rescheduled': 'Auction has not started and will be rescheduled',
-      'Please wait for the auction start.': 'Please wait for the auction start.'
+      'Please wait for the auction start.': 'Please wait for the auction start.',
+      'overprice': 'The price offer is more than 10 times the size of the previous price offer. You can cancel a quote if you placed it in error.'
     });
 
     $translateProvider.translations('uk', {
@@ -208,7 +209,8 @@ angular.module('auction').config(['$translateProvider',
       'Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).': 'Ваша ставка повинна перевищувати ставку переможця попередньої стадії як мінімум на 1 крок (1% від початкової вартості).',
       'Please use the correct link to view the auction.': 'Будь ласка, використовуйте правильне посилання для перегляду аукціону.',
       'Auction has not started and will be rescheduled': 'Аукціон не розпочався і буде перепланований',
-      'Please wait for the auction start.': 'Будь ласка, дочекайтесь початку аукціону.'
+      'Please wait for the auction start.': 'Будь ласка, дочекайтесь початку аукціону.',
+      'overprice': 'Цінова пропозиція більше, ніж в 10 разів перевищує розмір попередньої цінової пропозиції. Ви можете відмінити цінову пропозицію, якщо розмістили її помилково.'
     });
 
     $translateProvider.translations('ru', {
@@ -311,9 +313,8 @@ angular.module('auction').config(['$translateProvider',
       'Your bid should be greater than the one made by the sealed bid winner at least for one step (1% of the primary lot value).': 'Ваша ставка должна превышать ставку победителя предыдущего этапа как минимум на 1 шаг (1% от изначальной стоимости).',
       'Please use the correct link to view the auction.': 'Пожалуйста, используйте правильную ссылку для просмотра аукциона.',
       'Auction has not started and will be rescheduled': 'Аукцион не начался и будет перепланирован',
-      'Please wait for the auction start.': 'Пожалуйста, дождитесь начала аукциона.'
+      'Please wait for the auction start.': 'Пожалуйста, дождитесь начала аукциона.',
+      'overprice': 'Ценовое предложение более чем в 10 раз превышает размер предыдущего ценового предложения. Вы можете отменить ценовое предложение, если разместили по ошибке.'
     });
-
   }
-
 ]);

@@ -371,7 +371,7 @@
         </div>
       </div>
 
-      <div ng-show="view_bids_form" class="bids-form panel panel-default bg-warning fixed-bottom" ng-class="{'auction-with-one-price': (auction_doc.auction_type||'default') == 'default'}">
+      <div  class="bids-form panel panel-default bg-warning fixed-bottom" ng-class="{'auction-with-one-price': (auction_doc.auction_type||'default') == 'default'}">
         <div class="panel-body bg-warning">
           <div class="container">
             <div uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" ng-class="'alert-' + (alert.type || 'warning')" class="bids-form-alert" close="closeAlert(alert.msg_id)"><span class="bids-form-alert-msg">{{ alert.msg | translate }}</span></div>
@@ -380,6 +380,9 @@
                 <span translate>Your proposal</span>:
                 <span class="text-small" ng-if="['bestbid', 'sealedbid'].indexOf(auction_doc.current_phase) !== -1">{{ minimal_bid_amount | fraction }} {{'or higher'|translate}}</span>
               </label>
+              <div ng-show="overloadPrice" class="text-indent">
+                  <span translate>overprice</span>
+              </div>
               <!-- Start Dutch Bid -->
               <div class="col-md-12 col-sm-12 col-xs-12" ng-if="auction_doc.stages[auction_doc.current_stage].type.substring(0,5) === 'dutch'">
                 <div class="lead">
@@ -399,8 +402,8 @@
               </div>
               <!-- End Dutch Bid -->
               <!-- Start Seale Bid -->
-              <div class="col-md-8 col-sm-8 col-xs-12" ng-if="['bestbid', 'sealedbid'].indexOf(auction_doc.current_phase) !== -1">
-                <input id="{{'bid-amount-input_' + bidder_id }}" ng-disabled="!allow_bidding" min="0" ng-focus="$root.form.bid_temp = $root.form.bid" ng-blur="set_bid_from_temp()" ng-change="calculate_bid_temp()" class="form-control" id="bid" name="bid" ng-model="$root.form.bid" required format>
+              <div class="col-md-8 col-sm-8 col-xs-12" >
+                <input id="{{'bid-amount-input_' + bidder_id }}" ng-disabled="!allow_bidding" min="0" ng-change="calculate_bid_temp()" class="form-control" id="bid" name="bid" ng-model="$root.form.bid" required format>
               </div>
               <!-- End Seale Bid -->
               <!-- Start Submit For Form -->
