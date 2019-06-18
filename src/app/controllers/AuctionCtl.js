@@ -24,6 +24,7 @@ angular.module('auction').controller('AuctionController',[
     $rootScope.lang = 'uk';
     $rootScope.format_date = AuctionUtils.format_date;
     $rootScope.bidder_id = null;
+    $rootScope.overloadPrice = false;
     $rootScope.bid = null;
     $rootScope.follow_login_allowed = false;
     $rootScope.allow_bidding = true;
@@ -541,7 +542,6 @@ angular.module('auction').controller('AuctionController',[
               }
               $rootScope.allow_bidding = true;
               $rootScope.form.bid = "";
-              $rootScope.form.bid_temp = '';
             } else {
               $log.info({
                 message: "Handle success response on post bid",
@@ -877,19 +877,37 @@ angular.module('auction').controller('AuctionController',[
     };
 
     $rootScope.calculate_bid_temp = function() {
-      $rootScope.form.bid_temp = Number(math.fraction(($rootScope.form.bid * 100).toFixed(2), 100));
-      $log.debug("Set bid_temp:", $rootScope.form);
-    };
+      $rootScope.form.bid = Number(math.fraction(($rootScope.form.bid * 100).toFixed(2), 100));
+      $log.debug("Set bid:", $rootScope.form);
 
-    $rootScope.set_bid_from_temp = function() {
-      $rootScope.form.bid = $rootScope.form.bid_temp;
       if ($rootScope.form.bid){
         $rootScope.form.BidsForm.bid.$setViewValue(math.format($rootScope.form.bid, {
           notation: 'fixed',
           precision: 2
         }).replace(/(\d)(?=(\d{3})+\.)/g, '$1 ').replace(/\./g, ","));
       }
+
+      var lastBid = $rootScope.get_last_bid();
+      if (lastBid !== undefined || lastBid != null) {
+        if (Number($rootScope.form.bid) > lastBid.amount * 10){
+          $rootScope.overloadPrice = true;
+          return;
+        }
+        $rootScope.overloadPrice = false;
+      }
     };
+
+    $rootScope.get_last_bid = function() {
+      var bids = [];
+      $rootScope.auction_doc.stages.forEach(function (item, index) {
+        if (item.hasOwnProperty('type') && item.type === 'bids') bids.push(item);
+      });
+      var sortedBids =  bids.sort(function(a, b) {return Date.parse(b.time) - Date.parse(a.time)});
+      if (sortedBids.length > 0) {
+        return sortedBids[0];
+      }
+    };
+
     $rootScope.last_dutch_index = function() {
       for (var i = 0; i < $rootScope.auction_doc.stages.length; ++i) {
         if ($rootScope.auction_doc.stages[i].dutch_winner === true) {

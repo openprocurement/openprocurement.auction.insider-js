@@ -1,44 +1,35 @@
 angular.module('auction').directive('format', ['$filter', function ($filter) {
-  return {
-    require: '?ngModel',
-    link: function(scope, elem, attrs, ctrl) {
-      if (!ctrl) return;
-      ctrl.$formatters.unshift(function(value) {
-        if (value) {
-          var formatters_value = math.format(Number(value), {
-            notation: 'fixed',
-            precision: 2
-          }).replace(/(\d)(?=(\d{3})+\.)/g, '$1 ').replace(/\./g, ",");
-          ctrl.prev_value = formatters_value;
-          return formatters_value;
-        } else {
-          return "";
-        }
-      });
-      ctrl.$parsers.unshift(function(viewValue) {
-        console.log(viewValue);
-        if (viewValue) {
-          var plainNumber = Number((viewValue || "").replace(/ /g, '').replace(/,/g, "."));
-          if (plainNumber >= 0) {
-            var newviewValue = viewValue;
-            ctrl.prev_value = viewValue;
-          } else {
-            try {
-              var plainNumber = Number((ctrl.prev_value || null ).replace(/ /g, '').replace(/,/g, "."));
+    return {
+        require: '?ngModel',
+        link: function (scope, elem, attrs, ctrl) {
+            if (!ctrl) {
+                return;
             }
-            catch (e) {
-              var plainNumber = null;
-            }
-            var newviewValue = ctrl.prev_value;
-          }
-          //TODO: linter warn `newviewValue` is out of scope
-          ctrl.$viewValue = newviewValue;
-          ctrl.$render();
-        } else {
-          var plainNumber = null;
+
+            ctrl.$formatters.unshift(function () {
+                // this func is called when value is loaded from model
+                return $filter('floor')(ctrl.$modelValue, 2);
+            });
+
+            ctrl.$parsers.unshift(function (viewValue) {
+                // this func is called when value is loaded from input
+                var plainNumber = viewValue.replace(/[^\d\,\.]/g, '');
+
+                if (plainNumber.indexOf(".") !== -1) {
+                    // for inputs like 1,000.55 (in case Ctr+V)
+                    plainNumber = plainNumber.replace(/[\,]/g, '');
+                } else {
+                    // for inputs like 1000,55
+                    plainNumber = plainNumber.replace(/[\,]/g, '.');
+                }
+
+                plainNumber = plainNumber.replace(/\.(?=.*\.)/, '');
+
+                var formattedNumber = $filter('floor')(plainNumber);  // 20 000
+
+                elem.val(formattedNumber);
+                return plainNumber;
+            });
         }
-        return plainNumber;
-      });
-    }
-  };
+    };
 }]);
